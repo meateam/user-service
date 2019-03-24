@@ -14,7 +14,6 @@ export class UsersService {
         return JSON.parse(res);
     }
     static async getByDomainUser(domainUser: string): Promise<IUsers | null> {
-        console.log(`KARTOFFEL: ${process.env.KARTOFFEL_URL}`);
         const res = await request(`${baseUrl}/domainUser/${domainUser}`);
         return JSON.parse(res);
     }

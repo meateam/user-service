@@ -80,3 +80,6 @@ typings/
 
 # vs code config
 /.vscode
+
+#yarn files
+yarn.lock
