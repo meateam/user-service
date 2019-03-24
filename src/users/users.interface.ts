@@ -26,10 +26,11 @@ export interface IDomainUser {
 
 export interface IUsers {
     // Person's Basic information
+    _id?:string;
     id?: string;
     identityCard: string;
     personalNumber?: string;
-    primaryDomainUser?: string | Types.ObjectId | IDomainUser;
+    primaryDomainUser: IDomainUser;
     secondaryDomainUsers?:  string[] | Types.ObjectId[] | IDomainUser[];
     entityType: string;
     serviceType?: string;
@@ -54,4 +55,6 @@ export interface IUsers {
     responsibility?: string;
     responsibilityLocation?: string | Types.ObjectId | IOrganizationGroup;
     clearance?: string;
+    // Calculated
+    fullName?: string;
 }
