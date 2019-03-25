@@ -4,8 +4,8 @@ import { Types } from 'mongoose';
 export interface IOrganizationGroup {
     id?: string;
     name: string;
-    directManagers?: IUsers[] | string[];
-    directMembers?: IUsers[] | string[];
+    directManagers?: IUser[] | string[];
+    directMembers?: IUser[] | string[];
     createdAt: Date;
     updatedAt?: Date;
     ancestors?: string[];
@@ -21,10 +21,10 @@ export interface IDomainUser {
     name: string;
     uniqueID?: string;
     adfsUID?: string;
-    personId?: Types.ObjectId | string | IUsers;
+    personId?: Types.ObjectId | string | IUser;
 }
 
-export interface IUsers {
+export interface IUser {
     // Person's Basic information
     _id?:string;
     id?: string;
