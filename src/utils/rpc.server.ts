@@ -32,7 +32,7 @@ export class RPC {
     }
 
     private async getUserByID(call: any, callback: any) {
-        const user:IUser = await UsersService.getByID(call.request.id);
+        const user:IUser | null = await UsersService.getByID(call.request.id);
         if (!user) {
             return callback({
                 code: '404',
@@ -47,7 +47,14 @@ export class RPC {
     }
 
     private async getUserByMail(call: any, callback: any) {
-        const user:IUser = await UsersService.getByDomainUser(call.request.id);
+        const user:IUser | null = await UsersService.getByDomainUser(call.request.mail);
+        if (!user) {
+            return callback({
+                code: '404',
+                message: `The user with Mail ${call.request.mail}, is not found`,
+                status: grpc.status.NOT_FOUND,
+            });
+        }
         callback(null, { user: {
             firstName: user.firstName,
             lastName: user.lastName,
