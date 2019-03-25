@@ -2,11 +2,11 @@ import * as request from 'supertest';
 import { describe } from 'mocha';
 import { expect } from 'chai';
 import nock = require('nock');
-import { IUsers } from './users.interface';
+import { IUser } from './users.interface';
 import supertest = require('supertest');
 import { Server } from '../server';
 
-const user_1: IUsers = {
+const user_1: IUser = {
     _id: '5c8f5f3c039b31198058d812',
     updatedAt: new Date('2019-03-18T09:05:00.808Z'),
     createdAt: new Date('2019-03-18T09:05:00.203Z'),
