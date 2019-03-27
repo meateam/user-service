@@ -41,8 +41,10 @@ export class RPC {
             });
         }
         callback(null, { user: {
+            id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
+            mail: user.primaryDomainUser.uniqueID,
         }});
     }
 
@@ -56,8 +58,10 @@ export class RPC {
             });
         }
         callback(null, { user: {
+            id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
+            mail: user.primaryDomainUser.uniqueID,
         }});
     }
 

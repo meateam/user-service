@@ -25,6 +25,7 @@ export class UsersService {
             const res = await request(`${baseUrl}/domainUser/${domainUser}`);
             return JSON.parse(res);
         } catch (err) {
+            console.log(`${domainUser} is not found`);
             return null;
         }
     }
