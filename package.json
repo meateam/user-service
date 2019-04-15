@@ -1,12 +1,13 @@
 {
   "name": "users-service",
-  "version": "0.1",
+  "version": "0.1.0",
   "description": "Users services",
   "main": "index.js",
   "scripts": {
     "start": "tsc && node ./dist/index.js",
     "serve": "node ./dist/index.js",
-    "test": "cross-env NODE_ENV=test mocha --recursive -r ts-node/register src/**/*.spec.ts --exit",
+    "test": "npm run tslint && npm run run_tests",
+    "run_tests": "cross-env NODE_ENV=test mocha --recursive -r ts-node/register src/**/*.spec.ts --exit",
     "test_mocha": "cross-env NODE_ENV=test mocha --recursive -r ts-node/register src/**/*.spec.ts --exit",
     "test:integration": "cross-env NODE_ENV=test mocha --recursive -r ts-node/register \"src/**/*.router.spec.ts\" --exit",
     "test:coverage": "cross-env NODE_ENV=test nyc npm test",
