@@ -1,1 +1,1 @@
-PandoraPipeline()
+Pipeline()

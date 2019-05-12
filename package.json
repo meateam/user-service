@@ -1,7 +1,7 @@
 {
-  "name": "users-service",
+  "name": "user-service",
   "version": "0.1.0",
-  "description": "Users services",
+  "description": "User services",
   "main": "index.js",
   "scripts": {
     "start": "tsc && node ./dist/index.js",
