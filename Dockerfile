@@ -1,15 +1,18 @@
-FROM node:latest
+FROM node:10.15-alpine
+ENV NODE_ENV=development
+EXPOSE 8080
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
+COPY . ./
+RUN npm run build
 
-ENV HOME=/home/pandora
-
-COPY package*.json $HOME/app/
-
-WORKDIR $HOME/app
-
-RUN npm install --silent --progress=false
-
-COPY . $HOME/app/
-
-EXPOSE 3000
-
-CMD ["npm", "run", "serve"]
+FROM node:10.15-alpine
+ENV NODE_ENV=production
+EXPOSE 8080
+WORKDIR /usr/src/app
+COPY --from=0 /usr/src/app/package.json /usr/src/app/package-lock.json ./
+COPY --from=0 /usr/src/app/dist ./dist/
+COPY --from=0 /usr/src/app/proto ./proto/
+RUN npm install
+CMD ["npm", "start"]
