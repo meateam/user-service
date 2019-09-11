@@ -1,6 +1,6 @@
-repoName: meateam/feature-name
+repoName: meateam/user-service
 runTests: true
-testCommand:
+testCommand: "npm run run_tests"
 deployUponTestSuccess: true
 deployCommand:
-deployEnvironment: staging
+deployEnvironment:
