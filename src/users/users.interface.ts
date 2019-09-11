@@ -26,8 +26,8 @@ export interface IDomainUser {
 
 export interface IUser {
     // Person's Basic information
-    _id?:string;
-    id?: string;
+    _id:string;
+    id: string;
     identityCard: string;
     personalNumber?: string;
     primaryDomainUser: IDomainUser;
