@@ -1,5 +1,4 @@
-import { Server } from './server';
-import { RPC } from './utils/rpc.server';
+import { RPC } from './rpc.server';
 
 process.on('uncaughtException', (err) => {
     console.error('Unhandled Exception', err.stack);
@@ -17,15 +16,8 @@ process.on('SIGINT', async () => {
 });
 
 (async () => {
-    console.log('Starting RPC Server');
-
-    const rpcPort = process.env.RPC_PORT || '50051';
+    const rpcPort = process.env.RPC_PORT || '8086';
     const rpcServer: RPC = new RPC(rpcPort);
     rpcServer.server.start();
-    console.log('Starting server');
-    const server: Server = Server.bootstrap();
-
-    server.app.on('close', () => {
-        console.log('Server closed');
-    });
+    console.log(`RPC Server listening on port ${rpcPort}`);
 })();
