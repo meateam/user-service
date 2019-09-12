@@ -1,5 +1,6 @@
 import { UsersService } from './users/users.service';
 import { IUser } from './users/users.interface';
+import { wrapper } from './logger';
 
 const PROTO_PATH = `${__dirname}/../proto/users.proto`;
 const grpc = require('grpc');
@@ -25,8 +26,8 @@ export class RPC {
     public constructor(port: string) {
         this.server = new grpc.Server();
         this.server.addService(users_proto.Users.service, {
-            GetUserByID: this.getUserByID,
-            GetUserByMail: this.getUserByMail,
+            GetUserByID: wrapper(this.getUserByID),
+            GetUserByMail: wrapper(this.getUserByMail),
         });
         this.server.bind(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure());
     }
