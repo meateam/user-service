@@ -1,5 +1,10 @@
 import { UsersService } from './users/users.service';
 import { IUser } from './users/users.interface';
+import RedisClient, * as redis from 'redis';
+import { promisify } from 'util';
+import Axios, * as axios from 'axios';
+import { JsonWebTokenError } from 'jsonwebtoken';
+import * as https from 'https';
 
 const PROTO_PATH = `${__dirname}/../proto/users.proto`;
 const grpc = require('grpc');
@@ -23,6 +28,7 @@ export class RPC {
     public server: any;
 
     public constructor(port: string) {
+        // this.redis = redisClient;
         this.server = new grpc.Server();
         this.server.addService(users_proto.Users.service, {
             GetUserByID: this.getUserByID,
@@ -65,4 +71,44 @@ export class RPC {
         }});
     }
 
+}
+
+const redisClient = redis.createClient();
+redisClient.on('error', function (err) {
+    console.log(`Error ${err}`);
+});
+const getAsyncRedis = promisify(redisClient.get).bind(redisClient);
+
+async function spikeMiddleware() {
+    let kartoffelToken:string = await getAsyncRedis('kartoffel:token');
+    if (!kartoffelToken) {
+        kartoffelToken = await renewKartoffelToken();
+        redisClient.set('kartoffel:token', kartoffelToken);
+    }
+    return kartoffelToken;
+}
+
+export async function renewKartoffelToken(): Promise<string> {
+    const spikeId =  process.env.SPIKE_CLIENT_ID;
+    const spikeSecret = process.env.SPIKE_CLIENT_SECRET;
+
+    // For when the Spike's https certificate is self signed.
+    const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+    const authorizationValue = Buffer.from(`${spikeId}:${spikeSecret}`).toString('base64');
+    Axios({
+        httpsAgent,
+        method: 'post',
+        url: process.env.SPIKE_TOKEN_URL,
+        data: {
+            grant_type: 'client_credentials',
+            audience: 'kartoffel',
+        },
+        headers: { Authorization: `Basic ${authorizationValue}` },
+    }).then((res) => {
+        console.log(res);
+        return res.data;
+    }).catch((err) => {
+        console.log(err);
+    });
+    return '';
 }

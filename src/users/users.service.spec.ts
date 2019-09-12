@@ -1,4 +1,3 @@
-import * as request from 'supertest';
 import { describe } from 'mocha';
 import { expect } from 'chai';
 import nock = require('nock');
