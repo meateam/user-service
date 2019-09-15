@@ -3,7 +3,7 @@ import * as request from 'request-promise-native';
 
 const baseUrl = `${process.env.KARTOFFEL_URL || 'http://localhost:4000'}/api/persons`;
 
-export class UsersService {
+export default class UsersService {
     /**
      * Gets a user by its ID from the provider
      * @param id - the user ID
@@ -18,7 +18,7 @@ export class UsersService {
         }
     }
 
-    static async getAll(): Promise<IUser | null> {
+    static async getAll(): Promise<IUser[]> {
         const res = await request(`${baseUrl}`);
         return JSON.parse(res);
     }

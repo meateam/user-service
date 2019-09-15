@@ -1,4 +1,4 @@
-import { UsersService } from './users/users.service';
+import UsersService from './users/users.service';
 import { IUser } from './users/users.interface';
 
 const PROTO_PATH = `${__dirname}/../proto/users.proto`;

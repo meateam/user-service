@@ -2,9 +2,9 @@ import { describe } from 'mocha';
 import { expect } from 'chai';
 import nock = require('nock');
 import { IUser } from './users.interface';
-import { UsersService } from './users.service';
-// import supertest = require('supertest');
-// import { Server } from '../server';
+import  UsersService  from './users.service';
+
+// Old tests
 
 const user_1: IUser = {
     _id: '5c8f5f3c039b31198058d812',
