@@ -25,9 +25,9 @@ function connectToRedis(): redis.RedisClient {
 }
 
 (async () => {
-    // const redisClient = connectToRedis();
+    const redisClient = connectToRedis();
     const rpcPort = process.env.RPC_PORT || '8086';
-    const rpcServer: RPC = new RPC(rpcPort);
+    const rpcServer: RPC = new RPC(rpcPort, redisClient);
     rpcServer.server.start();
     console.log(`RPC Server listening on port ${rpcPort}`);
 })();

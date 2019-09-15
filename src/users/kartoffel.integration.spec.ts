@@ -1,9 +1,13 @@
 import { describe } from 'mocha';
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import * as redis from 'redis';
 import Spike from '../spike/spike.service';
-import UsersService from './users.service';
+import Kartoffel from './users.service';
 import { IUser } from './users.interface';
+import { UserNotFoundError } from '../utils/errors';
+
+chai.use(chaiAsPromised);
 
 const user_1: IUser = {
     secondaryDomainUsers: [],
@@ -51,10 +55,12 @@ describe.only('Spike and Kartoffel Integration', () => {
 
     let redisClient:redis.RedisClient;
     let SpikeService: Spike;
+    let UsersService: Kartoffel;
 
     before(async () => {
         redisClient = redis.createClient();
         SpikeService = new Spike(redisClient);
+        UsersService = new Kartoffel(redisClient);
     });
 
     describe('Token creation', () => {
@@ -64,14 +70,13 @@ describe.only('Spike and Kartoffel Integration', () => {
         });
     });
 
-    describe('Kartoffel', () => {
+    describe.only('Kartoffel', () => {
         describe('Get user by id', () => {
             it('should return null if the user does not exist', async () => {
-                const user: IUser|null =  await UsersService.getByID(fakeUserId);
-                expect(user).to.not.exist;
+                expect(UsersService.getByID(fakeUserId)).to.eventually.throw(UserNotFoundError);
             });
             it('Should return a user by id', async () => {
-                const user: IUser|null =  await UsersService.getByID(user_1.id);
+                const user: IUser =  await UsersService.getByID(user_1.id);
                 expect(user).to.exist;
                 expect(user).to.have.property('id', user_1.id);
                 expect(user).to.have.property('firstName', user_1.firstName);
@@ -81,11 +86,11 @@ describe.only('Spike and Kartoffel Integration', () => {
 
         describe('Get user by mail', () => {
             it('should return null if the user does not exist', async () => {
-                const user: IUser|null =  await UsersService.getByID(fakeUserMail);
+                const user: IUser =  await UsersService.getByID(fakeUserMail);
                 expect(user).to.not.exist;
             });
             it('Should return a user by domain-user id', async () => {
-                const user: IUser|null = await UsersService.getByDomainUser(<string>user_1.primaryDomainUser.uniqueID);
+                const user: IUser = await UsersService.getByDomainUser(<string>user_1.primaryDomainUser.uniqueID);
                 expect(user).to.exist;
                 expect(user).to.have.property('id', user_1.id);
                 expect(user).to.have.property('firstName', user_1.firstName);
@@ -93,9 +98,9 @@ describe.only('Spike and Kartoffel Integration', () => {
             });
         });
 
-        describe('Get all users', () => {
+        describe.skip('Get all users', () => {
             it('Should return a user by id', async () => {
-                const users: IUser[] = await UsersService.getAll();
+                const users: IUser[] = await Kartoffel.getAll();
                 expect(users).to.exist;
                 expect(users).to.be.an('array');
                 const user = users[0];

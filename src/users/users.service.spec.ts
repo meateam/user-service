@@ -55,35 +55,35 @@ describe('User Router', () => {
             .reply(200, user_1);
     });
 
-    describe('Get User by ID', () => {
-        it('Should return a user by id', async () => {
-            const user = await UsersService.getByID(user_1.id);
-            expect(user).to.exist;
-            expect(user).to.be.an('object');
-            expect(user).to.have.property('id', user_1.id);
-            expect(user).to.have.property('firstName', user_1.firstName);
-            expect(user).to.have.property('lastName', user_1.lastName);
-        });
-        it('Should return null if user doesn\'t exist', async () => {
-            const user = await UsersService.getByID('1234567');
-            expect(user).to.not.exist;
-        });
-    });
+    // describe('Get User by ID', () => {
+    //     it('Should return a user by id', async () => {
+    //         const user = await UsersService.getByID(user_1.id);
+    //         expect(user).to.exist;
+    //         expect(user).to.be.an('object');
+    //         expect(user).to.have.property('id', user_1.id);
+    //         expect(user).to.have.property('firstName', user_1.firstName);
+    //         expect(user).to.have.property('lastName', user_1.lastName);
+    //     });
+    //     it('Should return null if user doesn\'t exist', async () => {
+    //         const user = await UsersService.getByID('1234567');
+    //         expect(user).to.not.exist;
+    //     });
+    // });
 
-    describe('Get User by DomainUser', () => {
-        it('Should return a user by domain-user id', async () => {
-            const user = await UsersService.getByDomainUser(<string>user_1.primaryDomainUser.uniqueID);
-            expect(user).to.exist;
-            expect(user).to.be.an('object');
-            expect(user).to.have.property('id', user_1.id);
-            expect(user).to.have.property('firstName', user_1.firstName);
-            expect(user).to.have.property('lastName', user_1.lastName);
-        });
-        it('should return null if the user doensn\'t exist', async () => {
-            const user = await UsersService.getByDomainUser('1234567');
-            expect(user).to.not.exist;
-        });
-    });
+    // describe('Get User by DomainUser', () => {
+    //     it('Should return a user by domain-user id', async () => {
+    //         const user = await UsersService.getByDomainUser(<string>user_1.primaryDomainUser.uniqueID);
+    //         expect(user).to.exist;
+    //         expect(user).to.be.an('object');
+    //         expect(user).to.have.property('id', user_1.id);
+    //         expect(user).to.have.property('firstName', user_1.firstName);
+    //         expect(user).to.have.property('lastName', user_1.lastName);
+    //     });
+    //     it('should return null if the user doensn\'t exist', async () => {
+    //         const user = await UsersService.getByDomainUser('1234567');
+    //         expect(user).to.not.exist;
+    //     });
+    // });
 
     after(() => {
         nock.cleanAll();

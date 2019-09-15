@@ -1,5 +1,6 @@
-import UsersService from './users/users.service';
+import Kartoffel from './users/users.service';
 import { IUser } from './users/users.interface';
+import { RedisClient } from 'redis';
 
 const PROTO_PATH = `${__dirname}/../proto/users.proto`;
 const grpc = require('grpc');
@@ -21,9 +22,12 @@ const users_proto = protoDescriptor.users;
 
 export class RPC {
     public server: any;
+    private UsersService: Kartoffel;
+    private redis: RedisClient;
 
-    public constructor(port: string) {
-        // this.redis = redisClient;
+    public constructor(port: string, redisClient: RedisClient) {
+        this.redis = redisClient;
+        this.UsersService = new Kartoffel(this.redis);
         this.server = new grpc.Server();
         this.server.addService(users_proto.Users.service, {
             GetUserByID: this.getUserByID,
@@ -33,7 +37,7 @@ export class RPC {
     }
 
     private async getUserByID(call: any, callback: any) {
-        const user:IUser | null = await UsersService.getByID(call.request.id);
+        const user:IUser = await this.UsersService.getByID(call.request.id);
         if (!user) {
             return callback({
                 code: '404',
@@ -50,7 +54,7 @@ export class RPC {
     }
 
     private async getUserByMail(call: any, callback: any) {
-        const user:IUser | null = await UsersService.getByDomainUser(call.request.mail);
+        const user:IUser = await this.UsersService.getByDomainUser(call.request.mail);
         if (!user) {
             return callback({
                 code: '404',

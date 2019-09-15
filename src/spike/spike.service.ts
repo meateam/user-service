@@ -25,9 +25,9 @@ export default class Spike {
     /**
      * Renews the kartoffel token from spike
      */
-    public async renewToken(): Promise<SpikeToken> {
+    private async renewToken(): Promise<SpikeToken> {
         // For when the Spike's https certificate is self signed.
-        const authorizationValue = Buffer.from(`${this.spikeId}:${this.spikeSecret}`).toString('base64');
+        const authorizationValue:string = Buffer.from(`${this.spikeId}:${this.spikeSecret}`).toString('base64');
 
         const res = await axios({
             httpsAgent: new https.Agent({ rejectUnauthorized: false }),
@@ -47,11 +47,9 @@ export default class Spike {
      * Returns a kartoffel token saved in redis or from spike
      */
     public async getToken (): Promise<string> {
-        // If we don't have the token yet
         let kartoffelToken = await this.getAsyncRedis('kartoffel:token');
         // If the token is not in redis - either because we didn't save it yet or it has been expired
         if (!kartoffelToken) {
-            console.log('not in redis');
             let spikeRes: SpikeToken;
             try {
                 spikeRes = await this.renewToken();
@@ -59,7 +57,7 @@ export default class Spike {
                 console.log(`Error in receiving token: ${err}`);
                 throw new Error(`Error in receiving token: ${err}`);
             }
-            const tokenExp = parseInt(spikeRes.expires_in, 10);
+            const tokenExp: number = parseInt(spikeRes.expires_in, 10);
             this.redis.set('kartoffel:token', spikeRes.access_token, 'EX', tokenExp);
             kartoffelToken = spikeRes.access_token;
         }
