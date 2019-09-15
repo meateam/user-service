@@ -32,38 +32,30 @@ export class RPC {
         this.server.bind(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure());
     }
 
-    private async getUserByID(call: any, callback: any) {
+    private async getUserByID(call: any, callback: any): Promise<any> {
         const user:IUser | null = await UsersService.getByID(call.request.id);
         if (!user) {
-            return callback({
-                code: '404',
-                message: `The user with ID ${call.request.id}, is not found`,
-                status: grpc.status.NOT_FOUND,
-            });
+            throw new Error(`The user with Mail ${call.request.mail}, is not found`);
         }
-        callback(null, { user: {
+        return { user: {
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
             mail: user.primaryDomainUser.uniqueID,
-        }});
+        }};
     }
 
-    private async getUserByMail(call: any, callback: any) {
+    private async getUserByMail(call: any, callback: any) : Promise<any> {
         const user:IUser | null = await UsersService.getByDomainUser(call.request.mail);
         if (!user) {
-            return callback({
-                code: '404',
-                message: `The user with Mail ${call.request.mail}, is not found`,
-                status: grpc.status.NOT_FOUND,
-            });
+            throw new Error(`The user with Mail ${call.request.mail}, is not found`);
         }
-        callback(null, { user: {
+        return { user: {
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
             mail: user.primaryDomainUser.uniqueID,
-        }});
+        }};
     }
 
 }

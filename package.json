@@ -53,7 +53,9 @@
     "morgan": "^1.9.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
-    "snyk": "^1.189.0"
+    "snyk": "^1.189.0",
+    "winston": "^3.2.1",
+    "winston-elasticsearch": "^0.7.13"
   },
   "snyk": true
 }

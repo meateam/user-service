@@ -57,13 +57,13 @@ export function wrapper(func: Function) :
     return async (call: grpc.ServerUnaryCall<Object>, callback: grpc.requestCallback<Object>) => {
         try {
             const reqInfo: object = call.request;
-            log(Severity.INFO, 'request', func.name, 'traceID', reqInfo);
+            log(Severity.INFO, 'request', func.name, 'NONE', reqInfo);
 
             const res = await func(call, callback);
-            log(Severity.INFO, 'response', func.name, 'traceID', { res });
+            log(Severity.INFO, 'response', func.name, 'NONE', { res });
             callback(null, res);
         } catch (err) {
-            log(Severity.ERROR, func.name, err.message, 'getCurrTraceId()');
+            log(Severity.ERROR, func.name, err.message);
             callback(err);
         }
     };
