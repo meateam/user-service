@@ -1,12 +1,14 @@
 import * as winston from 'winston';
 import * as os from 'os';
-// import * as Elasticsearch from 'winston-elasticsearch';
-const Elasticsearch = require('winston-elasticsearch');
 import * as grpc from 'grpc';
+import * as WinstonElasticsearch from 'winston-elasticsearch';
+import * as data from 'winston-elasticsearch/index-template-mapping.json';
 import { confLogger, serviceName } from './config';
 
+const Elasticsearch = require('winston-elasticsearch');
+
 // index pattern for the logger
-const indexTemplateMapping = require('winston-elasticsearch/index-template-mapping.json');
+const indexTemplateMapping = data;
 indexTemplateMapping.index_patterns = `${confLogger.indexPrefix}-*`;
 
 export const logger: winston.Logger = winston.createLogger({
@@ -14,7 +16,7 @@ export const logger: winston.Logger = winston.createLogger({
 });
 
 // configure logger
-const elasticsearch = new Elasticsearch({
+const options: WinstonElasticsearch.ElasticsearchTransportOptions = {
     indexPrefix: confLogger.indexPrefix,
     level: 'verbose',
     clientOpts: confLogger.options,
@@ -22,7 +24,8 @@ const elasticsearch = new Elasticsearch({
     messageType: 'log',
     ensureMappingTemplate: true,
     mappingTemplate: indexTemplateMapping,
-});
+};
+const elasticsearch: WinstonElasticsearch.default = new Elasticsearch(options);
 logger.add(elasticsearch);
 
 /**
@@ -68,3 +71,4 @@ export function wrapper(func: Function) :
         }
     };
 }
+

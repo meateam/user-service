@@ -1,8 +1,4 @@
-// Used for the APM agent
-export const secretToken: string = process.env.APM_SECRET_TOKEN || '';
-export const serviceName: string = process.env.FS_APM_SERVICE_NAME || 'user-service';
-export const verifyServerCert: boolean = process.env.ELASTIC_APM_VERIFY_SERVER_CERT === 'true';
-export const apmURL: string = process.env.ELASTIC_APM_SERVER_URL || 'http://localhost:8200';
+export const serviceName: string = process.env.US_APM_SERVICE_NAME || 'user-service';
 
 const esHost: string = process.env.LOGGER_ELASTICSEARCH || 'http://localhost:9200';
 const esUser: string = process.env.ELASTICSEARCH_USER || '';
