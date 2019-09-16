@@ -1,12 +1,13 @@
 import { describe } from 'mocha';
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import * as chai from 'chai';
+import * as chaiAsPromised from 'chai-as-promised';
 import * as redis from 'redis';
 import Spike from '../spike/spike.service';
 import Kartoffel from './users.service';
 import { IUser } from './users.interface';
 import { UserNotFoundError } from '../utils/errors';
 
+const expect: Chai.ExpectStatic = chai.expect;
 chai.use(chaiAsPromised);
 
 const user_1: IUser = {
