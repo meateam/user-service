@@ -2,14 +2,12 @@ import * as winston from 'winston';
 import * as os from 'os';
 import * as grpc from 'grpc';
 import * as WinstonElasticsearch from 'winston-elasticsearch';
-import * as data from 'winston-elasticsearch/index-template-mapping.json';
+import * as indexTemplateMapping from 'winston-elasticsearch/index-template-mapping.json';
 import { confLogger, serviceName } from './config';
-
 const Elasticsearch = require('winston-elasticsearch');
 
 // index pattern for the logger
-const indexTemplateMapping = data;
-indexTemplateMapping.index_patterns = `${confLogger.indexPrefix}-*`;
+const indexPattern = `${confLogger.indexPrefix}-*`;
 
 export const logger: winston.Logger = winston.createLogger({
     defaultMeta: { service: serviceName, hostname: os.hostname() },
@@ -23,7 +21,7 @@ const options: WinstonElasticsearch.ElasticsearchTransportOptions = {
     bufferLimit: 100,
     messageType: 'log',
     ensureMappingTemplate: true,
-    mappingTemplate: indexTemplateMapping,
+    mappingTemplate: { ...indexTemplateMapping, index_patterns: indexPattern },
 };
 const elasticsearch: WinstonElasticsearch.default = new Elasticsearch(options);
 logger.add(elasticsearch);
