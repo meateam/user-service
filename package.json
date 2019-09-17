@@ -21,6 +21,7 @@
   "author": "Yonatan Tal",
   "license": "ISC",
   "devDependencies": {
+    "@types/elasticsearch": "^5.0.34",
     "@types/body-parser": "^1.17.0",
     "@types/chai": "^4.1.7",
     "@types/jsonwebtoken": "^7.2.8",
@@ -41,7 +42,7 @@
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "tslint-config-airbnb": "^5.11.0",
-    "typescript": "^2.9.2"
+    "typescript": "^3.5.1"
   },
   "dependencies": {
     "@grpc/proto-loader": "^0.4.0",
@@ -52,7 +53,9 @@
     "morgan": "^1.9.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
-    "snyk": "^1.189.0"
+    "snyk": "^1.189.0",
+    "winston": "^3.2.1",
+    "winston-elasticsearch": "^0.7.13"
   },
   "snyk": true
 }
