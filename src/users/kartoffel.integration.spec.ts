@@ -7,7 +7,7 @@ import Kartoffel from './users.service';
 import { IUser } from './users.interface';
 import { UserNotFoundError } from '../utils/errors';
 
-const expect = chai.expect;
+const expect: Chai.ExpectStatic = chai.expect;
 chai.use(chaiAsPromised);
 
 const user_1: IUser = {
