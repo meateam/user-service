@@ -1,12 +1,13 @@
 import { describe } from 'mocha';
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import * as chai from 'chai';
+import * as chaiAsPromised from 'chai-as-promised';
 import * as redis from 'redis';
 import Spike from '../spike/spike.service';
 import Kartoffel from './users.service';
 import { IUser } from './users.interface';
 import { UserNotFoundError } from '../utils/errors';
 
+const expect = chai.expect;
 chai.use(chaiAsPromised);
 
 const user_1: IUser = {
@@ -51,7 +52,7 @@ const user_1: IUser = {
 const fakeUserId = '5c8f5f3c039b31198058d812';
 const fakeUserMail = 'apple@kuchen';
 
-describe.only('Spike and Kartoffel Integration', () => {
+describe('Spike and Kartoffel Integration', () => {
 
     let redisClient:redis.RedisClient;
     let SpikeService: Spike;
@@ -63,17 +64,17 @@ describe.only('Spike and Kartoffel Integration', () => {
         UsersService = new Kartoffel(redisClient);
     });
 
-    describe('Token creation', () => {
+    describe.skip('Token creation', () => {
         it('should save the token in redis', async () => {
             const token = await SpikeService.getToken();
             console.log(token);
         });
     });
 
-    describe.only('Kartoffel', () => {
+    describe('Kartoffel', () => {
         describe('Get user by id', () => {
             it('should return null if the user does not exist', async () => {
-                expect(UsersService.getByID(fakeUserId)).to.eventually.throw(UserNotFoundError);
+                await expect(UsersService.getByID(fakeUserId)).to.eventually.be.rejectedWith(UserNotFoundError);
             });
             it('Should return a user by id', async () => {
                 const user: IUser =  await UsersService.getByID(user_1.id);
@@ -86,24 +87,11 @@ describe.only('Spike and Kartoffel Integration', () => {
 
         describe('Get user by mail', () => {
             it('should return null if the user does not exist', async () => {
-                const user: IUser =  await UsersService.getByID(fakeUserMail);
-                expect(user).to.not.exist;
+                await expect(UsersService.getByID(fakeUserMail)).to.eventually.be.rejectedWith(UserNotFoundError);
             });
             it('Should return a user by domain-user id', async () => {
                 const user: IUser = await UsersService.getByDomainUser(<string>user_1.primaryDomainUser.uniqueID);
                 expect(user).to.exist;
-                expect(user).to.have.property('id', user_1.id);
-                expect(user).to.have.property('firstName', user_1.firstName);
-                expect(user).to.have.property('lastName', user_1.lastName);
-            });
-        });
-
-        describe.skip('Get all users', () => {
-            it('Should return a user by id', async () => {
-                const users: IUser[] = await Kartoffel.getAll();
-                expect(users).to.exist;
-                expect(users).to.be.an('array');
-                const user = users[0];
                 expect(user).to.have.property('id', user_1.id);
                 expect(user).to.have.property('firstName', user_1.firstName);
                 expect(user).to.have.property('lastName', user_1.lastName);
