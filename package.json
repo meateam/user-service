@@ -21,7 +21,7 @@
   "author": "Yonatan Tal",
   "license": "ISC",
   "devDependencies": {
-    "@types/atob": "^2.1.2",
+    "@types/elasticsearch": "^5.0.34",
     "@types/body-parser": "^1.17.0",
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.2",
@@ -48,7 +48,6 @@
   },
   "dependencies": {
     "@grpc/proto-loader": "^0.4.0",
-    "atob": "^2.1.2",
     "axios": "^0.19.0",
     "body-parser": "^1.18.3",
     "dotenv": "^7.0.0",
@@ -58,7 +57,9 @@
     "redis": "^2.8.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
-    "snyk": "^1.189.0"
+    "snyk": "^1.189.0",
+    "winston": "^3.2.1",
+    "winston-elasticsearch": "^0.7.13"
   },
   "snyk": true
 }

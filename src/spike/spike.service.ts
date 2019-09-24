@@ -39,7 +39,6 @@ export default class Spike {
             },
             headers: { Authorization: `Basic ${authorizationValue}` },
         });
-        console.log(res.data);
         return res.data;
     }
 
@@ -54,7 +53,6 @@ export default class Spike {
             try {
                 spikeRes = await this.renewToken();
             } catch (err) {
-                console.log(`Error in receiving token: ${err}`);
                 throw new Error(`Error in receiving token: ${err}`);
             }
             const tokenExp: number = parseInt(spikeRes.expires_in, 10);
