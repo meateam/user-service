@@ -1,4 +1,15 @@
 import { RPC } from './rpc.server';
+import * as apm from 'elastic-apm-node';
+// const apm = require('elastic-apm-node');
+import { apmURL, verifyServerCert, serviceName, secretToken } from './config';
+const options = {
+    serviceName,
+    secretToken,
+    verifyServerCert,
+    serverUrl: apmURL,
+};
+console.log(options);
+apm.start(options);
 
 process.on('uncaughtException', (err) => {
     console.error('Unhandled Exception', err.stack);
