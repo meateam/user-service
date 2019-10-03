@@ -48,6 +48,7 @@
     "@grpc/proto-loader": "^0.4.0",
     "body-parser": "^1.18.3",
     "dotenv": "^7.0.0",
+    "elastic-apm-node": "2.11.6",
     "grpc": "^1.19.0",
     "mongoose": "^5.3.8",
     "morgan": "^1.9.1",
