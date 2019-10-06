@@ -1,5 +1,6 @@
 import { RPC } from './rpc.server';
 import * as apm from 'elastic-apm-node';
+import * as redis from 'redis';
 import { apmURL, verifyServerCert, serviceName, secretToken } from './config';
 
 apm.start({
@@ -24,9 +25,18 @@ process.on('SIGINT', async () => {
     process.exit(0);
 });
 
+function connectToRedis(): redis.RedisClient {
+    const client = redis.createClient();
+    client.on('error', function (err: ErrorEvent) {
+        console.log(`Error: ${err}`);
+    });
+    return client;
+}
+
 (async () => {
+    const redisClient = connectToRedis();
     const rpcPort = process.env.RPC_PORT || '8086';
-    const rpcServer: RPC = new RPC(rpcPort);
+    const rpcServer: RPC = new RPC(rpcPort, redisClient);
     rpcServer.server.start();
     console.log(`RPC Server listening on port ${rpcPort}`);
 })();

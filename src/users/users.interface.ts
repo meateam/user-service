@@ -17,8 +17,8 @@ export interface IOrganizationGroup {
 
 export interface IDomainUser {
     id?: string;
-    domain: string;
-    name: string;
+    domain?: string;
+    name?: string;
     uniqueID?: string;
     adfsUID?: string;
     personId?: Types.ObjectId | string | IUser;
