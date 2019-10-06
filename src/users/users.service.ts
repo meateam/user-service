@@ -3,7 +3,6 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { IUser } from './users.interface';
 import Spike from '../spike/spike.service';
 import { RedisClient } from 'redis';
-import { Func } from 'mocha';
 import { KartoffelError, UserNotFoundError, ApplicationError } from '../utils/errors';
 
 const baseUrl = `${process.env.KARTOFFEL_URL || 'http://localhost:4000'}/api/persons`;
@@ -105,7 +104,6 @@ export default class UsersService {
      */
     private async addAuthInterceptor() {
         const token: string = await this.SpikeService.getToken();
-        // TODO: remember handle failure in rpc service.
         this.axiosInstance.interceptors.request.use(async (config) => {
             config.headers = {
                 Authorization: token,

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import * as https from 'https';
 import { RedisClient } from 'redis';
 import { promisify } from 'util';
@@ -29,7 +29,7 @@ export default class Spike {
         // For when the Spike's https certificate is self signed.
         const authorizationValue:string = Buffer.from(`${this.spikeId}:${this.spikeSecret}`).toString('base64');
 
-        const res = await axios({
+        const res: AxiosResponse = await axios({
             httpsAgent: new https.Agent({ rejectUnauthorized: false }),
             method: 'post',
             url: this.spikeURL,
@@ -46,7 +46,7 @@ export default class Spike {
      * Returns a kartoffel token saved in redis or from spike
      */
     public async getToken (): Promise<string> {
-        let kartoffelToken = await this.getAsyncRedis('kartoffel:token');
+        let kartoffelToken:string|null = await this.getAsyncRedis('kartoffel:token');
         // If the token is not in redis - either because we didn't save it yet or it has been expired
         if (!kartoffelToken) {
             let spikeRes: SpikeToken;
