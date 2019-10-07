@@ -5,6 +5,8 @@ import * as WinstonElasticsearch from 'winston-elasticsearch';
 import * as indexTemplateMapping from 'winston-elasticsearch/index-template-mapping.json';
 import * as apm from 'elastic-apm-node';
 import { confLogger, serviceName } from './config';
+import { statusToString, validateGrpcError } from './utils/grpc.status';
+import { ApplicationError } from './utils/errors';
 const Elasticsearch = require('winston-elasticsearch');
 
 // index pattern for the logger
@@ -69,18 +71,10 @@ export function wrapper(func: Function) :
             log(Severity.INFO, 'response', func.name, 'NONE', { res });
             callback(null, res);
         } catch (err) {
+            const validatedErr : ApplicationError = validateGrpcError(err);
             log(Severity.ERROR, func.name, err.message);
-            // TODO: change error name
-            apm.endTransaction('BAD_ERROR');
+            apm.endTransaction(validatedErr.name);
             callback(err);
         }
     };
-}
-
-// TODO: change status
-export function statusToString(code: number) : string {
-    if (!(Number.isInteger(code) && code >= 0 && code <= 16)) {
-        return 'UNKNOWN';
-    }
-    return 'OK';
 }
