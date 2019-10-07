@@ -37,7 +37,7 @@ export class RPC {
         this.server.bind(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure());
     }
 
-    private async getUserByID(call: any, callback: any) {
+    private getUserByID = async (call: any, callback: any) => {
         const user:IUser = await this.UsersService.getByID(call.request.id);
         if (!user) {
             throw new Error(`The user with Mail ${call.request.mail}, is not found`);
@@ -50,7 +50,7 @@ export class RPC {
         }};
     }
 
-    private async getUserByMail(call: any, callback: any) {
+    private getUserByMail = async (call: any, callback: any) => {
         const user:IUser = await this.UsersService.getByDomainUser(call.request.mail);
         if (!user) {
             throw new Error(`The user with Mail ${call.request.mail}, is not found`);
@@ -62,5 +62,4 @@ export class RPC {
             mail: user.primaryDomainUser.uniqueID,
         }};
     }
-
 }
