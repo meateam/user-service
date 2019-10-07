@@ -1,5 +1,14 @@
 import { RPC } from './rpc.server';
+import * as apm from 'elastic-apm-node';
 import * as redis from 'redis';
+import { apmURL, verifyServerCert, serviceName, secretToken, redisPort, redisHost } from './config';
+
+apm.start({
+    serviceName,
+    secretToken,
+    verifyServerCert,
+    serverUrl: apmURL,
+});
 
 process.on('uncaughtException', (err) => {
     console.error('Unhandled Exception', err.stack);
@@ -17,7 +26,7 @@ process.on('SIGINT', async () => {
 });
 
 function connectToRedis(): redis.RedisClient {
-    const client = redis.createClient();
+    const client = redis.createClient(redisPort, redisHost);
     client.on('error', function (err: ErrorEvent) {
         console.log(`Error: ${err}`);
     });

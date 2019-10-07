@@ -62,5 +62,4 @@ export class RPC {
             mail: user.primaryDomainUser.uniqueID,
         }};
     }
-
 }
