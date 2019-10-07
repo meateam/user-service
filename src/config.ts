@@ -16,3 +16,6 @@ export const confLogger = {
     },
     indexPrefix: process.env.LOGGER_ELASTICSEARCH_PREFIX || 'kdrive',
 };
+
+export const redisPort: number = parseInt(`${process.env.REDIS_URL}`, 10) || 6379;
+export const redisHost: string = process.env.REDIS_HOST || '127.0.0.1';
