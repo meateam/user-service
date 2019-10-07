@@ -39,7 +39,7 @@ export interface IUser {
     currentUnit?: string;
     alive?: boolean;
     dischargeDay?: Date;
-    hierarchy?: string[];
+    hierarchy: string[];
     directGroup: string | Types.ObjectId | IOrganizationGroup;
     managedGroup?: string | Types.ObjectId | IOrganizationGroup;
     rank?: string;
