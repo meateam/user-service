@@ -22,8 +22,8 @@ message User {
     string firstName = 3;
     string lastName = 4;
     string fullName = 5;
-    string hierarchy = 6;
-    repeated string hierarchyFlat = 7;
+    repeated string hierarchy = 6;
+    string hierarchyFlat = 7;
 }
 
 message GetUserResponse {

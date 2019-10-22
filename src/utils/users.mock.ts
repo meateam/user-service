@@ -2,7 +2,6 @@ import { IUser } from '../users/users.interface';
 
 const USERS = [
     {
-        secondaryDomainUsers: [],
         alive: true,
         job: 'רוצח',
         responsibility: 'none',
@@ -24,20 +23,14 @@ const USERS = [
         hierarchy: ['parentGroup', 'childGroup1', 'childGroup1-1'],
         createdAt: new Date('2019-09-04T10:20:05.689Z'),
         updatedAt: new Date('2019-09-11T11:06:05.185Z'),
-        primaryDomainUser: {
+        domainUsers: [{
             uniqueID: 'Cleta95@jello',
             adfsUID: 'Cleta95@undefined',
-        },
+        }],
         fullName: 'נייטרו הגלטין',
         id: '5d6f8fd5f7709b8b73df3fb2',
     },
     {
-        secondaryDomainUsers: [
-            {
-                uniqueID: 'biran@somedomain',
-                adfsUID: 'biran@undefined',
-            },
-        ],
         alive: true,
         job: 'Investor Accounts Administrator',
         responsibility: 'none',
@@ -56,15 +49,14 @@ const USERS = [
         hierarchy: ['wallmart', 'tempora', 'aut', 'earum'],
         createdAt: new Date('2019-09-09T10:12:06.584Z'),
         updatedAt: new Date('2019-09-11T11:09:32.923Z'),
-        primaryDomainUser: {
+        domainUsers: [{
             uniqueID: 'biran22222@jello',
             adfsUID: 'biran22222@undefined',
-        },
+        }],
         fullName: 'Melyna Emard',
         id: '5d762576f7709b8b73df3fbd',
     },
     {
-        secondaryDomainUsers: [],
         alive: true,
         job: '',
         responsibility: 'none',
@@ -85,10 +77,10 @@ const USERS = [
         hierarchy: ['parentGroup', 'childGroup1', 'childGroup1-1'],
         createdAt: new Date('2019-09-11T11:14:28.198Z'),
         updatedAt: new Date('2019-09-11T11:16:50.133Z'),
-        primaryDomainUser: {
+        domainUsers: [{
             uniqueID: 't23456789@jello',
             adfsUID: 't23456789@undefined',
-        },
+        }],
         fullName: 'Jhon Dho',
         id: '5d78d714e296cb71b9535f5d',
     },

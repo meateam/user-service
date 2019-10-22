@@ -38,7 +38,7 @@ export class RPC {
         this.server.bind(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure());
     }
 
-    private async getUserByID(call: any, callback: any) {
+    private getUserByID = async (call: any, callback: any) => {
         const user:IUser = await this.UsersService.getByID(call.request.id);
         if (!user) {
             throw new Error(`The user with Mail ${call.request.mail}, is not found`);
@@ -47,11 +47,11 @@ export class RPC {
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
-            mail: user.primaryDomainUser.uniqueID,
+            mail: user.mail,
         }};
     }
 
-    private async getUserByMail(call: any, callback: any) {
+    private getUserByMail = async (call: any, callback: any) => {
         const user:IUser = await this.UsersService.getByDomainUser(call.request.mail);
         if (!user) {
             throw new Error(`The user with Mail ${call.request.mail}, is not found`);
@@ -60,19 +60,22 @@ export class RPC {
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
-            mail: user.primaryDomainUser.uniqueID,
+            mail: user.mail,
         }};
     }
 
-    private async findUsersByPartialName(call: any, callback: any) {
-        const users:IUser[] = await this.UsersService.searchByName(call.request.name);
-        return users.map(user => ({
+    private findUsersByPartialName = async (call: any, callback: any) => {
+        const usersRes:IUser[] = await this.UsersService.searchByName(call.request.name);
+        const users = usersRes.map(user => ({
             id: user.id,
-            fullName: user.fullName,
             mail: user.mail,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            fullName: user.fullName,
             hierarchy: user.hierarchy,
             hierarchyFlat: Kartoffel.flattenHierarchy(user.hierarchy),
         }));
+        return { users };
     }
 
 }

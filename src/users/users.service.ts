@@ -89,7 +89,7 @@ export default class UsersService {
         await this.authMiddleware();
         let res: AxiosResponse;
         try {
-            res = await this.axiosInstance.get(`${baseUrl}/search?fullName=${partialName}`);
+            res = await this.axiosInstance.get(`${baseUrl}/search`, { params: { fullname: partialName } });
         } catch (err) {
             // Complete later
             throw new ApplicationError(`Unknown Error: ${err} `);

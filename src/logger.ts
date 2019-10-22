@@ -3,7 +3,10 @@ import * as os from 'os';
 import * as grpc from 'grpc';
 import * as WinstonElasticsearch from 'winston-elasticsearch';
 import * as indexTemplateMapping from 'winston-elasticsearch/index-template-mapping.json';
+import * as apm from 'elastic-apm-node';
 import { confLogger, serviceName } from './config';
+import { statusToString, validateGrpcError } from './utils/grpc.status';
+import { ApplicationError } from './utils/errors';
 const Elasticsearch = require('winston-elasticsearch');
 
 // index pattern for the logger
@@ -57,14 +60,20 @@ export function wrapper(func: Function) :
   (call: grpc.ServerUnaryCall<Object>, callback: grpc.requestCallback<Object>) => Promise<void> {
     return async (call: grpc.ServerUnaryCall<Object>, callback: grpc.requestCallback<Object>) => {
         try {
+            const traceparent: grpc.MetadataValue[] = call.metadata.get('elastic-apm-traceparent');
+            const transOptions = (traceparent.length > 0) ? { childOf: traceparent[0].toString() } : {};
+            apm.startTransaction(`/user.UserService/${func.name}`, 'request', transOptions);
             const reqInfo: object = call.request;
             log(Severity.INFO, 'request', func.name, 'NONE', reqInfo);
 
             const res = await func(call, callback);
+            apm.endTransaction(statusToString(grpc.status.OK));
             log(Severity.INFO, 'response', func.name, 'NONE', { res });
             callback(null, res);
         } catch (err) {
+            const validatedErr : ApplicationError = validateGrpcError(err);
             log(Severity.ERROR, func.name, err.message);
+            apm.endTransaction(validatedErr.name);
             callback(err);
         }
     };

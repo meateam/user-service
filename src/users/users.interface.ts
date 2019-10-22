@@ -30,8 +30,7 @@ export interface IUser {
     id: string;
     identityCard: string;
     personalNumber?: string;
-    primaryDomainUser: IDomainUser;
-    secondaryDomainUsers?:  string[] | Types.ObjectId[] | IDomainUser[];
+    domainUsers: IDomainUser[];
     entityType: string;
     serviceType?: string;
     firstName: string;
