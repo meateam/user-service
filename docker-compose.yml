@@ -5,18 +5,18 @@ services:
     ports:
       - '8086:8080'
     environment:
-      ELASTIC_APM_SERVER_URL: 'http://13.69.137.179:8200'
-      LOGGER_ELASTICSEARCH: 'http://13.69.137.179:9200'
-      KARTOFFEL_URL: 'http://13.69.137.179:8080'
+      ELASTIC_APM_SERVER_URL: 'http://localhost:8200'
+      LOGGER_ELASTICSEARCH: 'http://localhost:9200'
+      KARTOFFEL_URL: 'http://localhost:3000'
       RPC_PORT: 8080
       REDIS_PORT: '6379'
       REDIS_HOST: 'redis'
-      SPIKE_CLIENT_ID: "SPIKE_ID"
-      SPIKE_CLIENT_SECRET: "SPIKE_SECRET"
-      SPIKE_URL: "https://spike.westeurope.cloudapp.azure.com"
+      SPIKE_CLIENT_ID: "CLIENT_ID"
+      SPIKE_CLIENT_SECRET: "CLIENT_SECRET"
+      SPIKE_REQUIRED: "false"
+      SPIKE_URL: "https://localhost"
       SPIKE_AUTH_SERVER_PORT: 1337
-      SPIKE_TOKEN_URL: "https://spike.westeurope.cloudapp.azure.com:1337/oauth2/token"
-      TOKEN: "TODO_TOKEN"
+      SPIKE_TOKEN_URL: "https://localhost:1337/oauth2/token"
     depends_on:
       - redis
   redis:
