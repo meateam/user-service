@@ -33,6 +33,7 @@ export class RPC {
         this.server.addService(users_proto.Users.service, {
             GetUserByID: wrapper(this.getUserByID),
             GetUserByMail: wrapper(this.getUserByMail),
+            FindUserByName: wrapper(this.findUsersByPartialName),
         });
         this.server.bind(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure());
     }
@@ -46,7 +47,7 @@ export class RPC {
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
-            mail: user.primaryDomainUser.uniqueID,
+            mail: user.mail,
         }};
     }
 
@@ -59,7 +60,22 @@ export class RPC {
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
-            mail: user.primaryDomainUser.uniqueID,
+            mail: user.mail,
         }};
     }
+
+    private findUsersByPartialName = async (call: any, callback: any) => {
+        const usersRes:IUser[] = await this.UsersService.searchByName(call.request.name);
+        const users = usersRes.map(user => ({
+            id: user.id,
+            mail: user.mail,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            fullName: user.fullName,
+            hierarchy: user.hierarchy,
+            hierarchyFlat: Kartoffel.flattenHierarchy(user.hierarchy),
+        }));
+        return { users };
+    }
+
 }

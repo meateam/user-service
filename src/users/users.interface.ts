@@ -30,8 +30,7 @@ export interface IUser {
     id: string;
     identityCard: string;
     personalNumber?: string;
-    primaryDomainUser: IDomainUser;
-    secondaryDomainUsers?:  string[] | Types.ObjectId[] | IDomainUser[];
+    domainUsers: IDomainUser[];
     entityType: string;
     serviceType?: string;
     firstName: string;
@@ -39,7 +38,7 @@ export interface IUser {
     currentUnit?: string;
     alive?: boolean;
     dischargeDay?: Date;
-    hierarchy?: string[];
+    hierarchy: string[];
     directGroup: string | Types.ObjectId | IOrganizationGroup;
     managedGroup?: string | Types.ObjectId | IOrganizationGroup;
     rank?: string;

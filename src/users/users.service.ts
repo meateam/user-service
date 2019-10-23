@@ -81,6 +81,23 @@ export default class UsersService {
         return user;
     }
 
+    /**
+     * Search user suggestions by a partial name. returns a list of users ordered by resemblance score
+     * @param partialName - the partial name to search by.
+     */
+    public async searchByName(partialName: string): Promise<IUser[]> {
+        await this.authMiddleware();
+        let res: AxiosResponse;
+        try {
+            res = await this.axiosInstance.get(`${baseUrl}/search`, { params: { fullname: partialName } });
+        } catch (err) {
+            // Complete later
+            throw new ApplicationError(`Unknown Error: ${err} `);
+        }
+        const users:IUser[] = res.data;
+        return users;
+    }
+
      /**
      * Calls a function a after a authentication middleware.
      */
@@ -96,6 +113,13 @@ export default class UsersService {
         if (process.env.SPIKE_REQUIRED === 'true') {
             await this.addAuthInterceptor(); // async function. but cannot await since its a constructor.
         }
+    }
+    /**
+     * This function gets an hierarchy in an array form and reduce it to a long string format
+     * @param hierarchy - The hierarchy array.
+     */
+    public static flattenHierarchy(hierarchy: string[]): string {
+        return hierarchy.reduce((x, y) => `${x}/${y}`);
     }
 
     /**

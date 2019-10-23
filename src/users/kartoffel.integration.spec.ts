@@ -13,7 +13,6 @@ const expect: Chai.ExpectStatic = chai.expect;
 chai.use(chaiAsPromised);
 
 const user_1: IUser = {
-    secondaryDomainUsers: [],
     alive: true,
     job: 'רוצח',
     responsibility: 'none',
@@ -43,10 +42,10 @@ const user_1: IUser = {
     ],
     createdAt: new Date('2019-09-04T10:20:05.689Z'),
     updatedAt: new Date('2019-09-11T11:06:05.185Z'),
-    primaryDomainUser: {
+    domainUsers: [{
         uniqueID: 'Cleta95@jello',
         adfsUID: 'Cleta95@jellouid',
-    },
+    }],
     fullName: 'נייטרו הגלטין',
     id: '5d6f8fd5f7709b8b73df3fb2',
 };
@@ -91,7 +90,7 @@ describe('Spike and Kartoffel Integration', () => {
                 await expect(UsersService.getByID(fakeUserMail)).to.eventually.be.rejectedWith(UserNotFoundError);
             });
             it('Should return a user by domain-user id', async () => {
-                const user: IUser = await UsersService.getByDomainUser(<string>user_1.primaryDomainUser.uniqueID);
+                const user: IUser = await UsersService.getByDomainUser(<string>user_1.domainUsers[0].uniqueID);
                 expect(user).to.exist;
                 expect(user).to.have.property('id', user_1.id);
                 expect(user).to.have.property('firstName', user_1.firstName);

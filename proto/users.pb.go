@@ -104,9 +104,12 @@ func (m *GetByIDRequest) GetId() string {
 
 type User struct {
 	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	FirstName            string   `protobuf:"bytes,2,opt,name=firstName,proto3" json:"firstName,omitempty"`
-	LastName             string   `protobuf:"bytes,3,opt,name=lastName,proto3" json:"lastName,omitempty"`
-	Mail                 string   `protobuf:"bytes,4,opt,name=mail,proto3" json:"mail,omitempty"`
+	Mail                 string   `protobuf:"bytes,2,opt,name=mail,proto3" json:"mail,omitempty"`
+	FirstName            string   `protobuf:"bytes,3,opt,name=firstName,proto3" json:"firstName,omitempty"`
+	LastName             string   `protobuf:"bytes,4,opt,name=lastName,proto3" json:"lastName,omitempty"`
+	FullName             string   `protobuf:"bytes,5,opt,name=fullName,proto3" json:"fullName,omitempty"`
+	Hierarchy            []string `protobuf:"bytes,6,rep,name=hierarchy,proto3" json:"hierarchy,omitempty"`
+	HierarchyFlat        string   `protobuf:"bytes,7,opt,name=hierarchyFlat,proto3" json:"hierarchyFlat,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -144,6 +147,13 @@ func (m *User) GetId() string {
 	return ""
 }
 
+func (m *User) GetMail() string {
+	if m != nil {
+		return m.Mail
+	}
+	return ""
+}
+
 func (m *User) GetFirstName() string {
 	if m != nil {
 		return m.FirstName
@@ -158,9 +168,23 @@ func (m *User) GetLastName() string {
 	return ""
 }
 
-func (m *User) GetMail() string {
+func (m *User) GetFullName() string {
 	if m != nil {
-		return m.Mail
+		return m.FullName
+	}
+	return ""
+}
+
+func (m *User) GetHierarchy() []string {
+	if m != nil {
+		return m.Hierarchy
+	}
+	return nil
+}
+
+func (m *User) GetHierarchyFlat() string {
+	if m != nil {
+		return m.HierarchyFlat
 	}
 	return ""
 }
@@ -204,32 +228,118 @@ func (m *GetUserResponse) GetUser() *User {
 	return nil
 }
 
+type FindUserByNameRequest struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *FindUserByNameRequest) Reset()         { *m = FindUserByNameRequest{} }
+func (m *FindUserByNameRequest) String() string { return proto.CompactTextString(m) }
+func (*FindUserByNameRequest) ProtoMessage()    {}
+func (*FindUserByNameRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_030765f334c86cea, []int{4}
+}
+
+func (m *FindUserByNameRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FindUserByNameRequest.Unmarshal(m, b)
+}
+func (m *FindUserByNameRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FindUserByNameRequest.Marshal(b, m, deterministic)
+}
+func (m *FindUserByNameRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FindUserByNameRequest.Merge(m, src)
+}
+func (m *FindUserByNameRequest) XXX_Size() int {
+	return xxx_messageInfo_FindUserByNameRequest.Size(m)
+}
+func (m *FindUserByNameRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_FindUserByNameRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FindUserByNameRequest proto.InternalMessageInfo
+
+func (m *FindUserByNameRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type FindUserByNameResponse struct {
+	Users                []*User  `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *FindUserByNameResponse) Reset()         { *m = FindUserByNameResponse{} }
+func (m *FindUserByNameResponse) String() string { return proto.CompactTextString(m) }
+func (*FindUserByNameResponse) ProtoMessage()    {}
+func (*FindUserByNameResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_030765f334c86cea, []int{5}
+}
+
+func (m *FindUserByNameResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FindUserByNameResponse.Unmarshal(m, b)
+}
+func (m *FindUserByNameResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FindUserByNameResponse.Marshal(b, m, deterministic)
+}
+func (m *FindUserByNameResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FindUserByNameResponse.Merge(m, src)
+}
+func (m *FindUserByNameResponse) XXX_Size() int {
+	return xxx_messageInfo_FindUserByNameResponse.Size(m)
+}
+func (m *FindUserByNameResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_FindUserByNameResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FindUserByNameResponse proto.InternalMessageInfo
+
+func (m *FindUserByNameResponse) GetUsers() []*User {
+	if m != nil {
+		return m.Users
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*GetByMailRequest)(nil), "users.GetByMailRequest")
 	proto.RegisterType((*GetByIDRequest)(nil), "users.GetByIDRequest")
 	proto.RegisterType((*User)(nil), "users.User")
 	proto.RegisterType((*GetUserResponse)(nil), "users.GetUserResponse")
+	proto.RegisterType((*FindUserByNameRequest)(nil), "users.FindUserByNameRequest")
+	proto.RegisterType((*FindUserByNameResponse)(nil), "users.FindUserByNameResponse")
 }
 
 func init() { proto.RegisterFile("users.proto", fileDescriptor_030765f334c86cea) }
 
 var fileDescriptor_030765f334c86cea = []byte{
-	// 232 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2e, 0x2d, 0x4e, 0x2d,
-	0x2a, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x05, 0x73, 0x94, 0xd4, 0xb8, 0x04, 0xdc,
-	0x53, 0x4b, 0x9c, 0x2a, 0x7d, 0x13, 0x33, 0x73, 0x82, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b, 0x84,
-	0x84, 0xb8, 0x58, 0x72, 0x13, 0x33, 0x73, 0x24, 0x18, 0x15, 0x18, 0x35, 0x38, 0x83, 0xc0, 0x6c,
-	0x25, 0x05, 0x2e, 0x3e, 0xb0, 0x3a, 0x4f, 0x17, 0x98, 0x2a, 0x3e, 0x2e, 0xa6, 0xcc, 0x14, 0xa8,
-	0x1a, 0xa6, 0xcc, 0x14, 0xa5, 0x14, 0x2e, 0x96, 0xd0, 0xe2, 0xd4, 0x22, 0x74, 0x71, 0x21, 0x19,
-	0x2e, 0xce, 0xb4, 0xcc, 0xa2, 0xe2, 0x12, 0xbf, 0xc4, 0xdc, 0x54, 0x09, 0x26, 0xb0, 0x30, 0x42,
-	0x40, 0x48, 0x8a, 0x8b, 0x23, 0x27, 0x11, 0x2a, 0xc9, 0x0c, 0x96, 0x84, 0xf3, 0xe1, 0xee, 0x60,
-	0x41, 0x72, 0x87, 0x11, 0x17, 0xbf, 0x7b, 0x6a, 0x09, 0xc8, 0xa2, 0xa0, 0xd4, 0xe2, 0x82, 0xfc,
-	0xbc, 0xe2, 0x54, 0x21, 0x79, 0x2e, 0x16, 0x90, 0x5f, 0xc0, 0x56, 0x72, 0x1b, 0x71, 0xeb, 0x41,
-	0x7c, 0x09, 0x56, 0x02, 0x96, 0x30, 0xea, 0x66, 0xe4, 0x62, 0x05, 0x71, 0x8b, 0x85, 0x9c, 0xb8,
-	0x78, 0xa1, 0xba, 0x21, 0x3e, 0x16, 0x12, 0x87, 0xaa, 0x46, 0x0f, 0x03, 0x29, 0x31, 0x84, 0x04,
-	0xb2, 0x65, 0x4a, 0x0c, 0x42, 0x76, 0x5c, 0xdc, 0x70, 0x33, 0x3c, 0x5d, 0x84, 0x44, 0x91, 0x4d,
-	0x80, 0x87, 0x0e, 0x6e, 0xfd, 0x49, 0x6c, 0xe0, 0xf0, 0x37, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff,
-	0x70, 0x52, 0xaa, 0xc9, 0x8e, 0x01, 0x00, 0x00,
+	// 336 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x92, 0xcd, 0x4a, 0x33, 0x31,
+	0x14, 0x86, 0xbf, 0x69, 0xa7, 0xfd, 0xec, 0x19, 0x5a, 0xe5, 0x40, 0xeb, 0x50, 0x2a, 0x8e, 0x41,
+	0x44, 0x10, 0xba, 0xa8, 0x4b, 0xc1, 0x45, 0x29, 0x2d, 0x5d, 0xa8, 0x50, 0xf0, 0x02, 0xa2, 0x4d,
+	0x69, 0x20, 0xfd, 0x31, 0x49, 0x17, 0x73, 0x7f, 0x5e, 0x86, 0x17, 0x23, 0xc9, 0x64, 0x32, 0xd3,
+	0x41, 0xdd, 0xe5, 0x9c, 0xe7, 0xcd, 0x9b, 0xf3, 0x13, 0x88, 0x0e, 0x8a, 0x49, 0x35, 0xdc, 0xcb,
+	0x9d, 0xde, 0x61, 0xc3, 0x06, 0xe4, 0x06, 0xce, 0x66, 0x4c, 0x8f, 0xd3, 0x27, 0xca, 0xc5, 0x82,
+	0x7d, 0x1c, 0x98, 0xd2, 0x88, 0x10, 0x6e, 0x28, 0x17, 0x71, 0x90, 0x04, 0xb7, 0xad, 0x85, 0x3d,
+	0x93, 0x04, 0x3a, 0x56, 0x37, 0x9f, 0xe4, 0xaa, 0x0e, 0xd4, 0xf8, 0xd2, 0x69, 0x6a, 0x7c, 0x49,
+	0x3e, 0x03, 0x08, 0x5f, 0x15, 0x93, 0x55, 0xe0, 0xed, 0x6a, 0x85, 0x1d, 0x0e, 0xa0, 0xb5, 0xe2,
+	0x52, 0xe9, 0x67, 0xba, 0x61, 0x71, 0xdd, 0x82, 0x22, 0x81, 0x7d, 0x38, 0x11, 0xd4, 0xc1, 0xd0,
+	0x42, 0x1f, 0x1b, 0xb6, 0x3a, 0x08, 0x61, 0x59, 0x23, 0x63, 0x79, 0x6c, 0x5c, 0xd7, 0x9c, 0x49,
+	0x2a, 0xdf, 0xd7, 0x69, 0xdc, 0x4c, 0xea, 0xc6, 0xd5, 0x27, 0xf0, 0x1a, 0xda, 0x3e, 0x98, 0x0a,
+	0xaa, 0xe3, 0xff, 0xf6, 0xfa, 0x71, 0x92, 0x8c, 0xe0, 0x74, 0xc6, 0xb4, 0x69, 0x64, 0xc1, 0xd4,
+	0x7e, 0xb7, 0x55, 0x0c, 0x2f, 0x21, 0x34, 0xc3, 0xb2, 0x2d, 0x45, 0xa3, 0x68, 0x98, 0x8d, 0xd1,
+	0x4a, 0x2c, 0x20, 0x77, 0xd0, 0x9d, 0xf2, 0xed, 0xd2, 0x64, 0xc6, 0xa9, 0xa9, 0xa4, 0x34, 0xc9,
+	0xad, 0x29, 0xd4, 0x4d, 0xd2, 0x9c, 0xc9, 0x03, 0xf4, 0xaa, 0x62, 0xf7, 0xce, 0x15, 0x64, 0x4b,
+	0x89, 0x83, 0xa4, 0x5e, 0x7d, 0x28, 0x23, 0xa3, 0xaf, 0x00, 0x1a, 0x26, 0x56, 0x38, 0x86, 0xb6,
+	0xab, 0x33, 0x5b, 0x1e, 0x9e, 0x3b, 0x79, 0x75, 0x9d, 0xfd, 0x5e, 0x01, 0xca, 0x6d, 0x91, 0x7f,
+	0xf8, 0x08, 0x91, 0xf7, 0x98, 0x4f, 0xb0, 0x5b, 0x76, 0xf0, 0x8b, 0xfe, 0xe3, 0xfe, 0x0b, 0x74,
+	0x8e, 0x5b, 0xc1, 0x81, 0xd3, 0xfe, 0x38, 0x8e, 0xfe, 0xc5, 0x2f, 0x34, 0x37, 0x7c, 0x6b, 0xda,
+	0xbf, 0x79, 0xff, 0x1d, 0x00, 0x00, 0xff, 0xff, 0xc2, 0x43, 0x1b, 0x55, 0xaa, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -246,6 +356,7 @@ const _ = grpc.SupportPackageIsVersion4
 type UsersClient interface {
 	GetUserByMail(ctx context.Context, in *GetByMailRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	GetUserByID(ctx context.Context, in *GetByIDRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
+	FindUserByName(ctx context.Context, in *FindUserByNameRequest, opts ...grpc.CallOption) (*FindUserByNameResponse, error)
 }
 
 type usersClient struct {
@@ -274,10 +385,20 @@ func (c *usersClient) GetUserByID(ctx context.Context, in *GetByIDRequest, opts 
 	return out, nil
 }
 
+func (c *usersClient) FindUserByName(ctx context.Context, in *FindUserByNameRequest, opts ...grpc.CallOption) (*FindUserByNameResponse, error) {
+	out := new(FindUserByNameResponse)
+	err := c.cc.Invoke(ctx, "/users.Users/FindUserByName", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UsersServer is the server API for Users service.
 type UsersServer interface {
 	GetUserByMail(context.Context, *GetByMailRequest) (*GetUserResponse, error)
 	GetUserByID(context.Context, *GetByIDRequest) (*GetUserResponse, error)
+	FindUserByName(context.Context, *FindUserByNameRequest) (*FindUserByNameResponse, error)
 }
 
 // UnimplementedUsersServer can be embedded to have forward compatible implementations.
@@ -289,6 +410,9 @@ func (*UnimplementedUsersServer) GetUserByMail(ctx context.Context, req *GetByMa
 }
 func (*UnimplementedUsersServer) GetUserByID(ctx context.Context, req *GetByIDRequest) (*GetUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByID not implemented")
+}
+func (*UnimplementedUsersServer) FindUserByName(ctx context.Context, req *FindUserByNameRequest) (*FindUserByNameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindUserByName not implemented")
 }
 
 func RegisterUsersServer(s *grpc.Server, srv UsersServer) {
@@ -331,6 +455,24 @@ func _Users_GetUserByID_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Users_FindUserByName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindUserByNameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServer).FindUserByName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.Users/FindUserByName",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServer).FindUserByName(ctx, req.(*FindUserByNameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Users_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "users.Users",
 	HandlerType: (*UsersServer)(nil),
@@ -342,6 +484,10 @@ var _Users_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserByID",
 			Handler:    _Users_GetUserByID_Handler,
+		},
+		{
+			MethodName: "FindUserByName",
+			Handler:    _Users_FindUserByName_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
