@@ -91,7 +91,6 @@ export default class UsersService {
         try {
             res = await this.axiosInstance.get(`${baseUrl}/search`, { params: { fullname: partialName } });
         } catch (err) {
-            // Complete later
             throw new ApplicationError(`Unknown Error: ${err} `);
         }
         const users:IUser[] = res.data;
