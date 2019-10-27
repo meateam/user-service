@@ -55,11 +55,8 @@ export class RPC {
     }
 
     private findUsersByPartialName = async (call: any, callback: any) => {
-        console.log(`name: ${call.request.name}`);
         const usersRes:IUser[] = await this.UsersService.searchByName(call.request.name);
         const users = usersRes.map(user => this.filterUserFields(user));
-        console.log('returned:');
-        console.log(users);
         return { users };
     }
 
