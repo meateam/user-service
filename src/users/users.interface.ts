@@ -26,7 +26,7 @@ export interface IDomainUser {
 
 export interface IUser {
     // Person's Basic information
-    _id:string;
+    _id?:string;
     id: string;
     identityCard: string;
     personalNumber?: string;
@@ -39,6 +39,7 @@ export interface IUser {
     alive?: boolean;
     dischargeDay?: Date;
     hierarchy: string[];
+    hierarchyFlat?: string;
     directGroup: string | Types.ObjectId | IOrganizationGroup;
     managedGroup?: string | Types.ObjectId | IOrganizationGroup;
     rank?: string;

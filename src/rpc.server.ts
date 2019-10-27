@@ -43,12 +43,7 @@ export class RPC {
         if (!user) {
             throw new Error(`The user with Mail ${call.request.mail}, is not found`);
         }
-        return { user: {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            mail: user.mail,
-        }};
+        return { user: this.filterUserFields(user) };
     }
 
     private getUserByMail = async (call: any, callback: any) => {
@@ -56,17 +51,17 @@ export class RPC {
         if (!user) {
             throw new Error(`The user with Mail ${call.request.mail}, is not found`);
         }
-        return { user: {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            mail: user.mail,
-        }};
+        return { user: this.filterUserFields(user) };
     }
 
     private findUsersByPartialName = async (call: any, callback: any) => {
         const usersRes:IUser[] = await this.UsersService.searchByName(call.request.name);
-        const users = usersRes.map(user => ({
+        const users = usersRes.map(user => this.filterUserFields(user));
+        return { users };
+    }
+
+    private filterUserFields(user: IUser): Partial<IUser> {
+        const filtereduUser = {
             id: user.id,
             mail: user.mail,
             firstName: user.firstName,
@@ -74,8 +69,9 @@ export class RPC {
             fullName: user.fullName,
             hierarchy: user.hierarchy,
             hierarchyFlat: Kartoffel.flattenHierarchy(user.hierarchy),
-        }));
-        return { users };
+        };
+
+        return filtereduUser;
     }
 
 }
