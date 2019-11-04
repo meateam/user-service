@@ -4,7 +4,7 @@ import * as grpc from 'grpc';
 import * as WinstonElasticsearch from 'winston-elasticsearch';
 import * as indexTemplateMapping from 'winston-elasticsearch/index-template-mapping.json';
 import * as apm from 'elastic-apm-node';
-import { confLogger, serviceName } from './config';
+import { confLogger, serviceName, debugMode } from './config';
 import { statusToString, validateGrpcError } from './utils/grpc.status';
 import { ApplicationError } from './utils/errors';
 const Elasticsearch = require('winston-elasticsearch');
@@ -39,6 +39,17 @@ logger.add(elasticsearch);
  * @param meta - additional optional information.
  */
 export const log = (level: Severity, message: string, name: string, traceID?: string, meta?: object) => {
+  // Console logs for debugging only.
+    if (debugMode) {
+        if (traceID) {
+            console.log(`level: ${level}, message: ${message}, name: ${name}, traceID: ${traceID}, meta:`);
+        } else {
+            console.log(`level: ${level}, message: ${message}, name: ${name}, meta:`);
+        }
+        if (meta) {
+            console.log(meta);
+        }
+    }
     logger.log(level, message, { ...meta, traceID, method: name });
 };
 
