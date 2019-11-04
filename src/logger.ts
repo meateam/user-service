@@ -29,6 +29,11 @@ const options: WinstonElasticsearch.ElasticsearchTransportOptions = {
 const elasticsearch: WinstonElasticsearch.default = new Elasticsearch(options);
 logger.add(elasticsearch);
 
+// Console logs for debugging only.
+if (debugMode) {
+    logger.add(new winston.transports.Console({}));
+}
+
 /**
  * logs the data with its given parameters.
  * @param severity - the kind of log created.
@@ -39,17 +44,6 @@ logger.add(elasticsearch);
  * @param meta - additional optional information.
  */
 export const log = (level: Severity, message: string, name: string, traceID?: string, meta?: object) => {
-  // Console logs for debugging only.
-    if (debugMode) {
-        if (traceID) {
-            console.log(`level: ${level}, message: ${message}, name: ${name}, traceID: ${traceID}, meta:`);
-        } else {
-            console.log(`level: ${level}, message: ${message}, name: ${name}, meta:`);
-        }
-        if (meta) {
-            console.log(meta);
-        }
-    }
     logger.log(level, message, { ...meta, traceID, method: name });
 };
 
