@@ -5,7 +5,7 @@ export const verifyServerCert: boolean = process.env.ELASTIC_APM_VERIFY_SERVER_C
 export const apmURL: string = process.env.ELASTIC_APM_SERVER_URL || 'http://localhost:8200';
 export const userQuotaLimit: string = process.env.USER_QUOTA_LIMIT || '10';
 
-const esHost: string = process.env.LOGGER_ELASTICSEARCH || 'http://localhost:9200';
+const esHost: string = process.env.ELASTICSEARCH_URL || 'http://localhost:9200';
 const esUser: string = process.env.ELASTICSEARCH_USER || '';
 const esPass: string = process.env.ELASTICSEARCH_PASSWORD || '';
 export const confLogger = {
@@ -14,7 +14,7 @@ export const confLogger = {
         // Might be auth instead, not sure.
         httpAuth: `${esUser}:${esPass}`,
     },
-    indexPrefix: process.env.LOGGER_ELASTICSEARCH_PREFIX || 'kdrive',
+    indexPrefix: process.env.LOG_INDEX || 'kdrive',
 };
 
 export const redisPort: number = parseInt(`${process.env.REDIS_URL}`, 10) || 6379;
