@@ -4,7 +4,7 @@ import * as grpc from 'grpc';
 import * as WinstonElasticsearch from 'winston-elasticsearch';
 import * as indexTemplateMapping from 'winston-elasticsearch/index-template-mapping.json';
 import * as apm from 'elastic-apm-node';
-import { confLogger, serviceName } from './config';
+import { confLogger, serviceName, debugMode } from './config';
 import { statusToString, validateGrpcError } from './utils/grpc.status';
 import { ApplicationError } from './utils/errors';
 const Elasticsearch = require('winston-elasticsearch');
@@ -28,6 +28,11 @@ const options: WinstonElasticsearch.ElasticsearchTransportOptions = {
 };
 const elasticsearch: WinstonElasticsearch.default = new Elasticsearch(options);
 logger.add(elasticsearch);
+
+// Console logs for debugging only.
+if (debugMode) {
+    logger.add(new winston.transports.Console({}));
+}
 
 /**
  * logs the data with its given parameters.

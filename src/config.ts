@@ -5,6 +5,8 @@ export const verifyServerCert: boolean = process.env.ELASTIC_APM_VERIFY_SERVER_C
 export const apmURL: string = process.env.ELASTIC_APM_SERVER_URL || 'http://localhost:8200';
 export const userQuotaLimit: string = process.env.USER_QUOTA_LIMIT || '10';
 
+export const debugMode: boolean = process.env.DEBUG_MODE === 'true';
+
 const esHost: string = process.env.ELASTICSEARCH_URL || 'http://localhost:9200';
 const esUser: string = process.env.ELASTICSEARCH_USER || '';
 const esPass: string = process.env.ELASTICSEARCH_PASSWORD || '';
