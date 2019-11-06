@@ -31,9 +31,9 @@ export class RPC {
         this.UsersService = new Kartoffel(this.redis);
         this.server = new grpc.Server();
         this.server.addService(users_proto.Users.service, {
-            GetUserByID: wrapper(this.getUserByID),
-            GetUserByMail: wrapper(this.getUserByMail),
-            FindUserByName: wrapper(this.findUsersByPartialName),
+            GetUserByID: wrapper(this.getUserByID, 'GetUserByID'),
+            GetUserByMail: wrapper(this.getUserByMail, 'GetUserByMail'),
+            FindUserByName: wrapper(this.findUsersByPartialName, 'FindUserByName'),
         });
         this.server.bind(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure());
     }
