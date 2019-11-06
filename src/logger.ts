@@ -61,23 +61,23 @@ export enum Severity {
    * and sends them to the elastic server.
    * @param func - the method called and wrapped.
    */
-export function wrapper(func: Function) :
+export function wrapper(func: Function, funcName: string) :
   (call: grpc.ServerUnaryCall<Object>, callback: grpc.requestCallback<Object>) => Promise<void> {
     return async (call: grpc.ServerUnaryCall<Object>, callback: grpc.requestCallback<Object>) => {
         try {
             const traceparent: grpc.MetadataValue[] = call.metadata.get('elastic-apm-traceparent');
             const transOptions = (traceparent.length > 0) ? { childOf: traceparent[0].toString() } : {};
-            apm.startTransaction(`/user.UserService/${func.name}`, 'request', transOptions);
+            apm.startTransaction(`/user.UserService/${funcName}`, 'request', transOptions);
             const reqInfo: object = call.request;
-            log(Severity.INFO, 'request', func.name, 'NONE', reqInfo);
+            log(Severity.INFO, 'request', funcName, 'NONE', reqInfo);
 
             const res = await func(call, callback);
             apm.endTransaction(statusToString(grpc.status.OK));
-            log(Severity.INFO, 'response', func.name, 'NONE', { res });
+            log(Severity.INFO, 'response', funcName, 'NONE', { res });
             callback(null, res);
         } catch (err) {
             const validatedErr : ApplicationError = validateGrpcError(err);
-            log(Severity.ERROR, func.name, err.message);
+            log(Severity.ERROR, funcName, err.message);
             apm.endTransaction(validatedErr.name);
             callback(err);
         }

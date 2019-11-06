@@ -27,23 +27,18 @@ export class RPC {
     private redis: RedisClient;
 
     public constructor(port: string, redisClient: RedisClient) {
-        // Bind the meythods to the calss
-        this.getUserByID = this.getUserByID.bind(this);
-        this.getUserByMail = this.getUserByMail.bind(this);
-        this.findUsersByPartialName = this.findUsersByPartialName.bind(this);
-
         this.redis = redisClient;
         this.UsersService = new Kartoffel(this.redis);
         this.server = new grpc.Server();
         this.server.addService(users_proto.Users.service, {
-            GetUserByID: wrapper(this.getUserByID),
-            GetUserByMail: wrapper(this.getUserByMail),
-            FindUserByName: wrapper(this.findUsersByPartialName),
+            GetUserByID: wrapper(this.getUserByID, 'GetUserByID'),
+            GetUserByMail: wrapper(this.getUserByMail, 'GetUserByMail'),
+            FindUserByName: wrapper(this.findUsersByPartialName, 'FindUserByName'),
         });
         this.server.bind(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure());
     }
 
-    private async getUserByID(call: any, callback: any) {
+    private getUserByID = async (call: any, callback: any) => {
         const user:IUser = await this.UsersService.getByID(call.request.id);
         if (!user) {
             throw new Error(`The user with Mail ${call.request.mail}, is not found`);
@@ -51,7 +46,7 @@ export class RPC {
         return { user: this.filterUserFields(user) };
     }
 
-    private async getUserByMail(call: any, callback: any) {
+    private getUserByMail = async (call: any, callback: any) => {
         const user:IUser = await this.UsersService.getByDomainUser(call.request.mail);
         if (!user) {
             throw new Error(`The user with Mail ${call.request.mail}, is not found`);
@@ -59,7 +54,7 @@ export class RPC {
         return { user: this.filterUserFields(user) };
     }
 
-    private async findUsersByPartialName(call: any, callback: any) {
+    private findUsersByPartialName = async (call: any, callback: any) => {
         const usersRes:IUser[] = await this.UsersService.searchByName(call.request.name);
         const users = usersRes.map(user => this.filterUserFields(user));
         return { users };
