@@ -17,11 +17,10 @@ jobs:
     - name: Build the test image and run it
       run: docker build . --file test.Dockerfile --tag ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:test
 
-
-# yontan need to add a config file with secrets 
     - name: Run test
-      run: docker run --env-file ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:test 
       id: test
+      run: docker run --env-file ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:test 
+      
     
     
     - name: Build the develop branch
