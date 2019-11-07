@@ -1,7 +1,8 @@
-import { RPC } from './rpc.server';
 import * as apm from 'elastic-apm-node';
 import * as redis from 'redis';
-import { apmURL, verifyServerCert, serviceName, secretToken, redisPort, redisHost } from './config';
+import * as Mongoose from 'mongoose';
+import { RPC } from './rpc.server';
+import { apmURL, verifyServerCert, serviceName, secretToken, redisPort, redisHost, mongoConnectionString } from './config';
 
 apm.start({
     serviceName,
@@ -33,7 +34,23 @@ function connectToRedis(): redis.RedisClient {
     return client;
 }
 
+async function connectToMongo() {
+    console.log(`connecting to: ${mongoConnectionString}`);
+    await Mongoose.connect(
+        mongoConnectionString,
+        { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false },
+        async (err) => {
+            if (!err) {
+                console.log(`successfully connected: ${mongoConnectionString}`);
+            } else {
+                console.log(`did not connect! ${mongoConnectionString}`);
+                console.log(err);
+            }
+        });
+}
+
 (async () => {
+    await connectToMongo();
     const redisClient = connectToRedis();
     const rpcPort = process.env.RPC_PORT || '8086';
     const rpcServer: RPC = new RPC(rpcPort, redisClient);

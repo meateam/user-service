@@ -3,6 +3,8 @@ import * as https from 'https';
 import { RedisClient } from 'redis';
 import { promisify } from 'util';
 import SpikeToken from './spike.token.interface';
+import { tokenModel, IToken } from './spike.model';
+import { log, Severity } from '../logger';
 
 export default class Spike {
     private redis: RedisClient;
@@ -49,15 +51,32 @@ export default class Spike {
         let kartoffelToken:string|null = await this.getAsyncRedis('kartoffel:token');
         // If the token is not in redis - either because we didn't save it yet or it has been expired
         if (!kartoffelToken) {
-            let spikeRes: SpikeToken;
+            log(Severity.INFO, 'failed to get token from redis. checking mongo.', 'getToken');
             try {
-                spikeRes = await this.renewToken();
+            // Check if the token exists in mongo
+                const tokenObject : IToken | null = await tokenModel.findOne({ id: 'Kartoffel' }).exec();
+                if (!tokenObject) {
+                    log(Severity.INFO, 'failed to get token from mongo. fetching from kartoffel.', 'getToken');
+                    let spikeRes: SpikeToken;
+                    spikeRes = await this.renewToken();
+                    const tokenExp: number = parseInt(spikeRes.expires_in, 10);
+                    this.redis.set('kartoffel:token', spikeRes.access_token, 'EX', tokenExp);
+                    kartoffelToken = spikeRes.access_token;
+                    // Add the new token to mongo
+                    const newToken : IToken = {
+                        id: 'Kartoffel',
+                        token: kartoffelToken,
+                        expireAt: new Date(Date.now() + 60),
+                    };
+                    await tokenModel.create(newToken);
+
+                } else {
+                    kartoffelToken = tokenObject.token;
+                }
             } catch (err) {
+
                 throw new Error(`Error in receiving token: ${err}`);
             }
-            const tokenExp: number = parseInt(spikeRes.expires_in, 10);
-            this.redis.set('kartoffel:token', spikeRes.access_token, 'EX', tokenExp);
-            kartoffelToken = spikeRes.access_token;
         }
         // TODO: Token verification?
         return kartoffelToken;
