@@ -3,6 +3,7 @@ import * as redis from 'redis';
 import * as Mongoose from 'mongoose';
 import { RPC } from './rpc.server';
 import { apmURL, verifyServerCert, serviceName, secretToken, redisPort, redisHost, mongoConnectionString } from './config';
+import { log, Severity } from './logger';
 
 apm.start({
     serviceName,
@@ -29,22 +30,21 @@ process.on('SIGINT', async () => {
 function connectToRedis(): redis.RedisClient {
     const client = redis.createClient(redisPort, redisHost);
     client.on('error', function (err: ErrorEvent) {
-        console.log(`Error: ${err}`);
+        log(Severity.ERROR, `error while connecting to redis: ${err}`, 'connectToRedis');
     });
     return client;
 }
 
 async function connectToMongo() {
-    console.log(`connecting to: ${mongoConnectionString}`);
+    log(Severity.INFO, `connecting to mongo: ${mongoConnectionString}`, 'connectToMongo');
     await Mongoose.connect(
         mongoConnectionString,
         { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true },
         async (err) => {
             if (!err) {
-                console.log(`successfully connected: ${mongoConnectionString}`);
+                log(Severity.INFO, `successfully connected: ${mongoConnectionString}`, 'connectToMongo');
             } else {
-                console.log(`did not connect! ${mongoConnectionString}`);
-                console.log(err);
+                log(Severity.ERROR, `did not connect to ${mongoConnectionString}. error: ${err}`, 'connectToMongo', undefined, err);
             }
         });
 }
@@ -55,5 +55,5 @@ async function connectToMongo() {
     const rpcPort = process.env.RPC_PORT || '8086';
     const rpcServer: RPC = new RPC(rpcPort, redisClient);
     rpcServer.server.start();
-    console.log(`RPC Server listening on port ${rpcPort}`);
+    log(Severity.INFO, `RPC Server listening on port ${rpcPort}`, 'index');
 })();
