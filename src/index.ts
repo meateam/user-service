@@ -38,7 +38,7 @@ async function connectToMongo() {
     console.log(`connecting to: ${mongoConnectionString}`);
     await Mongoose.connect(
         mongoConnectionString,
-        { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false },
+        { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true },
         async (err) => {
             if (!err) {
                 console.log(`successfully connected: ${mongoConnectionString}`);

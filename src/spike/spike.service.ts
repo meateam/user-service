@@ -3,8 +3,10 @@ import * as https from 'https';
 import { RedisClient } from 'redis';
 import { promisify } from 'util';
 import SpikeToken from './spike.token.interface';
-import { tokenModel, IToken } from './spike.model';
+import { tokenModel, IToken, Second } from './spike.model';
 import { log, Severity } from '../logger';
+import { tokenID } from '../config';
+import { ServerError } from '../utils/errors';
 
 export default class Spike {
     private redis: RedisClient;
@@ -54,8 +56,8 @@ export default class Spike {
             log(Severity.INFO, 'failed to get token from redis. checking mongo.', 'getToken');
             try {
             // Check if the token exists in mongo
-                const tokenObject : IToken | null = await tokenModel.findOne({ id: 'Kartoffel' }).exec();
-                if (!tokenObject) {
+                const tokenObject : IToken | null = await tokenModel.findOne({ id: tokenID }).exec();
+                if (!tokenObject || tokenObject.expireAt.getTime() < Date.now()) {
                     log(Severity.INFO, 'failed to get token from mongo. fetching from kartoffel.', 'getToken');
                     let spikeRes: SpikeToken;
                     spikeRes = await this.renewToken();
@@ -64,21 +66,21 @@ export default class Spike {
                     kartoffelToken = spikeRes.access_token;
                     // Add the new token to mongo
                     const newToken : IToken = {
-                        id: 'Kartoffel',
+                        id: tokenID,
                         token: kartoffelToken,
-                        expireAt: new Date(Date.now() + 60),
+                        expireAt: new Date(Date.now() + tokenExp * Second),
                     };
-                    await tokenModel.create(newToken);
+                    await tokenModel.findOneAndUpdate({ id: tokenID }, newToken, { upsert: true });
 
                 } else {
                     kartoffelToken = tokenObject.token;
                 }
             } catch (err) {
-
-                throw new Error(`Error in receiving token: ${err}`);
+                throw new ServerError(`Error in receiving token: ${err}`);
             }
         }
         // TODO: Token verification?
+        log(Severity.INFO, 'successfully obtained token', 'getToken');
         return kartoffelToken;
     }
 }
