@@ -50,33 +50,46 @@ export default class Spike {
      * Returns a kartoffel token saved in redis or from spike
      */
     public async getToken (): Promise<string> {
+        log(Severity.INFO, 'attempting to obtain token from redis', 'getToken');
         let kartoffelToken:string|null = await this.getAsyncRedis('kartoffel:token');
+        let updateMongo: boolean = false;
+        let tokenExp: number = 0;
         // If the token is not in redis - either because we didn't save it yet or it has been expired
         if (!kartoffelToken) {
             log(Severity.INFO, 'failed to get token from redis. checking mongo.', 'getToken');
-            try {
             // Check if the token exists in mongo
-                const tokenObject : IToken | null = await tokenModel.findOne({ id: tokenID }).exec();
+            const tokenObject : IToken | null | void = await tokenModel.findOne({ id: tokenID })
+            .exec()
+            .catch((err) => {
+                log(Severity.ERROR, err.toString(), 'getToken: mongo findOne');
+            });
+            try {
                 if (!tokenObject || tokenObject.expireAt.getTime() < Date.now()) {
                     log(Severity.INFO, 'failed to get token from mongo. fetching from kartoffel.', 'getToken');
-                    let spikeRes: SpikeToken;
-                    spikeRes = await this.renewToken();
-                    const tokenExp: number = parseInt(spikeRes.expires_in, 10);
+                    const spikeRes: SpikeToken = await this.renewToken();
+                    tokenExp = parseInt(spikeRes.expires_in, 10);
                     this.redis.set('kartoffel:token', spikeRes.access_token, 'EX', tokenExp);
                     kartoffelToken = spikeRes.access_token;
-                    // Add the new token to mongo
-                    const newToken : IToken = {
-                        id: tokenID,
-                        token: kartoffelToken,
-                        expireAt: new Date(Date.now() + tokenExp * Second),
-                    };
-                    await tokenModel.findOneAndUpdate({ id: tokenID }, newToken, { upsert: true });
-
+                    updateMongo = true;
                 } else {
                     kartoffelToken = tokenObject.token;
                 }
             } catch (err) {
                 throw new ServerError(`Error in receiving token: ${err}`);
+            }
+
+            // Add the new token to mongo
+            if (updateMongo) {
+                const newToken : IToken = {
+                    id: tokenID,
+                    token: kartoffelToken,
+                    expireAt: new Date(Date.now() + tokenExp * Second),
+                };
+                await tokenModel.findOneAndUpdate({ id: tokenID }, newToken, { upsert: true })
+                .exec()
+                .catch((err) => {
+                    log(Severity.ERROR, err.toString(), 'getToken: mongo findOneAndUpdate');
+                });
             }
         }
         // TODO: Token verification?

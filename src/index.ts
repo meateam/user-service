@@ -23,7 +23,7 @@ process.on('unhandledRejection', (err) => {
 });
 
 process.on('SIGINT', async () => {
-    console.log('User Termination');
+    log(Severity.ERROR, 'User Termination', 'SIGINT');
     process.exit(0);
 });
 

@@ -5,8 +5,6 @@ export interface IToken {
     expireAt: Date;
 }
 export const Second = 1000;
-export const Min = 60 * Second;
-export const Hour = 60 * Min;
 export const tokenSchema: Schema = new Schema(
     {
         token: {
