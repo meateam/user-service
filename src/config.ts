@@ -7,6 +7,11 @@ export const userQuotaLimit: string = process.env.USER_QUOTA_LIMIT || '10';
 
 export const debugMode: boolean = process.env.DEBUG_MODE === 'true';
 
+export const mongoConnectionString : string =
+  process.env.USR_MONGO_HOST || 'mongodb://localhost:27017/devDB';
+
+export const tokenID = process.env.TOKEN_ID || 'Kartoffel';
+
 const esHost: string = process.env.ELASTICSEARCH_URL || 'http://localhost:9200';
 const esUser: string = process.env.ELASTICSEARCH_USER || '';
 const esPass: string = process.env.ELASTICSEARCH_PASSWORD || '';
