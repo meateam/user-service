@@ -57,12 +57,13 @@ export default class Spike {
         // If the token is not in redis - either because we didn't save it yet or it has been expired
         if (!kartoffelToken) {
             log(Severity.INFO, 'failed to get token from redis. checking mongo.', 'getToken');
+            let tokenObject : IToken | null | void;
             // Check if the token exists in mongo
-            const tokenObject : IToken | null | void = await tokenModel.findOne({ id: tokenID })
-            .exec()
-            .catch((err) => {
+            try {
+                tokenObject = await tokenModel.findOne({ id: tokenID }).exec();
+            } catch (err) {
                 log(Severity.ERROR, err.toString(), 'getToken: mongo findOne');
-            });
+            }
             try {
                 if (!tokenObject || tokenObject.expireAt.getTime() < Date.now()) {
                     log(Severity.INFO, 'failed to get token from mongo. fetching from kartoffel.', 'getToken');
@@ -85,11 +86,11 @@ export default class Spike {
                     token: kartoffelToken,
                     expireAt: new Date(Date.now() + tokenExp * Second),
                 };
-                await tokenModel.findOneAndUpdate({ id: tokenID }, newToken, { upsert: true })
-                .exec()
-                .catch((err) => {
+                try {
+                    await tokenModel.findOneAndUpdate({ id: tokenID }, newToken, { upsert: true }).exec();
+                } catch (err) {
                     log(Severity.ERROR, err.toString(), 'getToken: mongo findOneAndUpdate');
-                });
+                }
             }
         }
         // TODO: Token verification?
