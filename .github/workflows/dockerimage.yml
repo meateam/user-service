@@ -13,7 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - name: scm checkout
+      uses: actions/checkout@v1
         
     - name: Build the test image and run it
       run: docker build . --file test.Dockerfile --tag ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:test
@@ -24,11 +25,12 @@ jobs:
       
   image:
     needs: test
-    
+
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v1
+    - name: scm checkout
+      uses: actions/checkout@v1
     
     - name: Build the develop branch
       run: docker build . --file Dockerfile --tag ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:develop
@@ -37,7 +39,7 @@ jobs:
 
 
     - name: Docker Login 
-    - uses: azure/docker-login@v1
+      uses: azure/docker-login@v1
       with:
        login-server: ${{ secrets.acr_registry }}
        username: ${{ secrets.acr_username }}
@@ -45,7 +47,6 @@ jobs:
        
     - name: Push container
       run: docker push ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:ci-temp
-      if: steps.test.status == success()
 
 
 
