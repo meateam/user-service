@@ -4,10 +4,11 @@ on:
   push:
     branches:
     - develop
+    - ci
 
 jobs:
 
-  build_test:
+  test:
     
     runs-on: ubuntu-latest
 
@@ -18,10 +19,16 @@ jobs:
       run: docker build . --file test.Dockerfile --tag ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:test
 
     - name: Run test
-      id: test
       run: docker run --env-file ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:test 
+
       
+  image:
+    needs: test
     
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
     
     - name: Build the develop branch
       run: docker build . --file Dockerfile --tag ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:develop
@@ -37,7 +44,7 @@ jobs:
        password: ${{ secrets.acr_password }}
        
     - name: Push container
-      run: docker push ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:develop
+      run: docker push ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:ci-temp
       if: steps.test.status == success()
 
 
