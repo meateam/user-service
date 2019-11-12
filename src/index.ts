@@ -37,16 +37,15 @@ function connectToRedis(): redis.RedisClient {
 
 async function connectToMongo() {
     log(Severity.INFO, `connecting to mongo: ${mongoConnectionString}`, 'connectToMongo');
-    await Mongoose.connect(
-        mongoConnectionString,
-        { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true },
-        async (err) => {
-            if (!err) {
-                log(Severity.INFO, `successfully connected: ${mongoConnectionString}`, 'connectToMongo');
-            } else {
-                log(Severity.ERROR, `did not connect to ${mongoConnectionString}. error: ${err}`, 'connectToMongo', undefined, err);
-            }
-        });
+    try {
+        await Mongoose.connect(
+            mongoConnectionString,
+            { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true });
+    } catch (err) {
+        log(Severity.ERROR, `did not connect to ${mongoConnectionString}. error: ${err}`, 'connectToMongo', undefined, err);
+        return;
+    }
+    log(Severity.INFO, `successfully connected: ${mongoConnectionString}`, 'connectToMongo');
 }
 
 (async () => {
