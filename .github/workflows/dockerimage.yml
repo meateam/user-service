@@ -46,7 +46,7 @@ jobs:
        password: ${{ secrets.acr_password }}
        
     - name: Push container
-      run: docker push ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:ci-temp
+      run: docker push ${{ secrets.acr_registry }}/$GITHUB_REPOSITORY:develop
 
 
 
