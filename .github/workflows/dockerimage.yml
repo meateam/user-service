@@ -20,7 +20,7 @@ jobs:
       run: docker build . --file test.Dockerfile --tag ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:test
 
     - name: Run test
-      run: docker run --env-file ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:test 
+      run: docker run ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:test 
 
       
   image:
