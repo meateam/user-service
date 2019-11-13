@@ -33,7 +33,7 @@ jobs:
       uses: actions/checkout@v1
     
     - name: Build the develop branch
-      run: docker build . --file Dockerfile --tag ${{ secrets.acr_registry }}$GITHUB_REPOSITORY:develop
+      run: docker build . --file Dockerfile --tag ${{ secrets.acr_registry }}/$GITHUB_REPOSITORY:develop
     
 
 
