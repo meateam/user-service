@@ -17,8 +17,8 @@ export interface IOrganizationGroup {
 
 export interface IDomainUser {
     id?: string;
-    domain?: string;
-    name?: string;
+    domain: string;
+    name: string;
     uniqueID?: string;
     adfsUID?: string;
     personId?: Types.ObjectId | string | IUser;
@@ -27,10 +27,11 @@ export interface IDomainUser {
 export interface IUser {
     // Person's Basic information
     _id?:string;
-    id: string;
+    id?: string;
     identityCard: string;
     personalNumber?: string;
-    domainUsers: IDomainUser[];
+    primaryDomainUser: IDomainUser;
+    secondaryDomainUsers?:  string[] | Types.ObjectId[] | IDomainUser[];
     entityType: string;
     serviceType?: string;
     firstName: string;
@@ -38,8 +39,7 @@ export interface IUser {
     currentUnit?: string;
     alive?: boolean;
     dischargeDay?: Date;
-    hierarchy: string[];
-    hierarchyFlat?: string;
+    hierarchy?: string[];
     directGroup: string | Types.ObjectId | IOrganizationGroup;
     managedGroup?: string | Types.ObjectId | IOrganizationGroup;
     rank?: string;

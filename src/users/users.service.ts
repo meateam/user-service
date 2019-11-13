@@ -1,137 +1,32 @@
-import * as request from 'request-promise-native';
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { IUser } from './users.interface';
-import Spike from '../spike/spike.service';
-import { RedisClient } from 'redis';
-import { KartoffelError, UserNotFoundError, ApplicationError } from '../utils/errors';
+import { UsersNotFoundError } from '../utils/errors/userErrors';
+import * as request from 'request-promise-native';
 
 const baseUrl = `${process.env.KARTOFFEL_URL || 'http://localhost:4000'}/api/persons`;
 
-export default class UsersService {
-    /**
-     * Gets a user by its ID from the provider
-     * @param id - the user ID
-     */
-    private SpikeService: Spike;
-    private redis: RedisClient;
-    private axiosInstance: AxiosInstance;
-
-    constructor(redis: RedisClient) {
-        this.redis = redis;
-        this.SpikeService = new Spike(redis);
-        this.axiosInstance = axios.create();
-    }
-
-    async getByID(id: string): Promise<IUser> {
-        await this.authMiddleware();
-        let res: AxiosResponse;
+export class UsersService {
+    static async getByID(id: string): Promise<IUser | null> {
+        console.log(`Searching User with ID: ${id}`);
         try {
-            res = await this.axiosInstance.get(`${baseUrl}/${id}`);
+            const res = await request(`${baseUrl}/${id}`);
+            return JSON.parse(res);
         } catch (err) {
-            if (err.response && err.response.status) {
-                const statusCode: number = err.response.status;
-                if (statusCode === 404) {
-                    throw new UserNotFoundError(`The user with id ${id} is not found`);
-                }
-                // Unauthorized
-                if (statusCode === 401) {
-                    throw new ApplicationError(`Request to Kartoffel wasn't authorized: ${err} `);
-                }
-                throw new KartoffelError(`Error in contacting the user service : ${err.response.data}`);
-            } else {
-                throw new ApplicationError(`Unknown Error while contacting the user service : ${err}`);
-            }
+            return null;
         }
-        // Status Code = 2XX / 3XX
-        const user:IUser = res.data;
-        return user;
     }
 
-    private static async getAll(): Promise<IUser[]> {
+    static async getAll(): Promise<IUser | null> {
         const res = await request(`${baseUrl}`);
         return JSON.parse(res);
     }
 
-    /**
-     * Gets a user by one of his mail addresses
-     * @param domainUser - a mail address
-     */
-    public async getByDomainUser(domainUser: string): Promise<IUser> {
-        await this.authMiddleware();
-        let res: AxiosResponse;
+    static async getByDomainUser(domainUser: string): Promise<IUser | null> {
         try {
-            res = await this.axiosInstance.get(`${baseUrl}/domainUser/${domainUser}`);
+            const res = await request(`${baseUrl}/domainUser/${domainUser}`);
+            return JSON.parse(res);
         } catch (err) {
-            if (err.response && err.response.status) {
-                const statusCode: number = err.response.status;
-                if (statusCode === 404) {
-                    throw new UserNotFoundError(`The user with mail ${domainUser} is not found`);
-                }
-                // Unauthorized
-                if (statusCode === 401) {
-                    throw new ApplicationError(`Request to Kartoffel wasn't authorized: ${err} `);
-                }
-                throw new KartoffelError(`Error in contacting the user service : ${err.response.data}`);
-            } else {
-                throw new ApplicationError(`Unknown Error while contacting the user service : ${err}`);
-            }
+            console.log(`${domainUser} is not found`);
+            return null;
         }
-        // Status Code = 2XX / 3XX
-        const user:IUser = res.data;
-        return user;
-    }
-
-    /**
-     * Search user suggestions by a partial name. returns a list of users ordered by resemblance score
-     * @param partialName - the partial name to search by.
-     */
-    public async searchByName(partialName: string): Promise<IUser[]> {
-        await this.authMiddleware();
-        let res: AxiosResponse;
-        try {
-            res = await this.axiosInstance.get(`${baseUrl}/search`, { params: { fullname: partialName } });
-        } catch (err) {
-            throw new ApplicationError(`Unknown Error: ${err} `);
-        }
-        const users:IUser[] = res.data;
-        return users;
-    }
-
-     /**
-     * Calls a function a after a authentication middleware.
-     */
-    public authWrapper(func: Function) {
-        this.authMiddleware();
-        func();
-    }
-
-    /**
-     * If authentication is needed, adds an authorization header to the axios instance.
-     */
-    public async authMiddleware() {
-        if (process.env.SPIKE_REQUIRED === 'true') {
-            await this.addAuthInterceptor(); // async function. but cannot await since its a constructor.
-        }
-    }
-    /**
-     * This function gets an hierarchy in an array form and reduce it to a long string format
-     * @param hierarchy - The hierarchy array.
-     */
-    public static flattenHierarchy(hierarchy: string[]): string {
-        return hierarchy.reduce((x, y) => `${x}/${y}`);
-    }
-
-    /**
-     * Adds an Authorization header with an updated authentication token
-     * from spike to the axios instance to kartoffel.
-     */
-    private async addAuthInterceptor() {
-        const token: string = await this.SpikeService.getToken();
-        this.axiosInstance.interceptors.request.use(async (config) => {
-            config.headers = {
-                Authorization: token,
-            };
-            return config;
-        });
     }
 }
