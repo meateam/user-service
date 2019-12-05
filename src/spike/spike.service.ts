@@ -10,6 +10,7 @@ import { ServerError } from '../utils/errors';
 
 export default class Spike {
     private redis: RedisClient;
+    private token: IToken | null | void;
     private spikeId: string;
     private spikeSecret: string;
     private spikeURL: string;
@@ -20,6 +21,7 @@ export default class Spike {
      */
     constructor(redis: RedisClient) {
         this.redis = redis;
+        this.token = undefined;
         this.getAsyncRedis = promisify(this.redis.get).bind(this.redis);
         this.spikeId =  process.env.SPIKE_CLIENT_ID || '';
         this.spikeSecret = process.env.SPIKE_CLIENT_SECRET || '';
@@ -50,6 +52,11 @@ export default class Spike {
      * Returns a kartoffel token saved in redis or from spike
      */
     public async getToken (): Promise<string> {
+        console.log('Getting Token!');
+        if (this.token && this.checkTokenValidity()) {
+            console.log('Ba!');
+            return this.token.token;
+        }
         log(Severity.INFO, 'attempting to obtain token from redis', 'getToken');
         let kartoffelToken:string|null = await this.getAsyncRedis('kartoffel:token');
         let updateMongo: boolean = false;
@@ -78,6 +85,7 @@ export default class Spike {
                 kartoffelToken = spikeRes.access_token;
                 updateMongo = true;
             } else {
+                this.token = tokenObject;
                 kartoffelToken = tokenObject.token;
             }
         } catch (err) {
@@ -92,6 +100,7 @@ export default class Spike {
                 expireAt: new Date(Date.now() + tokenExp * Second),
             };
             try {
+                this.token = newToken;
                 await tokenModel.findOneAndUpdate({ id: tokenID }, newToken, { upsert: true }).exec();
             } catch (err) {
                 log(Severity.ERROR, err.toString(), 'getToken: mongo findOneAndUpdate');
@@ -101,5 +110,10 @@ export default class Spike {
         // TODO: Token verification?
         log(Severity.INFO, 'successfully obtained token', 'getToken');
         return kartoffelToken;
+    }
+
+    private checkTokenValidity(): boolean {
+        const token = this.token;
+        return (!token || token.expireAt.getTime() < Date.now());
     }
 }

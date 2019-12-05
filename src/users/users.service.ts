@@ -20,10 +20,13 @@ export default class UsersService {
         this.redis = redis;
         this.SpikeService = new Spike(redis);
         this.axiosInstance = axios.create();
+        // If authentication is needed, adds an authorization header to the axios instance.
+        if (process.env.SPIKE_REQUIRED === 'true') {
+            this.addAuthInterceptor(); // async function. but cannot await since its a constructor.
+        }
     }
 
     async getByID(id: string): Promise<IUser> {
-        await this.authMiddleware();
         let res: AxiosResponse;
         try {
             res = await this.axiosInstance.get(`${baseUrl}/${id}`);
@@ -57,7 +60,6 @@ export default class UsersService {
      * @param domainUser - a mail address
      */
     public async getByDomainUser(domainUser: string): Promise<IUser> {
-        await this.authMiddleware();
         let res: AxiosResponse;
         try {
             res = await this.axiosInstance.get(`${baseUrl}/domainUser/${domainUser}`);
@@ -86,7 +88,6 @@ export default class UsersService {
      * @param partialName - the partial name to search by.
      */
     public async searchByName(partialName: string): Promise<IUser[]> {
-        await this.authMiddleware();
         let res: AxiosResponse;
         try {
             res = await this.axiosInstance.get(`${baseUrl}/search`, { params: { fullname: partialName } });
@@ -97,22 +98,6 @@ export default class UsersService {
         return users;
     }
 
-     /**
-     * Calls a function a after a authentication middleware.
-     */
-    public authWrapper(func: Function) {
-        this.authMiddleware();
-        func();
-    }
-
-    /**
-     * If authentication is needed, adds an authorization header to the axios instance.
-     */
-    public async authMiddleware() {
-        if (process.env.SPIKE_REQUIRED === 'true') {
-            await this.addAuthInterceptor(); // async function. but cannot await since its a constructor.
-        }
-    }
     /**
      * This function gets an hierarchy in an array form and reduce it to a long string format
      * @param hierarchy - The hierarchy array.
