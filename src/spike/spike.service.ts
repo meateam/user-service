@@ -52,9 +52,7 @@ export default class Spike {
      * Returns a kartoffel token saved in redis or from spike
      */
     public async getToken (): Promise<string> {
-        console.log('Getting Token!');
         if (this.token && this.checkTokenValidity()) {
-            console.log('Ba!');
             return this.token.token;
         }
         log(Severity.INFO, 'attempting to obtain token from redis', 'getToken');
