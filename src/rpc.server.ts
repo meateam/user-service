@@ -1,7 +1,15 @@
+import { RedisClient } from 'redis';
+import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
+
 import Kartoffel from './users/users.service';
 import { IUser } from './users/users.interface';
-import { RedisClient } from 'redis';
 import { wrapper } from './logger';
+
+export const serviceNames: string[] = ['', 'users.Users'];
+export const healthCheckStatusMap = {
+  '': HealthCheckResponse.ServingStatus.UNKNOWN,
+  serviceName: HealthCheckResponse.ServingStatus.UNKNOWN
+};
 
 const PROTO_PATH = `${__dirname}/../proto/users.proto`;
 const grpc = require('grpc');
@@ -25,11 +33,16 @@ export class RPC {
     public server: any;
     private UsersService: Kartoffel;
     private redis: RedisClient;
+    public grpcHealthCheck: GrpcHealthCheck;
 
     public constructor(port: string, redisClient: RedisClient) {
         this.redis = redisClient;
         this.UsersService = new Kartoffel(this.redis);
         this.server = new grpc.Server();
+        // Register the health service
+        this.grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
+        this.server.addService(HealthService, this.grpcHealthCheck);
+
         this.server.addService(users_proto.Users.service, {
             GetUserByID: wrapper(this.getUserByID, 'GetUserByID'),
             GetUserByMail: wrapper(this.getUserByMail, 'GetUserByMail'),
@@ -73,5 +86,4 @@ export class RPC {
 
         return filtereduUser;
     }
-
 }
