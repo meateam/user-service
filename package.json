@@ -25,6 +25,7 @@
     "@types/chai": "^4.2.4",
     "@types/chai-as-promised": "^7.1.2",
     "@types/elasticsearch": "^5.0.36",
+    "@types/google-protobuf": "^3.2.7",
     "@types/mocha": "^5.2.7",
     "@types/mongoose": "^5.2.22",
     "@types/node": "^10.14.3",
