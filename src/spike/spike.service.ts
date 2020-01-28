@@ -112,6 +112,6 @@ export default class Spike {
 
     private checkTokenValidity(): boolean {
         const token = this.token;
-        return (!token || token.expireAt.getTime() < Date.now());
+        return (token != null && token.expireAt.getTime() > Date.now());
     }
 }
