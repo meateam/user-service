@@ -81,7 +81,7 @@ export class RPC {
             lastName: user.lastName,
             fullName: user.fullName,
             hierarchy: user.hierarchy,
-            hierarchyFlat: Kartoffel.flattenHierarchy(user.hierarchy),
+            hierarchyFlat: Kartoffel.flattenHierarchy(user.hierarchy, user.job),
         };
 
         return filtereduUser;

@@ -102,8 +102,13 @@ export default class UsersService {
      * This function gets an hierarchy in an array form and reduce it to a long string format
      * @param hierarchy - The hierarchy array.
      */
-    public static flattenHierarchy(hierarchy: string[]): string {
-        return hierarchy.reduce((x, y) => `${x}/${y}`);
+    public static flattenHierarchy(hierarchy: string[], job:string): string {
+        let flat = hierarchy.join('/');
+        console.log(`job = ${job}`);
+        if (job) {
+            flat += `/${job}`;
+        }
+        return flat;
     }
 
     /**
