@@ -104,7 +104,6 @@ export default class UsersService {
      */
     public static flattenHierarchy(hierarchy: string[], job:string): string {
         let flat = hierarchy.join('/');
-        console.log(`job = ${job}`);
         if (job) {
             flat += `/${job}`;
         }
