@@ -72,6 +72,6 @@ async function connectToMongo(server: RPC) {
 
 function setHealthStatus(server: RPC, status: number) : void {
     for (let i = 0 ; i < serviceNames.length ; i++) {
-      server.grpcHealthCheck.setStatus(serviceNames[i], status);
+        server.grpcHealthCheck.setStatus(serviceNames[i], status);
     }
 }
