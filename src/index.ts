@@ -1,8 +1,7 @@
 import * as apm from 'elastic-apm-node';
-import * as Mongoose from 'mongoose';
 import { HealthCheckResponse } from 'grpc-ts-health-check';
 import { RPC, serviceNames } from './rpc.server';
-import { apmURL, verifyServerCert, serviceName, secretToken, mongoConnectionString } from './config';
+import { apmURL, verifyServerCert, serviceName, secretToken } from './config';
 import { log, Severity } from './logger';
 
 apm.start({
@@ -27,35 +26,11 @@ process.on('SIGINT', async () => {
     process.exit(0);
 });
 
-async function connectToMongo(server: RPC) {
-    log(Severity.INFO, `connecting to mongo: ${mongoConnectionString}`, 'connectToMongo');
-    try {
-        const db = await Mongoose.connect(
-            mongoConnectionString,
-            { useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true });
-        db.connection.on('connected', () => {
-            setHealthStatus(server, HealthCheckResponse.ServingStatus.SERVING);
-        });
-        db.connection.on('error', (err) => {
-            setHealthStatus(server, HealthCheckResponse.ServingStatus.NOT_SERVING);
-        });
-        db.connection.on('disconnected', () => {
-            setHealthStatus(server, HealthCheckResponse.ServingStatus.NOT_SERVING);
-        });
-    } catch (err) {
-        log(Severity.ERROR, `did not connect to ${mongoConnectionString}. error: ${err}`, 'connectToMongo', undefined, err);
-        setHealthStatus(server, HealthCheckResponse.ServingStatus.NOT_SERVING);
-        return;
-    }
-
-    log(Severity.INFO, `successfully connected: ${mongoConnectionString}`, 'connectToMongo');
-    setHealthStatus(server, HealthCheckResponse.ServingStatus.SERVING);
-}
-
 (async () => {
     const rpcPort = process.env.RPC_PORT || '8086';
     const rpcServer: RPC = new RPC(rpcPort);
-    await connectToMongo(rpcServer);
+    setHealthStatus(rpcServer, HealthCheckResponse.ServingStatus.NOT_SERVING);
+    setHealthStatus(rpcServer, HealthCheckResponse.ServingStatus.SERVING);
     rpcServer.server.start();
     log(Severity.INFO, `RPC Server listening on port ${rpcPort}`, 'index');
 })();

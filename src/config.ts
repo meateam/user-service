@@ -7,9 +7,6 @@ export const userQuotaLimit: string = process.env.USER_QUOTA_LIMIT || '10';
 
 export const debugMode: boolean = process.env.DEBUG_MODE === 'true';
 
-export const mongoConnectionString : string =
-  process.env.USR_MONGO_HOST || 'mongodb://localhost:27017/devDB';
-
 export const tokenID = process.env.TOKEN_ID || 'Kartoffel';
 
 const esHost: string = process.env.ELASTICSEARCH_URL || 'http://localhost:9200';
@@ -24,5 +21,3 @@ export const confLogger = {
     indexPrefix: process.env.LOG_INDEX || 'kdrive',
 };
 
-export const redisPort: number = parseInt(`${process.env.REDIS_URL}`, 10) || 6379;
-export const redisHost: string = process.env.REDIS_HOST || '127.0.0.1';
