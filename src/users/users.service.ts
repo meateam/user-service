@@ -1,7 +1,7 @@
 import * as request from 'request-promise-native';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { IUser } from './users.interface';
-import Spike from '../spike/spike.service';
+import Spike from '../spike/spike';
 import { RedisClient } from 'redis';
 import { KartoffelError, UserNotFoundError, ApplicationError } from '../utils/errors';
 

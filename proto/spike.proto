@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package spike;
+
+service Spike {
+    rpc GetSpikeToken(GetSpikeTokenRequest) returns (SpikeToken) {}
+    rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse) {}
+}
+
+message Client {
+    string id = 1;
+    string secret = 2;
+}
+
+
+message GetSpikeTokenRequest {
+    string grant_type = 1;
+    string audience = 2;
+    Client client = 3; // optional
+}
+
+
+message SpikeToken {
+    string token = 1;
+}
+
+message ValidateTokenRequest {
+    string token = 1;
+    string audience = 2; // optional
+}
+
+message ValidateTokenResponse {
+    bool valid = 1;
+    repeated string scopes = 2;
+    string message = 3;
+}

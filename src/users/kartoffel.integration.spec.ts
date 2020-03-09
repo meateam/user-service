@@ -4,7 +4,7 @@ import { describe } from 'mocha';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as redis from 'redis';
-import Spike from '../spike/spike.service';
+import Spike from '../spike/spike';
 import Kartoffel from './users.service';
 import { IUser } from './users.interface';
 import { UserNotFoundError } from '../utils/errors';
