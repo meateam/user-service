@@ -1,4 +1,3 @@
-import { RedisClient } from 'redis';
 import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
 
 import Kartoffel from './users/users.service';
@@ -32,12 +31,10 @@ const users_proto = protoDescriptor.users;
 export class RPC {
     public server: any;
     private UsersService: Kartoffel;
-    private redis: RedisClient;
     public grpcHealthCheck: GrpcHealthCheck;
 
-    public constructor(port: string, redisClient: RedisClient) {
-        this.redis = redisClient;
-        this.UsersService = new Kartoffel(this.redis);
+    public constructor(port: string) {
+        this.UsersService = new Kartoffel();
         this.server = new grpc.Server();
         // Register the health service
         this.grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);

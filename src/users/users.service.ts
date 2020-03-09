@@ -1,8 +1,7 @@
 import * as request from 'request-promise-native';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { IUser } from './users.interface';
-import Spike from '../spike/spike';
-import { RedisClient } from 'redis';
+import getToken from '../spike/spike.service';
 import { KartoffelError, UserNotFoundError, ApplicationError } from '../utils/errors';
 
 const baseUrl = `${process.env.KARTOFFEL_URL || 'http://localhost:4000'}/api/persons`;
@@ -12,13 +11,9 @@ export default class UsersService {
      * Gets a user by its ID from the provider
      * @param id - the user ID
      */
-    private SpikeService: Spike;
-    private redis: RedisClient;
     private axiosInstance: AxiosInstance;
 
-    constructor(redis: RedisClient) {
-        this.redis = redis;
-        this.SpikeService = new Spike(redis);
+    constructor() {
         this.axiosInstance = axios.create();
         // If authentication is needed, adds an authorization header to the axios instance.
         if (process.env.SPIKE_REQUIRED === 'true') {
@@ -116,7 +111,8 @@ export default class UsersService {
      */
     private async addAuthInterceptor() {
         this.axiosInstance.interceptors.request.use(async (config) => {
-            const token: string = await this.SpikeService.getToken();
+            const token = getToken();
+            console.log(token);
             config.headers = {
                 Authorization: token,
             };

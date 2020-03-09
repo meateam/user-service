@@ -1,9 +1,7 @@
-import path from 'path';
-
 const protoLoader = require('@grpc/proto-loader');
 const grpc = require('grpc');
 
-const PROTO_PATH = path.resolve("../proto/spike.proto");
+const PROTO_PATH = __dirname + "/../../proto/spike.proto";
 const packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
     {
@@ -20,10 +18,11 @@ export default function getToken() {
         grant_type: "client_credentials",
         audience: "kartoffel"
     }
-    const client = new spike_proto.Spike('localhost:8080',
+    const client = new spike_proto.Spike('spike-service:8080',
         grpc.credentials.createInsecure());
-    client.getSpikeToken(reqBody, function (err: Error, response: any) {
-        console.log(response);
-        return response;
+    client.GetSpikeToken(reqBody, function (err: Error, response: any) {
+        if(err) console.log(err);
+        console.log(response.token);
+        return response.token;
     });
 }

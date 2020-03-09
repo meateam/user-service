@@ -34,3 +34,4 @@ message ValidateTokenResponse {
     repeated string scopes = 2;
     string message = 3;
 }
+

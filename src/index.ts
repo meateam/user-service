@@ -1,9 +1,8 @@
 import * as apm from 'elastic-apm-node';
-import * as redis from 'redis';
 import * as Mongoose from 'mongoose';
 import { HealthCheckResponse } from 'grpc-ts-health-check';
 import { RPC, serviceNames } from './rpc.server';
-import { apmURL, verifyServerCert, serviceName, secretToken, redisPort, redisHost, mongoConnectionString } from './config';
+import { apmURL, verifyServerCert, serviceName, secretToken, mongoConnectionString } from './config';
 import { log, Severity } from './logger';
 
 apm.start({
@@ -27,14 +26,6 @@ process.on('SIGINT', async () => {
     log(Severity.ERROR, 'User Termination', 'SIGINT');
     process.exit(0);
 });
-
-function connectToRedis(): redis.RedisClient {
-    const client = redis.createClient(redisPort, redisHost);
-    client.on('error', function (err: ErrorEvent) {
-        log(Severity.ERROR, `error while connecting to redis: ${err}`, 'connectToRedis');
-    });
-    return client;
-}
 
 async function connectToMongo(server: RPC) {
     log(Severity.INFO, `connecting to mongo: ${mongoConnectionString}`, 'connectToMongo');
@@ -62,9 +53,8 @@ async function connectToMongo(server: RPC) {
 }
 
 (async () => {
-    const redisClient = connectToRedis();
     const rpcPort = process.env.RPC_PORT || '8086';
-    const rpcServer: RPC = new RPC(rpcPort, redisClient);
+    const rpcServer: RPC = new RPC(rpcPort);
     await connectToMongo(rpcServer);
     rpcServer.server.start();
     log(Severity.INFO, `RPC Server listening on port ${rpcPort}`, 'index');

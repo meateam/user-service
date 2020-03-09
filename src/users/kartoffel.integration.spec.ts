@@ -3,8 +3,7 @@
 import { describe } from 'mocha';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import * as redis from 'redis';
-import Spike from '../spike/spike';
+import getToken from '../spike/spike.service';
 import Kartoffel from './users.service';
 import { IUser } from './users.interface';
 import { UserNotFoundError } from '../utils/errors';
@@ -55,20 +54,12 @@ const fakeUserMail = 'apple@kuchen';
 
 describe('Spike and Kartoffel Integration', () => {
 
-    let redisClient:redis.RedisClient;
-    let SpikeService: Spike;
+    // let Spike: SpikeService;
     let UsersService: Kartoffel;
 
     before(async () => {
-        redisClient = redis.createClient();
-        SpikeService = new Spike(redisClient);
-        UsersService = new Kartoffel(redisClient);
-    });
-
-    describe('Token creation', () => {
-        it('should save the token in redis', async () => {
-            const token = await SpikeService.getToken();
-        });
+        // Spike = new SpikeService();
+        UsersService = new Kartoffel();
     });
 
     describe('Kartoffel', () => {
