@@ -3,7 +3,7 @@
 import { describe } from 'mocha';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import getToken from '../spike/spike.service';
+import SpikeService from '../spike/spike.service';
 import Kartoffel from './users.service';
 import { IUser } from './users.interface';
 import { UserNotFoundError } from '../utils/errors';

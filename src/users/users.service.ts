@@ -1,10 +1,10 @@
 import * as request from 'request-promise-native';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { IUser } from './users.interface';
-import getToken from '../spike/spike.service';
+import Spike from '../spike/spike.service';
 import { KartoffelError, UserNotFoundError, ApplicationError } from '../utils/errors';
 
-const baseUrl = `${process.env.KARTOFFEL_URL || 'http://localhost:4000'}/api/persons`;
+const baseUrl = `${process.env.KARTOFFEL_URL || 'http://localhost:3001'}/api/persons`;
 
 export default class UsersService {
     /**
@@ -12,8 +12,10 @@ export default class UsersService {
      * @param id - the user ID
      */
     private axiosInstance: AxiosInstance;
+    private SpikeService: Spike;
 
     constructor() {
+        this.SpikeService = new Spike();
         this.axiosInstance = axios.create();
         // If authentication is needed, adds an authorization header to the axios instance.
         if (process.env.SPIKE_REQUIRED === 'true') {
@@ -35,7 +37,7 @@ export default class UsersService {
                 if (statusCode === 401) {
                     throw new ApplicationError(`Request to Kartoffel wasn't authorized: ${err} `);
                 }
-                throw new KartoffelError(`Error in contacting the user service : ${err.response.data}`);
+                throw new KartoffelError(`Error in contacting the user service : ${err}`);
             } else {
                 throw new ApplicationError(`Unknown Error while contacting the user service : ${err}`);
             }
@@ -110,10 +112,8 @@ export default class UsersService {
      * from spike to the axios instance to kartoffel.
      */
     private async addAuthInterceptor() {
-        getToken();
+        const token = await this.SpikeService.getToken();
         this.axiosInstance.interceptors.request.use(async (config) => {
-            const token = getToken();
-            console.log(token);
             config.headers = {
                 Authorization: token,
             };

@@ -13,16 +13,30 @@ const packageDefinition = protoLoader.loadSync(
     });
 const spike_proto = grpc.loadPackageDefinition(packageDefinition).spike;
 
-export default function getToken() {
-    const reqBody = {
-        grant_type: "client_credentials",
-        audience: "kartoffel"
+export default class Spike {
+
+    public async getToken() {
+
+        const client = await new spike_proto.Spike('spike-service:8080',
+            grpc.credentials.createInsecure());
+
+        return this.getSpikeToken(client);
     }
-    const client = new spike_proto.Spike('spike-service:8080',
-        grpc.credentials.createInsecure());
-    client.GetSpikeToken(reqBody, function (err: Error, response: any) {
-        if(err) console.log(err);
-        console.log(response.token);
-        return response.token;
-    });
+
+    private getSpikeToken(client: any) {
+        const reqBody = {
+            grant_type: "client_credentials",
+            audience: "kartoffel"
+        }
+
+        return new Promise((resolve, reject) => {
+            client.GetSpikeToken(reqBody, function (err: Error, response: any) {
+                if (err) {
+                    reject();
+                } else {
+                    resolve(response.token);
+                }
+            });
+        });
+    }
 }
