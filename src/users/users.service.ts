@@ -112,8 +112,8 @@ export default class UsersService {
      * from spike to the axios instance to kartoffel.
      */
     private async addAuthInterceptor() {
-        const token = await this.SpikeService.getToken();
         this.axiosInstance.interceptors.request.use(async (config) => {
+            const token = await this.SpikeService.getToken();
             config.headers = {
                 Authorization: token,
             };
