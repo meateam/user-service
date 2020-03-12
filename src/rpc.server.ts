@@ -6,8 +6,8 @@ import { wrapper } from './logger';
 
 export const serviceNames: string[] = ['', 'users.Users'];
 export const healthCheckStatusMap = {
-  '': HealthCheckResponse.ServingStatus.UNKNOWN,
-  serviceName: HealthCheckResponse.ServingStatus.UNKNOWN
+    '': HealthCheckResponse.ServingStatus.UNKNOWN,
+    serviceName: HealthCheckResponse.ServingStatus.UNKNOWN,
 };
 
 const PROTO_PATH = `${__dirname}/../proto/users.proto`;
@@ -17,7 +17,8 @@ const protoLoader = require('@grpc/proto-loader');
 
 const packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
-    {keepCase: true,
+    {
+        keepCase: true,
         longs: String,
         enums: String,
         defaults: true,
@@ -49,7 +50,7 @@ export class RPC {
     }
 
     private getUserByID = async (call: any, callback: any) => {
-        const user:IUser = await this.UsersService.getByID(call.request.id);
+        const user: IUser = await this.UsersService.getByID(call.request.id);
         if (!user) {
             throw new Error(`The user with Mail ${call.request.mail}, is not found`);
         }
@@ -57,7 +58,7 @@ export class RPC {
     }
 
     private getUserByMail = async (call: any, callback: any) => {
-        const user:IUser = await this.UsersService.getByDomainUser(call.request.mail);
+        const user: IUser = await this.UsersService.getByDomainUser(call.request.mail);
         if (!user) {
             throw new Error(`The user with Mail ${call.request.mail}, is not found`);
         }
@@ -65,7 +66,7 @@ export class RPC {
     }
 
     private findUsersByPartialName = async (call: any, callback: any) => {
-        const usersRes:IUser[] = await this.UsersService.searchByName(call.request.name);
+        const usersRes: IUser[] = await this.UsersService.searchByName(call.request.name);
         const users = usersRes.map(user => this.filterUserFields(user));
         return { users };
     }

@@ -29,14 +29,13 @@ process.on('SIGINT', async () => {
 (async () => {
     const rpcPort = process.env.RPC_PORT || '8086';
     const rpcServer: RPC = new RPC(rpcPort);
-    setHealthStatus(rpcServer, HealthCheckResponse.ServingStatus.NOT_SERVING);
     setHealthStatus(rpcServer, HealthCheckResponse.ServingStatus.SERVING);
     rpcServer.server.start();
     log(Severity.INFO, `RPC Server listening on port ${rpcPort}`, 'index');
 })();
 
-function setHealthStatus(server: RPC, status: number) : void {
-    for (let i = 0 ; i < serviceNames.length ; i++) {
+function setHealthStatus(server: RPC, status: number): void {
+    for (let i = 0; i < serviceNames.length; i++) {
         server.grpcHealthCheck.setStatus(serviceNames[i], status);
     }
 }

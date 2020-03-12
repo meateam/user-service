@@ -54,11 +54,9 @@ const fakeUserMail = 'apple@kuchen';
 
 describe('Spike and Kartoffel Integration', () => {
 
-    // let Spike: SpikeService;
     let UsersService: Kartoffel;
 
     before(async () => {
-        // Spike = new SpikeService();
         UsersService = new Kartoffel();
     });
 

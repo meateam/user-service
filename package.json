@@ -26,7 +26,6 @@
     "@types/chai-as-promised": "^7.1.2",
     "@types/elasticsearch": "^5.0.36",
     "@types/google-protobuf": "^3.2.7",
-    "@types/mocha": "^5.2.7",
     "@types/mongoose": "^5.2.22",
     "@types/node": "^10.14.3",
     "@types/request-promise-native": "^1.0.15",
@@ -43,6 +42,7 @@
   },
   "dependencies": {
     "@grpc/proto-loader": "^0.5.2",
+    "@types/mocha": "^7.0.2",
     "axios": "^0.19.0",
     "elastic-apm-node": "2.11.6",
     "grpc": "^1.23.3",

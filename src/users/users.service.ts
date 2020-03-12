@@ -37,9 +37,9 @@ export default class UsersService {
                 if (statusCode === 401) {
                     throw new ApplicationError(`Request to Kartoffel wasn't authorized: ${err} `);
                 }
-                throw new KartoffelError(`Error in contacting the user service : ${err}`);
+                throw new KartoffelError(`Error in contacting the kartoffel : ${err}`);
             } else {
-                throw new ApplicationError(`Unknown Error while contacting the user service : ${err}`);
+                throw new ApplicationError(`Unknown Error while contacting the kartoffel : ${err}`);
             }
         }
         // Status Code = 2XX / 3XX
