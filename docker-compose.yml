@@ -10,8 +10,11 @@ services:
       ELASTIC_APM_SERVER_URL: 'http://localhost:8200'
       ELASTICSEARCH_URL: 'http://localhost:9200'
       KARTOFFEL_URL: 'http://kartoffel-master.eastus.cloudapp.azure.com:3001'
+      SPIKE_SERVICE_URL: 'spike-service:8080'
       RPC_PORT: 8080
       SPIKE_REQUIRED: "true"
+      GRANT_TYPE: "client_credentials"
+      AUDIENCE : "kartoffel"
     depends_on:
       - spike-service
 
@@ -20,9 +23,8 @@ services:
     ports:
       - '8080:8080'
     environment:
-      AUDIENCE: "kartoffel"
-      GRANT_TYPE: "client_credentials"
       AUDIENCE: "MyAudience"
+      GRANT_TYPE: "client_credentials"
       SPIKE_CLIENT_ID: "EPBpjCiczupCXZgBEq3ARZCinUt4LSXtOsVrI1Ub"
       SPIKE_CLIENT_SECRET: "u5qxEK0sy17ReZ7t8aVeN1gCcdI9hRiM78i9J_9Z6jA2YWcvbgczcchKqZ4WnXOsdT6jxmuVCLC3~RXuVcE5EsOG4JJi~B8AJQSB"
       REDIS_URL: 'redis://redis:6379'
