@@ -35,11 +35,11 @@ export default class UsersService {
                 }
                 // Unauthorized
                 if (statusCode === 401) {
-                    throw new ApplicationError(`Request to Kartoffel wasn't authorized: ${err} `);
+                    throw new ApplicationError(`Request to Kartoffel wasn't authorized: ${JSON.stringify(err)} `);
                 }
-                throw new KartoffelError(`Error in contacting the kartoffel : ${err}`);
+                throw new KartoffelError(`Error in contacting the user service : ${JSON.stringify(err)}`);
             } else {
-                throw new ApplicationError(`Unknown Error while contacting the kartoffel : ${err}`);
+                throw new ApplicationError(`Unknown Error while contacting the user service : ${JSON.stringify(err)}`);
             }
         }
         // Status Code = 2XX / 3XX
@@ -68,11 +68,11 @@ export default class UsersService {
                 }
                 // Unauthorized
                 if (statusCode === 401) {
-                    throw new ApplicationError(`Request to Kartoffel wasn't authorized: ${err} `);
+                    throw new ApplicationError(`Request to Kartoffel wasn't authorized: ${JSON.stringify(err)} `);
                 }
-                throw new KartoffelError(`Error in contacting the user service : ${err.response.data}`);
+                throw new KartoffelError(`Error in contacting the user service : ${JSON.stringify(err)}`);
             } else {
-                throw new ApplicationError(`Unknown Error while contacting the user service : ${err}`);
+                throw new ApplicationError(`Unknown Error while contacting the user service : ${JSON.stringify(err)}`);
             }
         }
         // Status Code = 2XX / 3XX
