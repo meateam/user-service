@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node ./dist/index.js",
     "build": "tsc",
+    "postbuild": "node ./dist/spike/getSpikeProto.js",
     "serve": "node ./dist/index.js",
     "test": "npm run tslint && npm run run_tests",
     "run_tests": "npm run test:unit",
@@ -45,7 +46,6 @@
     "@grpc/proto-loader": "^0.5.2",
     "axios": "^0.19.0",
     "elastic-apm-node": "2.11.6",
-    "github-content": "^1.0.1",
     "grpc": "^1.23.3",
     "grpc-ts-health-check": "^1.0.14",
     "request": "^2.88.0",

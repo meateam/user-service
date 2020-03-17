@@ -43,12 +43,6 @@ export class ProtoPullingError extends ApplicationError {
     }
 }
 
-export class FileError extends ApplicationError {
-    constructor(message?: string) {
-        super(message || 'Error with creating spike proto file', grpc.status.INTERNAL);
-    }
-}
-
 export class SpikeError extends ApplicationError {
     constructor(message?: string) {
         super(message || 'Error contacting spike', grpc.status.INTERNAL);

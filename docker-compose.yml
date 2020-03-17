@@ -15,8 +15,6 @@ services:
       SPIKE_REQUIRED: "true"
       GRANT_TYPE: "client_credentials"
       AUDIENCE: "kartoffel"
-      GITHUB_OWNER: "meateam"
-      GITHUB_REPO: "spike-service"
     depends_on:
       - spike-service
 
