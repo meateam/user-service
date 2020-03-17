@@ -6,10 +6,6 @@ import { kartoffelURL } from '../config';
 import { KartoffelError, UserNotFoundError, ApplicationError } from '../utils/errors';
 
 export default class UsersService {
-    /**
-     * Gets a user by its ID from the provider
-     * @param id - the user ID
-     */
     private axiosInstance: AxiosInstance;
     private SpikeService: Spike;
 
@@ -22,6 +18,10 @@ export default class UsersService {
         }
     }
 
+    /**
+     * Gets a user by its ID from the provider
+     * @param id - the user ID
+     */
     async getByID(id: string): Promise<IUser> {
         let res: AxiosResponse;
         try {
@@ -42,7 +42,7 @@ export default class UsersService {
             }
         }
         // Status Code = 2XX / 3XX
-        const user:IUser = res.data;
+        const user: IUser = res.data;
         return user;
     }
 
@@ -75,7 +75,7 @@ export default class UsersService {
             }
         }
         // Status Code = 2XX / 3XX
-        const user:IUser = res.data;
+        const user: IUser = res.data;
         return user;
     }
 
@@ -90,7 +90,7 @@ export default class UsersService {
         } catch (err) {
             throw new ApplicationError(`Unknown Error: ${err} `);
         }
-        const users:IUser[] = res.data;
+        const users: IUser[] = res.data;
         return users;
     }
 
@@ -98,7 +98,7 @@ export default class UsersService {
      * This function gets an hierarchy in an array form and reduce it to a long string format
      * @param hierarchy - The hierarchy array.
      */
-    public static flattenHierarchy(hierarchy: string[], job:string): string {
+    public static flattenHierarchy(hierarchy: string[], job: string): string {
         let flat = hierarchy.join('/');
         if (job) {
             flat += `/${job}`;
@@ -110,9 +110,9 @@ export default class UsersService {
      * Adds an Authorization header with an updated authentication token
      * from spike to the axios instance to kartoffel.
      */
-    private async addAuthInterceptor() {
+    private async addAuthInterceptor(): Promise<void> {
         this.axiosInstance.interceptors.request.use(async (config) => {
-            const token :string = await this.SpikeService.getToken();
+            const token: string = await this.SpikeService.getToken();
             config.headers = {
                 Authorization: token,
             };

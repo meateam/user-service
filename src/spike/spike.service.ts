@@ -16,16 +16,16 @@ const packageDefinition = protoLoader.loadSync(
     });
 const spike_proto = grpc.loadPackageDefinition(packageDefinition).spike;
 
+/**
+ * this class gets a token with scopes for the kartoffel authorization from the spike-service
+ */
 export default class Spike {
-
+    /**
+     * This function gets a token from spike service
+     * @returns the token
+     */
     public async getToken() :Promise<string> {
-
         const client = await new spike_proto.Spike(spikeServiceURL, grpc.credentials.createInsecure());
-
-        return this.getSpikeToken(client);
-    }
-
-    private getSpikeToken(client: any) :Promise<string> {
 
         return new Promise((resolve, reject) => {
             client.GetSpikeToken(spikeReqBody, function (err: Error, response: any) {
