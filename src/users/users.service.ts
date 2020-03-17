@@ -2,9 +2,8 @@ import * as request from 'request-promise-native';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { IUser } from './users.interface';
 import Spike from '../spike/spike.service';
+import { kartoffelURL } from '../config';
 import { KartoffelError, UserNotFoundError, ApplicationError } from '../utils/errors';
-
-const baseUrl = `${process.env.KARTOFFEL_URL || 'http://localhost:3001'}/api/persons`;
 
 export default class UsersService {
     /**
@@ -26,7 +25,7 @@ export default class UsersService {
     async getByID(id: string): Promise<IUser> {
         let res: AxiosResponse;
         try {
-            res = await this.axiosInstance.get(`${baseUrl}/${id}`);
+            res = await this.axiosInstance.get(`${kartoffelURL}/${id}`);
         } catch (err) {
             if (err.response && err.response.status) {
                 const statusCode: number = err.response.status;
@@ -48,7 +47,7 @@ export default class UsersService {
     }
 
     private static async getAll(): Promise<IUser[]> {
-        const res = await request(`${baseUrl}`);
+        const res = await request(`${kartoffelURL}`);
         return JSON.parse(res);
     }
 
@@ -59,7 +58,7 @@ export default class UsersService {
     public async getByDomainUser(domainUser: string): Promise<IUser> {
         let res: AxiosResponse;
         try {
-            res = await this.axiosInstance.get(`${baseUrl}/domainUser/${domainUser}`);
+            res = await this.axiosInstance.get(`${kartoffelURL}/domainUser/${domainUser}`);
         } catch (err) {
             if (err.response && err.response.status) {
                 const statusCode: number = err.response.status;
@@ -87,7 +86,7 @@ export default class UsersService {
     public async searchByName(partialName: string): Promise<IUser[]> {
         let res: AxiosResponse;
         try {
-            res = await this.axiosInstance.get(`${baseUrl}/search`, { params: { fullname: partialName } });
+            res = await this.axiosInstance.get(`${kartoffelURL}/search`, { params: { fullname: partialName } });
         } catch (err) {
             throw new ApplicationError(`Unknown Error: ${err} `);
         }
@@ -113,7 +112,7 @@ export default class UsersService {
      */
     private async addAuthInterceptor() {
         this.axiosInstance.interceptors.request.use(async (config) => {
-            const token = await this.SpikeService.getToken();
+            const token :string = await this.SpikeService.getToken();
             config.headers = {
                 Authorization: token,
             };

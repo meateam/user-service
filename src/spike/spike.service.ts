@@ -18,14 +18,14 @@ const spike_proto = grpc.loadPackageDefinition(packageDefinition).spike;
 
 export default class Spike {
 
-    public async getToken() {
+    public async getToken() :Promise<string> {
 
         const client = await new spike_proto.Spike(spikeServiceURL, grpc.credentials.createInsecure());
 
         return this.getSpikeToken(client);
     }
 
-    private getSpikeToken(client: any) {
+    private getSpikeToken(client: any) :Promise<string> {
 
         return new Promise((resolve, reject) => {
             client.GetSpikeToken(spikeReqBody, function (err: Error, response: any) {
