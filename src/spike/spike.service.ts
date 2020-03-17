@@ -4,7 +4,7 @@ import { spikeReqBody, spikeServiceURL } from '../config';
 const protoLoader = require('@grpc/proto-loader');
 const grpc = require('grpc');
 
-const PROTO_PATH = `${__dirname}/../../proto/spike.proto`;
+const PROTO_PATH = `${__dirname}/../../protos/spike/spike.proto`;
 const packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
     {

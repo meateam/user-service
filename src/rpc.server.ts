@@ -2,6 +2,8 @@ import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-hea
 
 import Kartoffel from './users/users.service';
 import { IUser } from './users/users.interface';
+import { UsersService, IUsersServer } from '../protos/users/users_grpc_pb';
+import { UsersToken, GetSpikeTokenRequest, ValidateTokenResponse, ValidateTokenRequest, Client } from '../protos/users/users_pb';
 import { wrapper } from './logger';
 
 export const serviceNames: string[] = ['', 'users.Users'];
@@ -10,7 +12,7 @@ export const healthCheckStatusMap = {
     serviceName: HealthCheckResponse.ServingStatus.UNKNOWN,
 };
 
-const PROTO_PATH = `${__dirname}/../proto/users.proto`;
+const PROTO_PATH = `${__dirname}/../protos/users/users.proto`;
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
 // Suggested options for similarity to existing grpc.load behavior
