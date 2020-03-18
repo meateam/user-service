@@ -14,6 +14,9 @@ const healthCheckStatusMap = {
 };
 const serviceNames: string[] = ['', 'users.Users'];
 
+/**
+ * this class implements the interface of the user service and the users.proto methods
+ */
 class Server implements IUsersServer {
     private UserService: Kartoffel;
     constructor() {
@@ -44,6 +47,7 @@ class Server implements IUsersServer {
             const usersRes: IUser[] = await this.UserService.searchByName(userName);
             const users: User[] = usersRes.map(user => this.getUserReplay(user));
             const replay: FindUserByNameResponse = new FindUserByNameResponse();
+            replay.setUsersList(users);
             callback(null, replay);
         } catch (err) {
             callback(err, null);
@@ -66,6 +70,10 @@ class Server implements IUsersServer {
         }
     }
 
+    /**
+     * this function return the user in the form of the userResponse
+     * @param user- this is the user from the kartoffel
+     */
     private getUserReplay(user: IUser): User {
         const userRes: User = new User();
         userRes.setFirstname(user.firstName);
@@ -95,6 +103,7 @@ export function startServer(port: string) {
     server.bind(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure());
     server.start();
     console.log(`Server is listening on port ${port}`);
+    setHealthStatus(usersServer, HealthCheckResponse.ServingStatus.SERVING);
 }
 
 function setHealthStatus(server: Server, status: number): void {

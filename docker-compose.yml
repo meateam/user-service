@@ -9,10 +9,10 @@ services:
       DEBUG_MODE: "false"
       ELASTIC_APM_SERVER_URL: "http://localhost:8200"
       ELASTICSEARCH_URL: "http://localhost:9200"
-      KARTOFFEL_URL: "http://kartoffel-master.eastus.cloudapp.azure.com:3000"
+      KARTOFFEL_URL: "http://kartoffel-master.eastus.cloudapp.azure.com:3001"
       SPIKE_SERVICE_URL: "spike-service:8080"
       RPC_PORT: 8080
-      SPIKE_REQUIRED: "false"
+      SPIKE_REQUIRED: "true"
       GRANT_TYPE: "client_credentials"
       AUDIENCE: "kartoffel"
     depends_on:
