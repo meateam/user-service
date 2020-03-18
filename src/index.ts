@@ -1,6 +1,6 @@
 import * as apm from 'elastic-apm-node';
 import { HealthCheckResponse } from 'grpc-ts-health-check';
-import { RPC, serviceNames } from './rpc.server';
+import { startServer } from './rpc.server';
 import { apmURL, verifyServerCert, serviceName, secretToken } from './config';
 import { log, Severity } from './logger';
 
@@ -28,14 +28,13 @@ process.on('SIGINT', async () => {
 
 (async () => {
     const rpcPort = process.env.RPC_PORT || '8086';
-    const rpcServer: RPC = new RPC(rpcPort);
-    setHealthStatus(rpcServer, HealthCheckResponse.ServingStatus.SERVING);
-    rpcServer.server.start();
+    startServer(rpcPort);
+    // setHealthStatus(rpcServer, HealthCheckResponse.ServingStatus.SERVING);
     log(Severity.INFO, `RPC Server listening on port ${rpcPort}`, 'index');
 })();
 
-function setHealthStatus(server: RPC, status: number): void {
-    for (let i = 0; i < serviceNames.length; i++) {
-        server.grpcHealthCheck.setStatus(serviceNames[i], status);
-    }
-}
+// function setHealthStatus(server: RPC, status: number): void {
+//     for (let i = 0; i < serviceNames.length; i++) {
+//         server.grpcHealthCheck.setStatus(serviceNames[i], status);
+//     }
+// }

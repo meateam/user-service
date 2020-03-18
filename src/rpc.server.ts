@@ -1,89 +1,104 @@
 import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
-
 import Kartoffel from './users/users.service';
 import { IUser } from './users/users.interface';
-import { UsersService, IUsersServer } from '../protos/users/users_grpc_pb';
-import { UsersToken, GetSpikeTokenRequest, ValidateTokenResponse, ValidateTokenRequest, Client } from '../protos/users/users_pb';
+import * as grpc from 'grpc';
+import { UsersService, IUsersServer } from '../protos/users/generated/users_grpc_pb';
+import { GetByMailRequest, GetByIDRequest, User, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse } from '../protos/users/generated/users_pb';
 import { wrapper } from './logger';
 
-export const serviceNames: string[] = ['', 'users.Users'];
-export const healthCheckStatusMap = {
-    '': HealthCheckResponse.ServingStatus.UNKNOWN,
-    serviceName: HealthCheckResponse.ServingStatus.UNKNOWN,
+const StatusesEnum = HealthCheckResponse.ServingStatus;
+
+const healthCheckStatusMap = {
+    '': StatusesEnum.UNKNOWN,
+    serviceName: StatusesEnum.UNKNOWN,
 };
+const serviceNames: string[] = ['', 'users.Users'];
 
-const PROTO_PATH = `${__dirname}/../protos/users/users.proto`;
-const grpc = require('grpc');
-const protoLoader = require('@grpc/proto-loader');
-// Suggested options for similarity to existing grpc.load behavior
-
-const packageDefinition = protoLoader.loadSync(
-    PROTO_PATH,
-    {
-        keepCase: true,
-        longs: String,
-        enums: String,
-        defaults: true,
-        oneofs: true,
-    });
-
-const protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
-// The protoDescriptor object has the full package hierarchy
-const users_proto = protoDescriptor.users;
-
-export class RPC {
-    public server: any;
-    private UsersService: Kartoffel;
-    public grpcHealthCheck: GrpcHealthCheck;
-
-    public constructor(port: string) {
-        this.UsersService = new Kartoffel();
-        this.server = new grpc.Server();
-        // Register the health service
-        this.grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
-        this.server.addService(HealthService, this.grpcHealthCheck);
-
-        this.server.addService(users_proto.Users.service, {
-            GetUserByID: wrapper(this.getUserByID, 'GetUserByID'),
-            GetUserByMail: wrapper(this.getUserByMail, 'GetUserByMail'),
-            FindUserByName: wrapper(this.findUsersByPartialName, 'FindUserByName'),
-        });
-        this.server.bind(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure());
+class Server implements IUsersServer {
+    private UserService: Kartoffel;
+    constructor() {
+        this.UserService = new Kartoffel();
     }
 
-    private getUserByID = async (call: any, callback: any) => {
-        const user: IUser = await this.UsersService.getByID(call.request.id);
-        if (!user) {
-            throw new Error(`The user with Mail ${call.request.mail}, is not found`);
+    async getUserByID(call: grpc.ServerUnaryCall<GetByIDRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
+        try {
+            const userId: string = call.request.getId();
+            console.log(userId);
+            const user: IUser = await this.UserService.getByID(userId);
+            const replay: GetUserResponse = new GetUserResponse();
+            if (!user) {
+                throw new Error(`The user with Id ${userId}, is not found`);
+            }
+            const userRes = this.getUserReplay(user);
+            replay.setUser(userRes);
+            callback(null, replay);
+
+        } catch (err) {
+            callback(err, null);
         }
-        return { user: this.filterUserFields(user) };
     }
 
-    private getUserByMail = async (call: any, callback: any) => {
-        const user: IUser = await this.UsersService.getByDomainUser(call.request.mail);
-        if (!user) {
-            throw new Error(`The user with Mail ${call.request.mail}, is not found`);
+    async findUserByName(call: grpc.ServerUnaryCall<FindUserByNameRequest>, callback: grpc.sendUnaryData<FindUserByNameResponse>) {
+        try {
+            const userName: string = call.request.getName();
+            const usersRes: IUser[] = await this.UserService.searchByName(userName);
+            const users: User[] = usersRes.map(user => this.getUserReplay(user));
+            const replay: FindUserByNameResponse = new FindUserByNameResponse();
+            callback(null, replay);
+        } catch (err) {
+            callback(err, null);
         }
-        return { user: this.filterUserFields(user) };
     }
 
-    private findUsersByPartialName = async (call: any, callback: any) => {
-        const usersRes: IUser[] = await this.UsersService.searchByName(call.request.name);
-        const users = usersRes.map(user => this.filterUserFields(user));
-        return { users };
+    async getUserByMail(call: grpc.ServerUnaryCall<GetByMailRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
+        try {
+            const userMail: string = call.request.getMail();
+            const user: IUser = await this.UserService.getByDomainUser(userMail);
+            const replay: GetUserResponse = new GetUserResponse();
+            if (!user) {
+                throw new Error(`The user with Mail ${userMail}, is not found`);
+            }
+            const userRes = this.getUserReplay(user);
+            replay.setUser(userRes);
+            callback(null, replay);
+        } catch (err) {
+            callback(err, null);
+        }
     }
 
-    private filterUserFields(user: IUser): Partial<IUser> {
-        const filtereduUser = {
-            id: user.id,
-            mail: user.mail,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            fullName: user.fullName,
-            hierarchy: user.hierarchy,
-            hierarchyFlat: Kartoffel.flattenHierarchy(user.hierarchy, user.job),
-        };
+    private getUserReplay(user: IUser): User {
+        const userRes: User = new User();
+        userRes.setFirstname(user.firstName);
+        userRes.setLastname(user.lastName);
+        userRes.setId(user.id);
+        userRes.setMail(user.mail as string);
+        userRes.setFullname(user.fullName as string);
+        userRes.setHierarchyList(user.hierarchy);
+        userRes.setHierarchyflat(user.hierarchyFlat as string);
+        return userRes;
+    }
+}
 
-        return filtereduUser;
+export const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
+
+export function startServer(port: string) {
+    const server = new grpc.Server();
+    const usersServer = new Server();
+
+    // Register UsersService
+    server.addService(UsersService, usersServer);
+
+    // Register the health service
+    server.addService(HealthService, grpcHealthCheck);
+
+    // setHealthStatus(spikeServer, HealthCheckResponse.ServingStatus.SERVING);
+    server.bind(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure());
+    server.start();
+    console.log(`Server is listening on port ${port}`);
+}
+
+function setHealthStatus(server: Server, status: number): void {
+    for (let i = 0; i < serviceNames.length; i++) {
+        grpcHealthCheck.setStatus(serviceNames[i], status);
     }
 }

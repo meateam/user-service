@@ -36,7 +36,7 @@ export default class UsersService {
                 if (statusCode === 401) {
                     throw new ApplicationError(`Request to Kartoffel wasn't authorized: ${JSON.stringify(err)} `);
                 }
-                throw new KartoffelError(`Error in contacting the user service : ${JSON.stringify(err)}`);
+                throw new KartoffelError(`Error in contacting the user service : ${err}`);
             } else {
                 throw new ApplicationError(`Unknown Error while contacting the user service : ${JSON.stringify(err)}`);
             }
