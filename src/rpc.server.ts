@@ -17,6 +17,7 @@ const serviceNames: string[] = ['', 'users.Users'];
 /**
  * this class implements the interface of the user service and the users.proto methods
  */
+
 class Server implements IUsersServer {
     private UserService: Kartoffel;
     constructor() {
@@ -26,7 +27,6 @@ class Server implements IUsersServer {
     async getUserByID(call: grpc.ServerUnaryCall<GetByIDRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
         try {
             const userId: string = call.request.getId();
-            console.log(userId);
             const user: IUser = await this.UserService.getByID(userId);
             const replay: GetUserResponse = new GetUserResponse();
             if (!user) {
@@ -35,7 +35,6 @@ class Server implements IUsersServer {
             const userRes = this.getUserReplay(user);
             replay.setUser(userRes);
             callback(null, replay);
-
         } catch (err) {
             callback(err, null);
         }
@@ -91,6 +90,15 @@ export const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
 
 export function startServer(port: string) {
     const server = new grpc.Server();
+
+    // const ProxyServer = new Proxy(new Server(), {
+    //     get(target, propKey: keyof Server, receiver) {
+    //         const origMethod: any = target[propKey];
+    //         return function (...args: [grpc.ServerUnaryCall<any>, grpc.sendUnaryData<any>]) {
+    //             return wrapper(origMethod.apply(Server, args), propKey as string);
+    //         };
+    //     }
+    // });
     const usersServer = new Server();
 
     // Register UsersService
