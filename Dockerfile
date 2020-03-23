@@ -3,6 +3,9 @@ ENV NODE_ENV=development
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
+RUN npm -g config set user root
+RUN apk add protobuf
+RUN npm -g install grpc-tools
 COPY . .
 RUN npm run build
 

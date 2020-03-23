@@ -22,9 +22,7 @@ export default class Spike {
             client.getSpikeToken(req , (err: grpc.ServiceError | null, response: SpikeToken) => {
                 if (err) {
                     reject(`Error contacting spike: ${err}`);
-                    // throw new SpikeError(`Error contacting spike: ${err}`);
                 } else {
-                    console.log(response.getToken());
                     resolve(response.getToken());
                 }
             });
