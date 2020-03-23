@@ -113,6 +113,7 @@ export default class UsersService {
     private async addAuthInterceptor(): Promise<void> {
         this.axiosInstance.interceptors.request.use(async (config) => {
             const token: string = await this.SpikeService.getToken();
+            console.log(token);
             config.headers = {
                 Authorization: token,
             };
