@@ -31,6 +31,7 @@
     "@types/mongoose": "^5.2.22",
     "@types/node": "^10.17.17",
     "@types/request-promise-native": "^1.0.15",
+    "@types/shelljs": "^0.8.7",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "cross-env": "^5.2.0",
@@ -43,7 +44,6 @@
     "typescript": "^3.6.3"
   },
   "dependencies": {
-    "@types/shelljs": "^0.8.6",
     "axios": "^0.19.0",
     "elastic-apm-node": "2.11.6",
     "grpc": "^1.23.3",
