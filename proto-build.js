@@ -5,7 +5,9 @@ const fs = require('fs');
 const githubBranch = process.env.GITHUB_BRANCH || 'master';
 
 /**
- * this function is called after build to get the proto file from the spike-service
+ * this function is called before build and gets the proto file from the spike-service in github, and generate it to node and typescript.
+ * @param {*} fileName - The name of the proto file
+ * @param {*} protoPath - The path to the proto in github
  */
 async function getSpikeProto(fileName, protoPath) {
     try {

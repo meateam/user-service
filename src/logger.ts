@@ -43,7 +43,7 @@ if (debugMode) {
  * @param user - the user requesting for the service.
  * @param meta - additional optional information.
  */
-export const log = (level: Severity, message: string, name: string, traceID?: string, meta?: object) => {
+export const log = <T>(level: Severity, message: string, name: string, traceID?: string, meta?: T) => {
     logger.log(level, message, { ...meta, traceID, method: name });
 };
 
@@ -56,30 +56,33 @@ export enum Severity {
     SILLY = 'silly',
 }
 
-  /**
-   * wraps all of the service methods, creating the transaction for the apm and the logger,
-   * and sends them to the elastic server.
-   * @param func - the method called and wrapped.
-   */
-export function wrapper(func: Function, funcName: string) :
-  (call: grpc.ServerUnaryCall<Object>, callback: grpc.requestCallback<Object>) => Promise<void> {
-    return async (call: grpc.ServerUnaryCall<Object>, callback: grpc.requestCallback<Object>) => {
-        try {
-            const traceparent: grpc.MetadataValue[] = call.metadata.get('elastic-apm-traceparent');
-            const transOptions = (traceparent.length > 0) ? { childOf: traceparent[0].toString() } : {};
-            apm.startTransaction(`/user.UserService/${funcName}`, 'request', transOptions);
-            const reqInfo: object = call.request;
-            log(Severity.INFO, 'request', funcName, 'NONE', reqInfo);
 
-            const res = await func(call, callback);
-            apm.endTransaction(statusToString(grpc.status.OK));
-            log(Severity.INFO, 'response', funcName, 'NONE', { res });
-            callback(null, res);
-        } catch (err) {
-            const validatedErr : ApplicationError = validateGrpcError(err);
-            log(Severity.ERROR, funcName, err.message);
-            apm.endTransaction(validatedErr.name);
-            callback(err);
-        }
-    };
+/**
+* wraps all of the service methods, creating the transaction for the apm and the logger,
+* and sends them to the elastic server.
+ * @param func - The method called and wrapped.
+ * @param call - The call from the client with the params.
+ * @param callback - The callback the returns to the client.
+ */
+export async function wrapper<T, S>(func: Function, call: grpc.ServerUnaryCall<T>, callback: grpc.sendUnaryData<S>):
+    Promise<void> {
+    try {
+        const traceparent: grpc.MetadataValue[] = call.metadata.get('elastic-apm-traceparent');
+        const transOptions = (traceparent.length > 0) ? { childOf: traceparent[0].toString() } : {};
+        apm.startTransaction(`/user.UserService/${func.name}`, 'request', transOptions);
+        const reqInfo: T = call.request;
+        log<T>(Severity.INFO, 'request', func.name, 'NONE', reqInfo);
+
+        const res: S = await func(call);
+        apm.endTransaction(statusToString(grpc.status.OK));
+        log(Severity.INFO, 'response', func.name, 'NONE', { res });
+        callback(null, res);
+    } catch (err) {
+        const validatedErr: ApplicationError = validateGrpcError(err);
+        log(Severity.ERROR, func.name, err.message);
+        apm.endTransaction(validatedErr.name);
+        callback(err, null);
+    }
 }
+
+
