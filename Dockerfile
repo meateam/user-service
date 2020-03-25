@@ -3,7 +3,6 @@ ENV NODE_ENV=development
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
-RUN npm -g config set user root
 COPY . .
 RUN npm run build
 

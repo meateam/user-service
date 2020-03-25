@@ -26,9 +26,9 @@ class Server implements IUsersServer {
     }
 
     /**
-     * this function implements the UserService method: getUserByID, and returns the user with the given ID.
-      * @param call - The call from the client with the user ID.
-      * @param callback - The callback the returns to the client (user).
+     * getUserByID returns a user by a given ID. This function implements the UserService's method by the same name.
+      * @param call - The grpc call from the client, should contain a user ID.
+      * @param callback - The grpc callback of the function that this method implements.
      */
     async getUserByID(call: grpc.ServerUnaryCall<GetByIDRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
         const GetUserById = async (call: grpc.ServerUnaryCall<GetByIDRequest>) => {
@@ -42,13 +42,13 @@ class Server implements IUsersServer {
             replay.setUser(userRes);
             return replay;
         };
-        wrapper<GetByIDRequest, GetUserResponse>(GetUserById, call, callback);
+        await wrapper<GetByIDRequest, GetUserResponse>(GetUserById, call, callback);
     }
 
     /**
-     * this function implements the UserService method: findUserByName, and returns the user with the given name.
-      * @param call - The call from the client with the user first name.
-      * @param callback - The callback the returns to the client (users array).
+     * findUserByName returns a user by a given name. This function implements the UserService's method by the same name.
+      * @param call - The grpc call from the client, should contain a user first name.
+      * @param callback - The grpc callback of the function that this method implements.
      */
     async findUserByName(call: grpc.ServerUnaryCall<FindUserByNameRequest>, callback: grpc.sendUnaryData<FindUserByNameResponse>) {
         const FindUserByName = async (call: grpc.ServerUnaryCall<FindUserByNameRequest>) => {
@@ -59,13 +59,13 @@ class Server implements IUsersServer {
             replay.setUsersList(users);
             return replay;
         };
-        wrapper<FindUserByNameRequest, FindUserByNameResponse>(FindUserByName, call, callback);
+        await wrapper<FindUserByNameRequest, FindUserByNameResponse>(FindUserByName, call, callback);
     }
 
     /**
-     * this function implements the UserService method: getUserByMail, and returns the user with the given mail.
-      * @param call - The call from the client with the mail.
-      * @param callback - The callback the returns to the client (user).
+     * getUserByMail returns a user by a given mail. This function implements the UserService's method by the same name.
+      * @param call - The grpc call from the client, should contain a user mail.
+      * @param callback - The grpc callback of the function that this method implements.
      */
     async getUserByMail(call: grpc.ServerUnaryCall<GetByMailRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
         const GetUserByMail = async (call: grpc.ServerUnaryCall<GetByMailRequest>) => {
@@ -79,7 +79,7 @@ class Server implements IUsersServer {
             replay.setUser(userRes);
             return replay;
         };
-        wrapper<GetByMailRequest, GetUserResponse>(GetUserByMail, call, callback);
+        await wrapper<GetByMailRequest, GetUserResponse>(GetUserByMail, call, callback);
     }
 
     /**

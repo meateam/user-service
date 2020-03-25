@@ -61,11 +61,10 @@ export enum Severity {
 * wraps all of the service methods, creating the transaction for the apm and the logger,
 * and sends them to the elastic server.
  * @param func - The method called and wrapped.
- * @param call - The call from the client with the params.
- * @param callback - The callback the returns to the client.
+ * @param call - The grpc call from the client.
+ * @param callback - The grpc callback of the function func.
  */
-export async function wrapper<T, S>(func: Function, call: grpc.ServerUnaryCall<T>, callback: grpc.sendUnaryData<S>):
-    Promise<void> {
+export async function wrapper<T, S>(func: Function, call: grpc.ServerUnaryCall<T>, callback: grpc.sendUnaryData<S>) {
     try {
         const traceparent: grpc.MetadataValue[] = call.metadata.get('elastic-apm-traceparent');
         const transOptions = (traceparent.length > 0) ? { childOf: traceparent[0].toString() } : {};
