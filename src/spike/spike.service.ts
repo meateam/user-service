@@ -9,8 +9,8 @@ import { GetSpikeTokenRequest, SpikeToken } from '../../protos/spike/generated/s
  */
 export default class Spike {
     /**
-     * This function gets a token from spike service
-     * @returns the token
+     * getToken gets a JWT token for Kartoffel, from spike service.
+     * @returns a JWT token for kartoffel
      */
     public async getToken(): Promise<string> {
         const client: SpikeClient = new SpikeClient(spikeServiceURL, grpc.credentials.createInsecure());
@@ -21,7 +21,7 @@ export default class Spike {
         return new Promise((resolve, reject) => {
             client.getSpikeToken(req , (err: grpc.ServiceError | null, response: SpikeToken) => {
                 if (err) {
-                    reject(`Error contacting spike: ${err}`);
+                    reject(err);
                 } else {
                     resolve(response.getToken());
                 }

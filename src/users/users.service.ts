@@ -3,7 +3,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { IUser } from './users.interface';
 import Spike from '../spike/spike.service';
 import { kartoffelURL } from '../config';
-import { KartoffelError, UserNotFoundError, ApplicationError } from '../utils/errors';
+import { KartoffelError, UserNotFoundError, ApplicationError, SpikeError } from '../utils/errors';
 
 export default class UsersService {
     private axiosInstance: AxiosInstance;
@@ -112,12 +112,15 @@ export default class UsersService {
      */
     private async addAuthInterceptor(): Promise<void> {
         this.axiosInstance.interceptors.request.use(async (config) => {
-            const token: string = await this.SpikeService.getToken();
-            console.log(`Got the token: ${token}`);
-            config.headers = {
-                Authorization: token,
-            };
-            return config;
+            try {
+                const token: string = await this.SpikeService.getToken();
+                config.headers = {
+                    Authorization: token,
+                };
+                return config;
+            } catch (err) {
+                throw new SpikeError(`Error contacting spike: ${err}`);
+            }
         });
     }
 }

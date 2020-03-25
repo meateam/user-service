@@ -16,7 +16,7 @@ const healthCheckStatusMap = {
 const serviceNames: string[] = ['', 'users.Users'];
 
 /**
- * this class implements the interface of the user service and the users.proto methods
+ * Spike is a class that implements a grpc client of the spike-service.
  */
 
 class Server implements IUsersServer {
@@ -34,59 +34,59 @@ class Server implements IUsersServer {
         const GetUserById = async (call: grpc.ServerUnaryCall<GetByIDRequest>) => {
             const userID: string = call.request.getId();
             const user: IUser = await this.UserService.getByID(userID);
-            const replay: GetUserResponse = new GetUserResponse();
+            const reply: GetUserResponse = new GetUserResponse();
             if (!user) {
                 throw new UserNotFoundError(`The user with ID ${userID}, is not found`);
             }
-            const userRes: User = this.getUserReplay(user);
-            replay.setUser(userRes);
-            return replay;
+            const userRes: User = this.formatUser(user);
+            reply.setUser(userRes);
+            return reply;
         };
         await wrapper<GetByIDRequest, GetUserResponse>(GetUserById, call, callback);
     }
 
     /**
-     * findUserByName returns a user by a given name. This function implements the UserService's method by the same name.
-      * @param call - The grpc call from the client, should contain a user first name.
+     * findUserByName returns an array of users who match with a given partial-name. This function implements the UserService's method by the same name.
+      * @param call - The grpc call from the client, should contain a user's partial name.
       * @param callback - The grpc callback of the function that this method implements.
      */
     async findUserByName(call: grpc.ServerUnaryCall<FindUserByNameRequest>, callback: grpc.sendUnaryData<FindUserByNameResponse>) {
         const FindUserByName = async (call: grpc.ServerUnaryCall<FindUserByNameRequest>) => {
             const userName: string = call.request.getName();
             const usersRes: IUser[] = await this.UserService.searchByName(userName);
-            const users: User[] = usersRes.map(user => this.getUserReplay(user));
-            const replay: FindUserByNameResponse = new FindUserByNameResponse();
-            replay.setUsersList(users);
-            return replay;
+            const users: User[] = usersRes.map(user => this.formatUser(user));
+            const reply: FindUserByNameResponse = new FindUserByNameResponse();
+            reply.setUsersList(users);
+            return reply;
         };
         await wrapper<FindUserByNameRequest, FindUserByNameResponse>(FindUserByName, call, callback);
     }
 
     /**
-     * getUserByMail returns a user by a given mail. This function implements the UserService's method by the same name.
-      * @param call - The grpc call from the client, should contain a user mail.
+     * getUserByMail returns a user by its domain-user (mail). This function implements the UserService's method by the same name.
+      * @param call - The grpc call from the client, should contain a mail.
       * @param callback - The grpc callback of the function that this method implements.
      */
     async getUserByMail(call: grpc.ServerUnaryCall<GetByMailRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
         const GetUserByMail = async (call: grpc.ServerUnaryCall<GetByMailRequest>) => {
             const userMail: string = call.request.getMail();
             const user: IUser = await this.UserService.getByDomainUser(userMail);
-            const replay: GetUserResponse = new GetUserResponse();
+            const reply: GetUserResponse = new GetUserResponse();
             if (!user) {
                 throw new UserNotFoundError(`The user with Mail ${userMail}, is not found`);
             }
-            const userRes: User = this.getUserReplay(user);
-            replay.setUser(userRes);
-            return replay;
+            const userRes: User = this.formatUser(user);
+            reply.setUser(userRes);
+            return reply;
         };
         await wrapper<GetByMailRequest, GetUserResponse>(GetUserByMail, call, callback);
     }
 
     /**
-* this function return the user in the form of the userResponse
-* @param user- this is the user from the kartoffel
+* formatUser gets a User object and returned it formatted.
+* @param user- a user object from Kartoffel.
 */
-    private getUserReplay(user: IUser): User {
+    private formatUser(user: IUser): User {
         const userRes: User = new User();
         userRes.setFirstname(user.firstName);
         userRes.setLastname(user.lastName);
