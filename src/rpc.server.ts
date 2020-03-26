@@ -111,7 +111,6 @@ export function startServer(port: string) {
     // Register the health service
     server.addService(HealthService, grpcHealthCheck);
 
-    // setHealthStatus(spikeServer, HealthCheckResponse.ServingStatus.SERVING);
     server.bind(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure());
     server.start();
     console.log(`Server is listening on port ${port}`);

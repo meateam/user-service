@@ -77,7 +77,6 @@ export async function wrapper<T, S>(func: Function, call: grpc.ServerUnaryCall<T
         log(Severity.INFO, 'response', func.name, 'NONE', { res });
         callback(null, res);
     } catch (err) {
-        console.log("catchhhh");
         const validatedErr: ApplicationError = validateGrpcError(err);
         log(Severity.ERROR, func.name, err.message);
         apm.endTransaction(validatedErr.name);
