@@ -94,7 +94,7 @@ class Server implements IUsersServer {
         userRes.setMail(user.mail as string);
         userRes.setFullname(user.fullName as string);
         userRes.setHierarchyList(user.hierarchy);
-        userRes.setHierarchyflat(user.hierarchyFlat as string);
+        userRes.setHierarchyflat(Kartoffel.flattenHierarchy(user.hierarchy, user.job));
         return userRes;
     }
 }
