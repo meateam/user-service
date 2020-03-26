@@ -58,7 +58,7 @@ export enum Severity {
 
 
 /**
-* wraps all of the service methods, creating the transaction for the apm and the logger,
+* wrapper wraps all of the service methods, creating the transaction for the apm and the logger,
 * and sends them to the elastic server.
  * @param func - The method called and wrapped.
  * @param call - The grpc call from the client.
@@ -77,11 +77,10 @@ export async function wrapper<T, S>(func: Function, call: grpc.ServerUnaryCall<T
         log(Severity.INFO, 'response', func.name, 'NONE', { res });
         callback(null, res);
     } catch (err) {
+        console.log("catchhhh");
         const validatedErr: ApplicationError = validateGrpcError(err);
         log(Severity.ERROR, func.name, err.message);
         apm.endTransaction(validatedErr.name);
         callback(err, null);
     }
 }
-
-

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/index.js",
-    "prebuild": "node ./proto-build.js",
+    "prebuild": "./build.sh",
     "build": "tsc",
     "serve": "node ./dist/index.js",
     "test": "npm run tslint && npm run run_tests",
