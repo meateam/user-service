@@ -51,7 +51,7 @@
     "grpc_tools_node_protoc_ts": "^2.5.10",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
-    "snyk": "^1.290.1",
+    "snyk": "^1.305.0",
     "winston": "^3.2.1",
     "winston-elasticsearch": "^0.7.13"
   },
