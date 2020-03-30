@@ -85,4 +85,4 @@ typings/
 yarn.lock
 
 #generated spike
-protos/spike/generated
+proto/spike/generated
