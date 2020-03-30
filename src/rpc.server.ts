@@ -1,9 +1,9 @@
 import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
-import Kartoffel from './users/users.service';
+import { Kartoffel } from './users/users.service';
 import { IUser } from './users/users.interface';
 import * as grpc from 'grpc';
-import { UsersService, IUsersServer } from '../protos/users/generated/users_grpc_pb';
-import { GetByMailRequest, GetByIDRequest, User, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse } from '../protos/users/generated/users_pb';
+import { UsersService, IUsersServer } from '../proto/users/generated/users_grpc_pb';
+import { GetByMailRequest, GetByIDRequest, User, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse } from '../proto/users/generated/users_pb';
 import { wrapper } from './logger';
 import { UserNotFoundError } from './utils/errors';
 
@@ -20,9 +20,9 @@ const serviceNames: string[] = ['', 'users.Users'];
  */
 
 class Server implements IUsersServer {
-    private UserService: Kartoffel;
+    private karttofelClient: Kartoffel;
     constructor() {
-        this.UserService = new Kartoffel();
+        this.karttofelClient = new Kartoffel();
     }
 
     /**
@@ -31,9 +31,9 @@ class Server implements IUsersServer {
       * @param callback - The grpc callback of the function that this method implements.
      */
     async getUserByID(call: grpc.ServerUnaryCall<GetByIDRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
-        const GetUserById = async (call: grpc.ServerUnaryCall<GetByIDRequest>) => {
+        const GetUserByID = async (call: grpc.ServerUnaryCall<GetByIDRequest>) => {
             const userID: string = call.request.getId();
-            const user: IUser = await this.UserService.getByID(userID);
+            const user: IUser = await this.karttofelClient.getByID(userID);
             const reply: GetUserResponse = new GetUserResponse();
             if (!user) {
                 throw new UserNotFoundError(`The user with ID ${userID}, is not found`);
@@ -42,7 +42,7 @@ class Server implements IUsersServer {
             reply.setUser(userRes);
             return reply;
         };
-        await wrapper<GetByIDRequest, GetUserResponse>(GetUserById, call, callback);
+        await wrapper<GetByIDRequest, GetUserResponse>(GetUserByID, call, callback);
     }
 
     /**
@@ -53,7 +53,7 @@ class Server implements IUsersServer {
     async findUserByName(call: grpc.ServerUnaryCall<FindUserByNameRequest>, callback: grpc.sendUnaryData<FindUserByNameResponse>) {
         const FindUserByName = async (call: grpc.ServerUnaryCall<FindUserByNameRequest>) => {
             const userName: string = call.request.getName();
-            const usersRes: IUser[] = await this.UserService.searchByName(userName);
+            const usersRes: IUser[] = await this.karttofelClient.searchByName(userName);
             const users: User[] = usersRes.map(user => this.formatUser(user));
             const reply: FindUserByNameResponse = new FindUserByNameResponse();
             reply.setUsersList(users);
@@ -70,7 +70,7 @@ class Server implements IUsersServer {
     async getUserByMail(call: grpc.ServerUnaryCall<GetByMailRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
         const GetUserByMail = async (call: grpc.ServerUnaryCall<GetByMailRequest>) => {
             const userMail: string = call.request.getMail();
-            const user: IUser = await this.UserService.getByDomainUser(userMail);
+            const user: IUser = await this.karttofelClient.getByDomainUser(userMail);
             const reply: GetUserResponse = new GetUserResponse();
             if (!user) {
                 throw new UserNotFoundError(`The user with Mail ${userMail}, is not found`);

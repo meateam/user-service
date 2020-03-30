@@ -1,8 +1,7 @@
-import { SpikeError } from '../utils/errors';
 import { audiance, grantType, spikeServiceURL } from '../config';
 import * as grpc from 'grpc';
-import { SpikeClient } from '../../protos/spike/generated/spike/spike_grpc_pb';
-import { GetSpikeTokenRequest, SpikeToken } from '../../protos/spike/generated/spike/spike_pb';
+import { SpikeClient } from '../../proto/spike/generated/spike/spike_grpc_pb';
+import { GetSpikeTokenRequest, SpikeToken } from '../../proto/spike/generated/spike/spike_pb';
 
 /**
  * this class gets a token with scopes for the kartoffel authorization from the spike-service
