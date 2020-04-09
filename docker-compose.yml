@@ -18,7 +18,7 @@ services:
       GITHUB_BRANCH: "master"
     depends_on:
       - spike-service
-
+  
   spike-service:
     image: spike-service:latest
     ports:

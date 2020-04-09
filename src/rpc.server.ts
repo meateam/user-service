@@ -14,15 +14,43 @@ const healthCheckStatusMap = {
     serviceName: StatusesEnum.UNKNOWN,
 };
 const serviceNames: string[] = ['', 'users.Users'];
+const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
 
 /**
  * Spike is a class that implements a grpc client of the spike-service.
  */
+export class Server implements IUsersServer {
+    static karttofelClient: Kartoffel;
 
-class Server implements IUsersServer {
-    private karttofelClient: Kartoffel;
     constructor() {
-        this.karttofelClient = new Kartoffel();
+        Server.karttofelClient = new Kartoffel();
+    }
+
+    /**
+     * start function starts the grpc server
+     * @param rpcPort 
+     */
+    static start(rpcPort: string) {
+        const usersServer = new Server();
+        const grpcServer: grpc.Server = new grpc.Server();
+        const grpcHealthCheck: GrpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
+
+        // Register UsersService
+        grpcServer.addService(UsersService, usersServer);
+
+        // Register the health service
+        grpcServer.addService(HealthService, grpcHealthCheck);
+
+        grpcServer.bind(`0.0.0.0:${rpcPort}`, grpc.ServerCredentials.createInsecure());
+        grpcServer.start();
+        console.log(`Server is listening on port ${rpcPort}`);
+        this.setHealthStatus(usersServer, HealthCheckResponse.ServingStatus.SERVING);
+    }
+
+    static setHealthStatus(server: Server, status: number): void {
+        for (let i = 0; i < serviceNames.length; i++) {
+            grpcHealthCheck.setStatus(serviceNames[i], status);
+        }
     }
 
     /**
@@ -31,18 +59,19 @@ class Server implements IUsersServer {
       * @param callback - The grpc callback of the function that this method implements.
      */
     async getUserByID(call: grpc.ServerUnaryCall<GetByIDRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
-        const GetUserByID = async (call: grpc.ServerUnaryCall<GetByIDRequest>) => {
-            const userID: string = call.request.getId();
-            const user: IUser = await this.karttofelClient.getByID(userID);
-            const reply: GetUserResponse = new GetUserResponse();
-            if (!user) {
-                throw new UserNotFoundError(`The user with ID ${userID}, is not found`);
-            }
-            const userRes: User = this.formatUser(user);
-            reply.setUser(userRes);
-            return reply;
-        };
-        await wrapper<GetByIDRequest, GetUserResponse>(GetUserByID, call, callback);
+        await wrapper<GetByIDRequest, GetUserResponse>(Server.GetUserByIDHandler, call, callback);
+    }
+
+    static async GetUserByIDHandler(call: grpc.ServerUnaryCall<GetByIDRequest>) {
+        const userID: string = call.request.getId();
+        const user: IUser = await Server.karttofelClient.getByID(userID);
+        const reply: GetUserResponse = new GetUserResponse();
+        if (!user) {
+            throw new UserNotFoundError(`The user with ID ${userID}, is not found`);
+        }
+        const userRes: User = Server.formatUser(user);
+        reply.setUser(userRes);
+        return reply;
     }
 
     /**
@@ -51,15 +80,16 @@ class Server implements IUsersServer {
       * @param callback - The grpc callback of the function that this method implements.
      */
     async findUserByName(call: grpc.ServerUnaryCall<FindUserByNameRequest>, callback: grpc.sendUnaryData<FindUserByNameResponse>) {
-        const FindUserByName = async (call: grpc.ServerUnaryCall<FindUserByNameRequest>) => {
-            const userName: string = call.request.getName();
-            const usersRes: IUser[] = await this.karttofelClient.searchByName(userName);
-            const users: User[] = usersRes.map(user => this.formatUser(user));
-            const reply: FindUserByNameResponse = new FindUserByNameResponse();
-            reply.setUsersList(users);
-            return reply;
-        };
-        await wrapper<FindUserByNameRequest, FindUserByNameResponse>(FindUserByName, call, callback);
+        await wrapper<FindUserByNameRequest, FindUserByNameResponse>(Server.FindUserByNameHandler, call, callback);
+    }
+
+    static async FindUserByNameHandler(call: grpc.ServerUnaryCall<FindUserByNameRequest>) {
+        const userName: string = call.request.getName();
+        const usersRes: IUser[] = await Server.karttofelClient.searchByName(userName);
+        const users: User[] = usersRes.map(user => Server.formatUser(user));
+        const reply: FindUserByNameResponse = new FindUserByNameResponse();
+        reply.setUsersList(users);
+        return reply;
     }
 
     /**
@@ -68,25 +98,26 @@ class Server implements IUsersServer {
       * @param callback - The grpc callback of the function that this method implements.
      */
     async getUserByMail(call: grpc.ServerUnaryCall<GetByMailRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
-        const GetUserByMail = async (call: grpc.ServerUnaryCall<GetByMailRequest>) => {
-            const userMail: string = call.request.getMail();
-            const user: IUser = await this.karttofelClient.getByDomainUser(userMail);
-            const reply: GetUserResponse = new GetUserResponse();
-            if (!user) {
-                throw new UserNotFoundError(`The user with Mail ${userMail}, is not found`);
-            }
-            const userRes: User = this.formatUser(user);
-            reply.setUser(userRes);
-            return reply;
-        };
-        await wrapper<GetByMailRequest, GetUserResponse>(GetUserByMail, call, callback);
+        await wrapper<GetByMailRequest, GetUserResponse>(Server.GetUserByMailHandler, call, callback);
+    }
+
+    static async GetUserByMailHandler(call: grpc.ServerUnaryCall<GetByMailRequest>) {
+        const userMail: string = call.request.getMail();
+        const user: IUser = await Server.karttofelClient.getByDomainUser(userMail);
+        const reply: GetUserResponse = new GetUserResponse();
+        if (!user) {
+            throw new UserNotFoundError(`The user with Mail ${userMail}, is not found`);
+        }
+        const userRes: User = Server.formatUser(user);
+        reply.setUser(userRes);
+        return reply;
     }
 
     /**
 * formatUser gets a User object and returned it formatted.
 * @param user- a user object from Kartoffel.
 */
-    private formatUser(user: IUser): User {
+    static formatUser(user: IUser): User {
         const userRes: User = new User();
         userRes.setFirstname(user.firstName);
         userRes.setLastname(user.lastName);
@@ -99,26 +130,3 @@ class Server implements IUsersServer {
     }
 }
 
-export const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
-
-export function startServer(port: string) {
-    const server = new grpc.Server();
-    const usersServer = new Server();
-
-    // Register UsersService
-    server.addService(UsersService, usersServer);
-
-    // Register the health service
-    server.addService(HealthService, grpcHealthCheck);
-
-    server.bind(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure());
-    server.start();
-    console.log(`Server is listening on port ${port}`);
-    setHealthStatus(usersServer, HealthCheckResponse.ServingStatus.SERVING);
-}
-
-function setHealthStatus(server: Server, status: number): void {
-    for (let i = 0; i < serviceNames.length; i++) {
-        grpcHealthCheck.setStatus(serviceNames[i], status);
-    }
-}
