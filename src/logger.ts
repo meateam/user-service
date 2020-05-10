@@ -56,7 +56,6 @@ export enum Severity {
     SILLY = 'silly',
 }
 
-
 /**
 * wrapper wraps all of the service methods, creating the transaction for the apm and the logger,
 * and sends them to the elastic server.

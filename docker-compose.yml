@@ -15,7 +15,6 @@ services:
       SPIKE_REQUIRED: "true"
       GRANT_TYPE: "client_credentials"
       AUDIENCE: "kartoffel"
-      GITHUB_BRANCH: "master"
     depends_on:
       - spike-service
   

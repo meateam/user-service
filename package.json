@@ -4,8 +4,7 @@
   "description": "User services",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node ./dist/index.js",
-    "prebuild": "./build-spike-proto.sh",
+    "start": "node ./dist/index.js",
     "build": "tsc",
     "serve": "node ./dist/index.js",
     "test": "npm run tslint && npm run run_tests",

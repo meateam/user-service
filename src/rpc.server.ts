@@ -19,19 +19,19 @@ const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
 /**
  * Spike is a class that implements a grpc client of the spike-service.
  */
-export class Server implements IUsersServer {
+export class RPC implements IUsersServer {
     static karttofelClient: Kartoffel;
 
     constructor() {
-        Server.karttofelClient = new Kartoffel();
+        RPC.karttofelClient = new Kartoffel();
     }
 
     /**
      * start function starts the grpc server
-     * @param rpcPort 
+     * @param rpcPort
      */
     static start(rpcPort: string) {
-        const usersServer = new Server();
+        const usersServer = new RPC();
         const grpcServer: grpc.Server = new grpc.Server();
         const grpcHealthCheck: GrpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
 
@@ -47,7 +47,7 @@ export class Server implements IUsersServer {
         this.setHealthStatus(usersServer, HealthCheckResponse.ServingStatus.SERVING);
     }
 
-    static setHealthStatus(server: Server, status: number): void {
+    static setHealthStatus(server: RPC, status: number): void {
         for (let i = 0; i < serviceNames.length; i++) {
             grpcHealthCheck.setStatus(serviceNames[i], status);
         }
@@ -59,17 +59,17 @@ export class Server implements IUsersServer {
       * @param callback - The grpc callback of the function that this method implements.
      */
     async getUserByID(call: grpc.ServerUnaryCall<GetByIDRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
-        await wrapper<GetByIDRequest, GetUserResponse>(Server.GetUserByIDHandler, call, callback);
+        await wrapper<GetByIDRequest, GetUserResponse>(RPC.getUserByIDHandler, call, callback);
     }
 
-    static async GetUserByIDHandler(call: grpc.ServerUnaryCall<GetByIDRequest>) {
+    static async getUserByIDHandler(call: grpc.ServerUnaryCall<GetByIDRequest>) {
         const userID: string = call.request.getId();
-        const user: IUser = await Server.karttofelClient.getByID(userID);
+        const user: IUser = await RPC.karttofelClient.getByID(userID);
         const reply: GetUserResponse = new GetUserResponse();
         if (!user) {
             throw new UserNotFoundError(`The user with ID ${userID}, is not found`);
         }
-        const userRes: User = Server.formatUser(user);
+        const userRes: User = RPC.formatUser(user);
         reply.setUser(userRes);
         return reply;
     }
@@ -80,13 +80,13 @@ export class Server implements IUsersServer {
       * @param callback - The grpc callback of the function that this method implements.
      */
     async findUserByName(call: grpc.ServerUnaryCall<FindUserByNameRequest>, callback: grpc.sendUnaryData<FindUserByNameResponse>) {
-        await wrapper<FindUserByNameRequest, FindUserByNameResponse>(Server.FindUserByNameHandler, call, callback);
+        await wrapper<FindUserByNameRequest, FindUserByNameResponse>(RPC.findUserByNameHandler, call, callback);
     }
 
-    static async FindUserByNameHandler(call: grpc.ServerUnaryCall<FindUserByNameRequest>) {
+    static async findUserByNameHandler(call: grpc.ServerUnaryCall<FindUserByNameRequest>) {
         const userName: string = call.request.getName();
-        const usersRes: IUser[] = await Server.karttofelClient.searchByName(userName);
-        const users: User[] = usersRes.map(user => Server.formatUser(user));
+        const usersRes: IUser[] = await RPC.karttofelClient.searchByName(userName);
+        const users: User[] = usersRes.map(user => RPC.formatUser(user));
         const reply: FindUserByNameResponse = new FindUserByNameResponse();
         reply.setUsersList(users);
         return reply;
@@ -98,17 +98,17 @@ export class Server implements IUsersServer {
       * @param callback - The grpc callback of the function that this method implements.
      */
     async getUserByMail(call: grpc.ServerUnaryCall<GetByMailRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
-        await wrapper<GetByMailRequest, GetUserResponse>(Server.GetUserByMailHandler, call, callback);
+        await wrapper<GetByMailRequest, GetUserResponse>(RPC.getUserByMailHandler, call, callback);
     }
 
-    static async GetUserByMailHandler(call: grpc.ServerUnaryCall<GetByMailRequest>) {
+    static async getUserByMailHandler(call: grpc.ServerUnaryCall<GetByMailRequest>) {
         const userMail: string = call.request.getMail();
-        const user: IUser = await Server.karttofelClient.getByDomainUser(userMail);
+        const user: IUser = await RPC.karttofelClient.getByDomainUser(userMail);
         const reply: GetUserResponse = new GetUserResponse();
         if (!user) {
             throw new UserNotFoundError(`The user with Mail ${userMail}, is not found`);
         }
-        const userRes: User = Server.formatUser(user);
+        const userRes: User = RPC.formatUser(user);
         reply.setUser(userRes);
         return reply;
     }
@@ -129,4 +129,3 @@ export class Server implements IUsersServer {
         return userRes;
     }
 }
-

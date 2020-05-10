@@ -21,6 +21,9 @@ In order to compile the proto file make sure you have `protobuf` and `protoc-gen
 
 In order to compile the proto file make sure you have `grpc-tools`
 
-**Compiling proto To js+ts:**
+**Compiling proto to js+ts:**
 `npx grpc_tools_node_protoc--plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --ts_out=./proto/users/generated -I ./proto ./proto/users/users.proto`
 `npx grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./proto/users/generated --grpc_out=./proto/users/generated -I ./proto ./proto/users/users.proto`
+
+**Compiling spike proro to js+ts:**
+`./build-spike-proto.sh`

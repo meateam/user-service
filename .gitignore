@@ -83,6 +83,3 @@ typings/
 
 #yarn files
 yarn.lock
-
-#generated spike
-proto/spike/generated
