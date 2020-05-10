@@ -1,5 +1,5 @@
 import * as apm from 'elastic-apm-node';
-import { Server } from './rpc.server';
+import { RPC } from './rpc.server';
 import { apmURL, verifyServerCert, serviceName, secretToken } from './config';
 import { log, Severity } from './logger';
 
@@ -27,6 +27,6 @@ process.on('SIGINT', async () => {
 
 (async () => {
     const rpcPort = process.env.RPC_PORT || '8086';
-    Server.start(rpcPort);
+    RPC.start(rpcPort);
     log(Severity.INFO, `RPC Server listening on port ${rpcPort}`, 'index');
 })();
