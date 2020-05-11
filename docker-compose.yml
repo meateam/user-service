@@ -15,6 +15,7 @@ services:
       SPIKE_REQUIRED: "true"
       GRANT_TYPE: "client_credentials"
       AUDIENCE: "kartoffel"
+      DOMAINUSERS_QUERY: "nonExternals"
     depends_on:
       - spike-service
   
