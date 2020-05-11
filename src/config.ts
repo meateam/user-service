@@ -5,12 +5,12 @@ export const verifyServerCert: boolean = process.env.ELASTIC_APM_VERIFY_SERVER_C
 export const apmURL: string = process.env.ELASTIC_APM_SERVER_URL || 'http://localhost:8200';
 export const userQuotaLimit: string = process.env.USER_QUOTA_LIMIT || '10';
 
+export const audiance :string = process.env.AUDIENCE || 'kartoffel';
+export const grantType :string = process.env.GRANT_TYPE || 'client_credentials';
+export const spikeServiceURL: string = process.env.SPIKE_SERVICE_URL || 'spike-service:8080';
+export const kartoffelURL: string = `${process.env.KARTOFFEL_URL || 'http://localhost:3001'}/api/persons`;
+
 export const debugMode: boolean = process.env.DEBUG_MODE === 'true';
-
-export const mongoConnectionString : string =
-  process.env.USR_MONGO_HOST || 'mongodb://localhost:27017/devDB';
-
-export const tokenID = process.env.TOKEN_ID || 'Kartoffel';
 
 const esHost: string = process.env.ELASTICSEARCH_URL || 'http://localhost:9200';
 const esUser: string = process.env.ELASTICSEARCH_USER || '';
@@ -23,6 +23,3 @@ export const confLogger = {
     },
     indexPrefix: process.env.LOG_INDEX || 'kdrive',
 };
-
-export const redisPort: number = parseInt(`${process.env.REDIS_URL}`, 10) || 6379;
-export const redisHost: string = process.env.REDIS_HOST || '127.0.0.1';

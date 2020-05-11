@@ -2,34 +2,30 @@ import * as request from 'request-promise-native';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { IUser } from './users.interface';
 import Spike from '../spike/spike.service';
-import { RedisClient } from 'redis';
-import { KartoffelError, UserNotFoundError, ApplicationError } from '../utils/errors';
+import { kartoffelURL } from '../config';
+import { KartoffelError, UserNotFoundError, ApplicationError, SpikeError } from '../utils/errors';
 
-const baseUrl = `${process.env.KARTOFFEL_URL || 'http://localhost:4000'}/api/persons`;
+export class Kartoffel {
+    private axiosInstance: AxiosInstance;
+    private SpikeService: Spike;
 
-export default class UsersService {
+    constructor() {
+        this.SpikeService = new Spike();
+        this.axiosInstance = axios.create();
+        // If authentication is needed, adds an authorization header to the axios instance.
+        if (process.env.SPIKE_REQUIRED === 'true') {
+            this.addAuthInterceptor();
+        }
+    }
+
     /**
      * Gets a user by its ID from the provider
      * @param id - the user ID
      */
-    private SpikeService: Spike;
-    private redis: RedisClient;
-    private axiosInstance: AxiosInstance;
-
-    constructor(redis: RedisClient) {
-        this.redis = redis;
-        this.SpikeService = new Spike(redis);
-        this.axiosInstance = axios.create();
-        // If authentication is needed, adds an authorization header to the axios instance.
-        if (process.env.SPIKE_REQUIRED === 'true') {
-            this.addAuthInterceptor(); // async function. but cannot await since its a constructor.
-        }
-    }
-
     async getByID(id: string): Promise<IUser> {
         let res: AxiosResponse;
         try {
-            res = await this.axiosInstance.get(`${baseUrl}/${id}`);
+            res = await this.axiosInstance.get(`${kartoffelURL}/${id}`);
         } catch (err) {
             if (err.response && err.response.status) {
                 const statusCode: number = err.response.status;
@@ -38,20 +34,20 @@ export default class UsersService {
                 }
                 // Unauthorized
                 if (statusCode === 401) {
-                    throw new ApplicationError(`Request to Kartoffel wasn't authorized: ${err} `);
+                    throw new ApplicationError(`Request to Kartoffel wasn't authorized: ${JSON.stringify(err)} `);
                 }
-                throw new KartoffelError(`Error in contacting the user service : ${err.response.data}`);
+                throw new KartoffelError(`Error in contacting the user service : ${JSON.stringify(err)}`);
             } else {
-                throw new ApplicationError(`Unknown Error while contacting the user service : ${err}`);
+                throw new ApplicationError(`Unknown Error while contacting the user service : ${JSON.stringify(err)}`);
             }
         }
         // Status Code = 2XX / 3XX
-        const user:IUser = res.data;
+        const user: IUser = res.data;
         return user;
     }
 
     private static async getAll(): Promise<IUser[]> {
-        const res = await request(`${baseUrl}`);
+        const res = await request(`${kartoffelURL}`);
         return JSON.parse(res);
     }
 
@@ -62,7 +58,7 @@ export default class UsersService {
     public async getByDomainUser(domainUser: string): Promise<IUser> {
         let res: AxiosResponse;
         try {
-            res = await this.axiosInstance.get(`${baseUrl}/domainUser/${domainUser}`);
+            res = await this.axiosInstance.get(`${kartoffelURL}/domainUser/${domainUser}`);
         } catch (err) {
             if (err.response && err.response.status) {
                 const statusCode: number = err.response.status;
@@ -71,15 +67,15 @@ export default class UsersService {
                 }
                 // Unauthorized
                 if (statusCode === 401) {
-                    throw new ApplicationError(`Request to Kartoffel wasn't authorized: ${err} `);
+                    throw new ApplicationError(`Request to Kartoffel wasn't authorized: ${JSON.stringify(err)} `);
                 }
-                throw new KartoffelError(`Error in contacting the user service : ${err.response.data}`);
+                throw new KartoffelError(`Error in contacting the user service : ${JSON.stringify(err)}`);
             } else {
-                throw new ApplicationError(`Unknown Error while contacting the user service : ${err}`);
+                throw new ApplicationError(`Unknown Error while contacting the user service : ${JSON.stringify(err)}`);
             }
         }
         // Status Code = 2XX / 3XX
-        const user:IUser = res.data;
+        const user: IUser = res.data;
         return user;
     }
 
@@ -90,11 +86,11 @@ export default class UsersService {
     public async searchByName(partialName: string): Promise<IUser[]> {
         let res: AxiosResponse;
         try {
-            res = await this.axiosInstance.get(`${baseUrl}/search`, { params: { fullname: partialName } });
+            res = await this.axiosInstance.get(`${kartoffelURL}/search`, { params: { fullname: partialName } });
         } catch (err) {
             throw new ApplicationError(`Unknown Error: ${err} `);
         }
-        const users:IUser[] = res.data;
+        const users: IUser[] = res.data;
         return users;
     }
 
@@ -102,21 +98,29 @@ export default class UsersService {
      * This function gets an hierarchy in an array form and reduce it to a long string format
      * @param hierarchy - The hierarchy array.
      */
-    public static flattenHierarchy(hierarchy: string[]): string {
-        return hierarchy.reduce((x, y) => `${x}/${y}`);
+    public static flattenHierarchy(hierarchy: string[], job: string): string {
+        let flat = hierarchy.join('/');
+        if (job) {
+            flat += `/${job}`;
+        }
+        return flat;
     }
 
     /**
      * Adds an Authorization header with an updated authentication token
      * from spike to the axios instance to kartoffel.
      */
-    private async addAuthInterceptor() {
+    private addAuthInterceptor() {
         this.axiosInstance.interceptors.request.use(async (config) => {
-            const token: string = await this.SpikeService.getToken();
-            config.headers = {
-                Authorization: token,
-            };
-            return config;
+            try {
+                const token: string = await this.SpikeService.getToken();
+                config.headers = {
+                    Authorization: token,
+                };
+                return config;
+            } catch (err) {
+                throw new SpikeError(`Error contacting spike: ${err}`);
+            }
         });
     }
 }
