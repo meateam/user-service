@@ -9,6 +9,7 @@ export const spikeReqBody: object = {
     audience: process.env.AUDIENCE || 'kartoffel',
 };
 export const spikeServiceURL: string = process.env.SPIKE_SERVICE_URL || 'spike-service:8080';
+export const kartoffelQuery: string = `/search?domainusers.datasource=${process.env.DOMAINUSERS_QUERY}`;
 export const kartoffelURL: string = `${process.env.KARTOFFEL_URL || 'http://localhost:3001'}/api/persons`;
 
 export const debugMode: boolean = process.env.DEBUG_MODE === 'true';
