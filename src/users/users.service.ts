@@ -2,7 +2,7 @@ import * as request from 'request-promise-native';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { IUser } from './users.interface';
 import Spike from '../spike/spike.service';
-import { kartoffelURL } from '../config';
+import { kartoffelURL, kartoffelQuery } from '../config';
 import { KartoffelError, UserNotFoundError, ApplicationError, SpikeError } from '../utils/errors';
 
 export class Kartoffel {
@@ -47,7 +47,7 @@ export class Kartoffel {
     }
 
     private static async getAll(): Promise<IUser[]> {
-        const res = await request(`${kartoffelURL}`);
+        const res = await request(`${kartoffelURL}${kartoffelQuery}`);
         return JSON.parse(res);
     }
 

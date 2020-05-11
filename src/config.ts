@@ -8,7 +8,8 @@ export const userQuotaLimit: string = process.env.USER_QUOTA_LIMIT || '10';
 export const audiance: string = process.env.AUDIENCE || 'kartoffel';
 export const grantType: string = process.env.GRANT_TYPE || 'client_credentials';
 export const spikeServiceURL: string = process.env.SPIKE_SERVICE_URL || 'spike-service:8080';
-export const kartoffelURL: string = `${process.env.KARTOFFEL_URL || 'http://localhost:3001'}/api/persons/search?domainusers.datasource=${process.env.DOMAINUSERS_QUERY}`;
+export const kartoffelQuery: string = `/search?domainusers.datasource=${process.env.DOMAINUSERS_QUERY}`;
+export const kartoffelURL: string = `${process.env.KARTOFFEL_URL || 'http://localhost:3001'}/api/persons`;
 
 export const debugMode: boolean = process.env.DEBUG_MODE === 'true';
 
