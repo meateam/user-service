@@ -6,7 +6,7 @@ export const apmURL: string = process.env.ELASTIC_APM_SERVER_URL || 'http://loca
 export const userQuotaLimit: string = process.env.USER_QUOTA_LIMIT || '10';
 export const spikeReqBody: object = {
     grant_type: process.env.GRANT_TYPE || 'client_credentials',
-    audience: process.env.AUDIENCE || 'kartoffel',
+    audience: process.env.USER_KARTOFFEL_AUDIENCE || 'kartoffel',
 };
 export const spikeServiceURL: string = process.env.SPIKE_SERVICE_URL || 'spike-service:8080';
 export const kartoffelQuery: string = `/search?domainusers.datasource=${process.env.DOMAINUSERS_QUERY || 'nonExternals'}`;
