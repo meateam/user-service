@@ -72,6 +72,7 @@ export class RPC {
     }
 
     private filterUserFields(user: IUser): Partial<IUser> {
+        if (!user.lastName) { user.lastName = ''; }
         const filtereduUser = {
             id: user.id,
             mail: user.mail,
