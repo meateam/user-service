@@ -72,12 +72,11 @@ export class RPC {
     }
 
     private filterUserFields(user: IUser): Partial<IUser> {
-        if (!user.lastName) { user.lastName = ''; }
         const filtereduUser = {
             id: user.id,
             mail: user.mail,
             firstName: user.firstName,
-            lastName: user.lastName,
+            lastName: user.lastName || ' ',
             fullName: user.fullName,
             hierarchy: user.hierarchy,
             hierarchyFlat: Kartoffel.flattenHierarchy(user.hierarchy, user.job),
