@@ -18,4 +18,4 @@ COPY --from=0 /usr/src/app/dist ./dist
 COPY --from=0 /usr/src/app/proto ./proto
 RUN npm install
 EXPOSE 8080
-CMD ["npm", "start"]
+CMD ["node", "/app/dist/index.js"]
