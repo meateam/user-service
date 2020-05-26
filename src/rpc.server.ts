@@ -120,7 +120,7 @@ export class RPC implements IUsersServer {
     static formatUser(user: IUser): User {
         const userRes: User = new User();
         userRes.setFirstname(user.firstName);
-        userRes.setLastname(user.lastName);
+        userRes.setLastname(user.lastName || ' ');
         userRes.setId(user.id);
         userRes.setMail(user.mail as string);
         userRes.setFullname(user.fullName as string);

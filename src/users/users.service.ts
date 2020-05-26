@@ -2,8 +2,8 @@ import * as request from 'request-promise-native';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { IUser } from './users.interface';
 import Spike from '../spike/spike.service';
-import { kartoffelURL } from '../config';
 import { KartoffelError, UserNotFoundError, ApplicationError, SpikeError } from '../utils/errors';
+import { kartoffelURL, kartoffelQuery } from '../config';
 
 export class Kartoffel {
     private axiosInstance: AxiosInstance;
@@ -47,7 +47,7 @@ export class Kartoffel {
     }
 
     private static async getAll(): Promise<IUser[]> {
-        const res = await request(`${kartoffelURL}`);
+        const res = await request(`${kartoffelURL}${kartoffelQuery}`);
         return JSON.parse(res);
     }
 
@@ -86,7 +86,7 @@ export class Kartoffel {
     public async searchByName(partialName: string): Promise<IUser[]> {
         let res: AxiosResponse;
         try {
-            res = await this.axiosInstance.get(`${kartoffelURL}/search`, { params: { fullname: partialName } });
+            res = await this.axiosInstance.get(`${kartoffelURL}${kartoffelQuery}`, { params: { fullname: partialName } });
         } catch (err) {
             throw new ApplicationError(`Unknown Error: ${err} `);
         }
