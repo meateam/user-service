@@ -4,10 +4,10 @@ export const serviceName: string = process.env.US_APM_SERVICE_NAME || 'user-serv
 export const verifyServerCert: boolean = process.env.ELASTIC_APM_VERIFY_SERVER_CERT === 'true';
 export const apmURL: string = process.env.ELASTIC_APM_SERVER_URL || 'http://localhost:8200';
 export const userQuotaLimit: string = process.env.USER_QUOTA_LIMIT || '10';
-export const spikeReqBody: object = {
-    grant_type: process.env.GRANT_TYPE || 'client_credentials',
-    audience: process.env.USER_KARTOFFEL_AUDIENCE || 'kartoffel',
-};
+
+export const audiance :string = process.env.USER_KARTOFFEL_AUDIENCE || 'kartoffel';
+export const grantType :string = process.env.GRANT_TYPE || 'client_credentials';
+
 export const spikeServiceURL: string = process.env.SPIKE_SERVICE_URL || 'spike-service:8080';
 export const kartoffelQuery: string = `/search?domainusers.datasource=${process.env.DOMAINUSERS_QUERY || 'nonExternals'}`;
 export const kartoffelURL: string = `${process.env.KARTOFFEL_URL || 'http://localhost:3001'}/api/persons`;

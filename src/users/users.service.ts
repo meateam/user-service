@@ -2,10 +2,10 @@ import * as request from 'request-promise-native';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { IUser } from './users.interface';
 import Spike from '../spike/spike.service';
+import { KartoffelError, UserNotFoundError, ApplicationError, SpikeError } from '../utils/errors';
 import { kartoffelURL, kartoffelQuery } from '../config';
-import { KartoffelError, UserNotFoundError, ApplicationError } from '../utils/errors';
 
-export default class UsersService {
+export class Kartoffel {
     private axiosInstance: AxiosInstance;
     private SpikeService: Spike;
 
@@ -14,7 +14,7 @@ export default class UsersService {
         this.axiosInstance = axios.create();
         // If authentication is needed, adds an authorization header to the axios instance.
         if (process.env.SPIKE_REQUIRED === 'true') {
-            this.addAuthInterceptor(); // async function. but cannot await since its a constructor.
+            this.addAuthInterceptor();
         }
     }
 
@@ -110,13 +110,17 @@ export default class UsersService {
      * Adds an Authorization header with an updated authentication token
      * from spike to the axios instance to kartoffel.
      */
-    private async addAuthInterceptor(): Promise<void> {
+    private addAuthInterceptor() {
         this.axiosInstance.interceptors.request.use(async (config) => {
-            const token: string = await this.SpikeService.getToken();
-            config.headers = {
-                Authorization: token,
-            };
-            return config;
+            try {
+                const token: string = await this.SpikeService.getToken();
+                config.headers = {
+                    Authorization: token,
+                };
+                return config;
+            } catch (err) {
+                throw new SpikeError(`Error contacting spike: ${err}`);
+            }
         });
     }
 }
