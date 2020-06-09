@@ -1,4 +1,3 @@
-import { RedisClient } from 'redis';
 import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
 
 import Kartoffel from './users/users.service';
@@ -7,8 +6,8 @@ import { wrapper } from './logger';
 
 export const serviceNames: string[] = ['', 'users.Users'];
 export const healthCheckStatusMap = {
-  '': HealthCheckResponse.ServingStatus.UNKNOWN,
-  serviceName: HealthCheckResponse.ServingStatus.UNKNOWN
+    '': HealthCheckResponse.ServingStatus.UNKNOWN,
+    serviceName: HealthCheckResponse.ServingStatus.UNKNOWN,
 };
 
 const PROTO_PATH = `${__dirname}/../proto/users.proto`;
@@ -18,7 +17,8 @@ const protoLoader = require('@grpc/proto-loader');
 
 const packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
-    {keepCase: true,
+    {
+        keepCase: true,
         longs: String,
         enums: String,
         defaults: true,
@@ -32,12 +32,10 @@ const users_proto = protoDescriptor.users;
 export class RPC {
     public server: any;
     private UsersService: Kartoffel;
-    private redis: RedisClient;
     public grpcHealthCheck: GrpcHealthCheck;
 
-    public constructor(port: string, redisClient: RedisClient) {
-        this.redis = redisClient;
-        this.UsersService = new Kartoffel(this.redis);
+    public constructor(port: string) {
+        this.UsersService = new Kartoffel();
         this.server = new grpc.Server();
         // Register the health service
         this.grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
@@ -52,7 +50,7 @@ export class RPC {
     }
 
     private getUserByID = async (call: any, callback: any) => {
-        const user:IUser = await this.UsersService.getByID(call.request.id);
+        const user: IUser = await this.UsersService.getByID(call.request.id);
         if (!user) {
             throw new Error(`The user with Mail ${call.request.mail}, is not found`);
         }
@@ -60,7 +58,7 @@ export class RPC {
     }
 
     private getUserByMail = async (call: any, callback: any) => {
-        const user:IUser = await this.UsersService.getByDomainUser(call.request.mail);
+        const user: IUser = await this.UsersService.getByDomainUser(call.request.mail);
         if (!user) {
             throw new Error(`The user with Mail ${call.request.mail}, is not found`);
         }
@@ -68,7 +66,7 @@ export class RPC {
     }
 
     private findUsersByPartialName = async (call: any, callback: any) => {
-        const usersRes:IUser[] = await this.UsersService.searchByName(call.request.name);
+        const usersRes: IUser[] = await this.UsersService.searchByName(call.request.name);
         const users = usersRes.map(user => this.filterUserFields(user));
         return { users };
     }
@@ -78,10 +76,10 @@ export class RPC {
             id: user.id,
             mail: user.mail,
             firstName: user.firstName,
-            lastName: user.lastName,
+            lastName: user.lastName || ' ',
             fullName: user.fullName,
             hierarchy: user.hierarchy,
-            hierarchyFlat: Kartoffel.flattenHierarchy(user.hierarchy),
+            hierarchyFlat: Kartoffel.flattenHierarchy(user.hierarchy, user.job),
         };
 
         return filtereduUser;
