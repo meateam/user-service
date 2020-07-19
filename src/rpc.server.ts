@@ -2,6 +2,8 @@ import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-hea
 
 import Kartoffel from './users/users.service';
 import { IUser } from './users/users.interface';
+import { PhonebookService } from "./phonebook/phonebook.service";
+import { IApproverInfo, IFormatedApproverInfo } from './phonebook/approvers.interface';
 import { wrapper } from './logger';
 
 export const serviceNames: string[] = ['', 'users.Users'];
@@ -32,10 +34,12 @@ const users_proto = protoDescriptor.users;
 export class RPC {
     public server: any;
     private UsersService: Kartoffel;
+    private PhonebookService: PhonebookService;
     public grpcHealthCheck: GrpcHealthCheck;
 
     public constructor(port: string) {
         this.UsersService = new Kartoffel();
+        this.PhonebookService = new PhonebookService();
         this.server = new grpc.Server();
         // Register the health service
         this.grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
@@ -65,6 +69,14 @@ export class RPC {
         return { user: this.filterUserFields(user) };
     }
 
+    private getApproverInfo = async (call: any, callback: any) => {
+        const info: IApproverInfo = await this.PhonebookService.getApproverInfo(call.request.id);
+        if (!info) {
+            throw new Error(`The user is not found`);
+        }
+        return info;
+    }
+
     private findUsersByPartialName = async (call: any, callback: any) => {
         const usersRes: IUser[] = await this.UsersService.searchByName(call.request.name);
         const users = usersRes.map(user => this.filterUserFields(user));
@@ -83,5 +95,18 @@ export class RPC {
         };
 
         return filtereduUser;
+    }
+
+    private filterApproverInfoFields(info: IApproverInfo): IFormatedApproverInfo {
+        const unit = {
+            name: info.unit.name,
+            approvers: info.unit.approvers
+        }
+
+        const filterdInfo: IFormatedApproverInfo = {
+            canApprove: info.isAdmin || info.canApprove,
+            unit,
+        }
+        return filterdInfo;
     }
 }

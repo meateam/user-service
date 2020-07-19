@@ -15,6 +15,7 @@ services:
       SPIKE_REQUIRED: "true"
       GRANT_TYPE: "client_credentials"
       AUDIENCE: "kartoffel"
+      PHONE_BOOK_URL: "http://94.245.91.5"
     depends_on:
       - spike-service
 

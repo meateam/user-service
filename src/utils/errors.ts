@@ -54,3 +54,10 @@ export class KartoffelError extends ApplicationError {
         super(message || 'Error contacting kartoffel', grpc.status.INTERNAL);
     }
 }
+
+export class PhonebookError extends ApplicationError {
+    constructor(message?: string) {
+        super(message || 'Error contacting phonebook', grpc.status.INTERNAL);
+    }
+}
+
