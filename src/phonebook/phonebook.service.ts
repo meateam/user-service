@@ -3,7 +3,7 @@ import { IApproverInfo } from "./approvers.interface";
 import { phonebookeUrl } from '../config';
 import { PhonebookError, UserNotFoundError, ApplicationError } from '../utils/errors';
 
-export class PhonebookService {
+export class Phonebook {
     private axiosInstance: AxiosInstance;
 
     constructor() {

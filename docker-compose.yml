@@ -16,6 +16,7 @@ services:
       GRANT_TYPE: "client_credentials"
       AUDIENCE: "kartoffel"
       PHONE_BOOK_URL: "http://phonebook:8200"
+      DOMAINUSERS_QUERY: "nonExternals"
     depends_on:
       - spike-service
 
@@ -24,7 +25,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      AUDIENCE: "MyAudience"
+      AUDIENCE: "kartoffel"
       GRANT_TYPE: "client_credentials"
       SPIKE_CLIENT_ID: "EPBpjCiczupCXZgBEq3ARZCinUt4LSXtOsVrI1Ub"
       SPIKE_CLIENT_SECRET: "u5qxEK0sy17ReZ7t8aVeN1gCcdI9hRiM78i9J_9Z6jA2YWcvbgczcchKqZ4WnXOsdT6jxmuVCLC3~RXuVcE5EsOG4JJi~B8AJQSB"
@@ -42,17 +43,17 @@ services:
 
   phonebook:
     image: registry.gitlab.com/yesodot/shared-projects/dropbox/phonebook-api
+    build: .
     environment:
       NODE_ENV: production
       MONGODB_URL: mongodb://mongo
       MONGODB_NAME: people
-      TERMINAL_URL: http://terminal-mock-api:8080
-      PORT: 8200
+      TERMINAL_URL: http://terminal-mock-api
     depends_on:
       - terminal-mock-api
       - mongo
     ports:
-      - 8081:8200
+      - 8200:8200
 
   terminal-mock-api:
     image: registry.gitlab.com/yesodot/shared-projects/dropbox/terminal-mock-api

@@ -12,11 +12,3 @@ export interface IApproverInfo {
         name: string;
     }
 }
-
-export interface IFormatedApproverInfo {
-    canApprove: boolean,
-    unit: {
-        approvers: string[],
-        name: string,
-    }
-}

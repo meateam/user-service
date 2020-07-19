@@ -44,11 +44,11 @@ message GetApproverInfoRequest {
 }
 
 message GetApproverInfoResponse {
-    string canApprove = 1;
-    Unit unit = 2;
+    ApproverInfo info = 1;
 }
 
-message Unit {
-    string name = 1;
-    repeated string approvers = 2;
+message ApproverInfo {
+    bool canApprove = 1;
+    string unit = 2;
+    repeated string approvers = 3;
 }
