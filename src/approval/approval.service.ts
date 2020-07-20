@@ -1,14 +1,9 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import Axios, { AxiosResponse } from 'axios';
 import { IApproverInfo } from "./approvers.interface";
-import { phonebookeUrl } from '../config';
+import { approvalUrl } from '../config';
 import { PhonebookError, UserNotFoundError, ApplicationError } from '../utils/errors';
 
-export class Phonebook {
-    private axiosInstance: AxiosInstance;
-
-    constructor() {
-        this.axiosInstance = axios.create();
-    }
+export class Approval {
 
     /**
      * Gets a user approver information from the phonebook 
@@ -16,7 +11,7 @@ export class Phonebook {
      */
     async getApproverInfo(id: string): Promise<IApproverInfo> {
         try {
-            const res: AxiosResponse = await this.axiosInstance.get(`${phonebookeUrl}/api/v1/user/${id}/approverInfo`);
+            const res: AxiosResponse = await Axios.get(`${approvalUrl}/user/${id}/approverInfo`);
             const info: IApproverInfo = res.data;
 
             return info;
@@ -32,7 +27,7 @@ export class Phonebook {
                 }
                 throw new PhonebookError(`Error in contacting the user service : ${JSON.stringify(err)}`);
             } else {
-                throw new ApplicationError(`Unknown Error while contacting the user service : ${JSON.stringify(err)}`);
+                throw new ApplicationError(`Unknown Error while contacting the user service : ${err}`);
             }
         }
     }

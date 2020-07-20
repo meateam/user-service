@@ -1,8 +1,8 @@
 import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
 import { Kartoffel } from './users/users.service';
 import { IUser } from './users/users.interface';
-import { Phonebook } from "./phonebook/phonebook.service";
-import { IApproverInfo } from './phonebook/approvers.interface';
+import { Approval } from "./approval/approval.service";
+import { IApproverInfo } from './approval/approvers.interface';
 import * as grpc from 'grpc';
 import { UsersService, IUsersServer } from '../proto/users/generated/users/users_grpc_pb';
 import { GetByMailRequest, GetByIDRequest, User, ApproverInfo, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse, GetApproverInfoResponse, GetApproverInfoRequest } from '../proto/users/generated/users/users_pb';
@@ -23,11 +23,11 @@ const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
  */
 export class RPC implements IUsersServer {
     static karttofelClient: Kartoffel;
-    static phonebookClient: Phonebook;
+    static approvalClient: Approval;
 
     constructor() {
         RPC.karttofelClient = new Kartoffel();
-        RPC.phonebookClient = new Phonebook();
+        RPC.approvalClient = new Approval();
     }
 
     /**
@@ -64,7 +64,7 @@ export class RPC implements IUsersServer {
 
     static async getApproverInfoHandler(call: grpc.ServerUnaryCall<GetApproverInfoRequest>) {
         const userID: string = call.request.getId();
-        const info: IApproverInfo = await RPC.phonebookClient.getApproverInfo(userID);
+        const info: IApproverInfo = await RPC.approvalClient.getApproverInfo(userID);
         const reply: GetApproverInfoResponse = new GetApproverInfoResponse();
         if (!info) {
             throw new UserNotFoundError(`The user with ID ${info}, is not found`);
