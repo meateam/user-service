@@ -42,7 +42,6 @@ export class RPC implements IUsersServer {
         // Register UsersService
         grpcServer.addService(UsersService, usersServer);
 
-
         // Register the health service
         grpcServer.addService(HealthService, grpcHealthCheck);
 
@@ -66,9 +65,6 @@ export class RPC implements IUsersServer {
         const userID: string = call.request.getId();
         const info: IApproverInfo = await RPC.approvalClient.getApproverInfo(userID);
         const reply: GetApproverInfoResponse = new GetApproverInfoResponse();
-        if (!info) {
-            throw new UserNotFoundError(`The user with ID ${info}, is not found`);
-        }
         const formattedInfo: ApproverInfo = RPC.formatApproverInfo(info);
         reply.setInfo(formattedInfo);
         return reply;
@@ -152,7 +148,7 @@ export class RPC implements IUsersServer {
 
     /**
      * formatApproverInfo gets the Info object and returned it formatted.
-     * @param info is the user approver info from the phonebook
+     * @param info is the user approver info from the approval service
      */
     static formatApproverInfo(info: IApproverInfo): ApproverInfo {
         const approverInfoRes: ApproverInfo = new ApproverInfo();

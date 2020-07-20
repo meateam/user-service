@@ -1,12 +1,12 @@
 import Axios, { AxiosResponse } from 'axios';
 import { IApproverInfo } from "./approvers.interface";
 import { approvalUrl } from '../config';
-import { PhonebookError, UserNotFoundError, ApplicationError } from '../utils/errors';
+import { ApprovalError, UserNotFoundError, ApplicationError } from '../utils/errors';
 
 export class Approval {
 
     /**
-     * Gets a user approver information from the phonebook 
+     * Gets a user approver information from the approval service 
      * @param id - the user ID
      */
     async getApproverInfo(id: string): Promise<IApproverInfo> {
@@ -17,17 +17,13 @@ export class Approval {
             return info;
         } catch (err) {
             if (err.response && err.response.status) {
-                const statusCode: number = err.response.status;
-                if (statusCode === 404) {
+                const status: number = err.response.status;
+                if (status === 404) {
                     throw new UserNotFoundError(`The user with id ${id} is not found`);
                 }
-                // Unauthorized
-                if (statusCode === 401) {
-                    throw new ApplicationError(`Request to phonebook wasn't authorized: ${JSON.stringify(err)} `);
-                }
-                throw new PhonebookError(`Error in contacting the user service : ${JSON.stringify(err)}`);
+                throw new ApprovalError(`Error in contacting the approval service : ${JSON.stringify(err)}`);
             } else {
-                throw new ApplicationError(`Unknown Error while contacting the user service : ${err}`);
+                throw new ApplicationError(`Unknown Error while contacting the approval service : ${err}`);
             }
         }
     }

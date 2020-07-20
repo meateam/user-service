@@ -49,9 +49,9 @@ export class KartoffelError extends ApplicationError {
     }
 }
 
-export class PhonebookError extends ApplicationError {
+export class ApprovalError extends ApplicationError {
     constructor(message?: string) {
-        super(message || 'Error contacting phonebook', grpc.status.INTERNAL);
+        super(message || 'Error contacting approval service', grpc.status.INTERNAL);
     }
 }
 

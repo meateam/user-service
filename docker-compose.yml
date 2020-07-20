@@ -9,17 +9,16 @@ services:
       DEBUG_MODE: "false"
       ELASTIC_APM_SERVER_URL: "http://localhost:8200"
       ELASTICSEARCH_URL: "http://localhost:9200"
-      KARTOFFEL_URL: "http://kartoffel-master.eastus.cloudapp.azure.com:3000"
+      KARTOFFEL_URL: "http://kartoffel-master.eastus.cloudapp.azure.com:3001"
       SPIKE_SERVICE_URL: "spike-service:8080"
       RPC_PORT: 8080
-      SPIKE_REQUIRED: "false"
+      SPIKE_REQUIRED: "true"
       GRANT_TYPE: "client_credentials"
       AUDIENCE: "kartoffel"
       US_APPROVAL_URL: "http://23.102.32.203/api/v1"
       DOMAINUSERS_QUERY: "nonExternals"
     depends_on:
       - spike-service
-      - phonebook
   spike-service:
     image: spike-service:latest
     ports:
@@ -40,23 +39,3 @@ services:
     image: "redis:alpine"
     ports:
       - "6379:6379"
-  terminal-mock-api:
-    image: registry.gitlab.com/yesodot/shared-projects/dropbox/terminal-mock-api
-    environment:
-      NODE_ENV: production
-      PORT: 80
-  phonebook:
-    image: registry.gitlab.com/yesodot/shared-projects/dropbox/phonebook-api
-    environment:
-      NODE_ENV: production
-      MONGODB_URL: mongodb://mongo
-      MONGODB_NAME: people
-      TERMINAL_URL: http://terminal-mock-api
-    depends_on:
-      - terminal-mock-api
-      - mongo
-    ports:
-      - 8200:8200
-  mongo:
-    image: mongo:latest
-
