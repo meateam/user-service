@@ -15,10 +15,10 @@ services:
       SPIKE_REQUIRED: "true"
       GRANT_TYPE: "client_credentials"
       AUDIENCE: "kartoffel"
+      US_APPROVAL_URL: "http://23.102.32.203/api/v1"
       DOMAINUSERS_QUERY: "nonExternals"
     depends_on:
       - spike-service
-  
   spike-service:
     image: spike-service:latest
     ports:

@@ -1,5 +1,5 @@
 // package: users
-// file: users.proto
+// file: users/users.proto
 
 /* tslint:disable */
 /* eslint-disable */
@@ -160,5 +160,81 @@ export class FindUserByNameResponse extends jspb.Message {
 export namespace FindUserByNameResponse {
     export type AsObject = {
         usersList: Array<User.AsObject>,
+    }
+}
+
+export class GetApproverInfoRequest extends jspb.Message { 
+    getId(): string;
+    setId(value: string): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): GetApproverInfoRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: GetApproverInfoRequest): GetApproverInfoRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: GetApproverInfoRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): GetApproverInfoRequest;
+    static deserializeBinaryFromReader(message: GetApproverInfoRequest, reader: jspb.BinaryReader): GetApproverInfoRequest;
+}
+
+export namespace GetApproverInfoRequest {
+    export type AsObject = {
+        id: string,
+    }
+}
+
+export class GetApproverInfoResponse extends jspb.Message { 
+
+    hasInfo(): boolean;
+    clearInfo(): void;
+    getInfo(): ApproverInfo | undefined;
+    setInfo(value?: ApproverInfo): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): GetApproverInfoResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: GetApproverInfoResponse): GetApproverInfoResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: GetApproverInfoResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): GetApproverInfoResponse;
+    static deserializeBinaryFromReader(message: GetApproverInfoResponse, reader: jspb.BinaryReader): GetApproverInfoResponse;
+}
+
+export namespace GetApproverInfoResponse {
+    export type AsObject = {
+        info?: ApproverInfo.AsObject,
+    }
+}
+
+export class ApproverInfo extends jspb.Message { 
+    getCanapprove(): boolean;
+    setCanapprove(value: boolean): void;
+
+    getUnit(): string;
+    setUnit(value: string): void;
+
+    clearApproversList(): void;
+    getApproversList(): Array<string>;
+    setApproversList(value: Array<string>): void;
+    addApprovers(value: string, index?: number): string;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ApproverInfo.AsObject;
+    static toObject(includeInstance: boolean, msg: ApproverInfo): ApproverInfo.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ApproverInfo, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ApproverInfo;
+    static deserializeBinaryFromReader(message: ApproverInfo, reader: jspb.BinaryReader): ApproverInfo;
+}
+
+export namespace ApproverInfo {
+    export type AsObject = {
+        canapprove: boolean,
+        unit: string,
+        approversList: Array<string>,
     }
 }

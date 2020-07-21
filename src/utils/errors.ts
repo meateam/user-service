@@ -48,3 +48,10 @@ export class KartoffelError extends ApplicationError {
         super(message || 'Error contacting kartoffel', grpc.status.INTERNAL);
     }
 }
+
+export class ApprovalError extends ApplicationError {
+    constructor(message?: string) {
+        super(message || 'Error contacting approval service', grpc.status.INTERNAL);
+    }
+}
+

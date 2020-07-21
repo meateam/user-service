@@ -1,9 +1,11 @@
 import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
 import { Kartoffel } from './users/users.service';
 import { IUser } from './users/users.interface';
+import { Approval } from "./approval/approval.service";
+import { IApproverInfo } from './approval/approvers.interface';
 import * as grpc from 'grpc';
-import { UsersService, IUsersServer } from '../proto/users/generated/users_grpc_pb';
-import { GetByMailRequest, GetByIDRequest, User, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse } from '../proto/users/generated/users_pb';
+import { UsersService, IUsersServer } from '../proto/users/generated/users/users_grpc_pb';
+import { GetByMailRequest, GetByIDRequest, User, ApproverInfo, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse, GetApproverInfoResponse, GetApproverInfoRequest } from '../proto/users/generated/users/users_pb';
 import { wrapper } from './logger';
 import { UserNotFoundError } from './utils/errors';
 
@@ -21,9 +23,11 @@ const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
  */
 export class RPC implements IUsersServer {
     static karttofelClient: Kartoffel;
+    static approvalClient: Approval;
 
     constructor() {
         RPC.karttofelClient = new Kartoffel();
+        RPC.approvalClient = new Approval();
     }
 
     /**
@@ -51,6 +55,19 @@ export class RPC implements IUsersServer {
         for (let i = 0; i < serviceNames.length; i++) {
             grpcHealthCheck.setStatus(serviceNames[i], status);
         }
+    }
+
+    async getApproverInfo(call: grpc.ServerUnaryCall<GetApproverInfoRequest>, callback: grpc.sendUnaryData<GetApproverInfoResponse>) {
+        await wrapper<GetApproverInfoRequest, GetApproverInfoResponse>(RPC.getApproverInfoHandler, call, callback);
+    }
+
+    static async getApproverInfoHandler(call: grpc.ServerUnaryCall<GetApproverInfoRequest>) {
+        const userID: string = call.request.getId();
+        const info: IApproverInfo = await RPC.approvalClient.getApproverInfo(userID);
+        const reply: GetApproverInfoResponse = new GetApproverInfoResponse();
+        const formattedInfo: ApproverInfo = RPC.formatApproverInfo(info);
+        reply.setInfo(formattedInfo);
+        return reply;
     }
 
     /**
@@ -127,5 +144,19 @@ export class RPC implements IUsersServer {
         userRes.setHierarchyList(user.hierarchy);
         userRes.setHierarchyflat(Kartoffel.flattenHierarchy(user.hierarchy, user.job));
         return userRes;
+    }
+
+    /**
+     * formatApproverInfo gets the Info object and returned it formatted.
+     * @param info is the user approver info from the approval service
+     */
+    static formatApproverInfo(info: IApproverInfo): ApproverInfo {
+        const approverInfoRes: ApproverInfo = new ApproverInfo();
+
+        approverInfoRes.setCanapprove(info.isAdmin || info.canApprove);
+        approverInfoRes.setUnit(info.unit.name);
+        approverInfoRes.setApproversList(info.unit.approvers);
+
+        return approverInfoRes;
     }
 }

@@ -6,6 +6,7 @@ service Users {
     rpc GetUserByMail(GetByMailRequest) returns (GetUserResponse) {}
     rpc GetUserByID(GetByIDRequest) returns (GetUserResponse) {}
     rpc FindUserByName(FindUserByNameRequest) returns (FindUserByNameResponse) {}
+    rpc GetApproverInfo(GetApproverInfoRequest) returns (GetApproverInfoResponse) {}
 }
 
 message GetByMailRequest {
@@ -36,4 +37,18 @@ message FindUserByNameRequest {
 
 message FindUserByNameResponse {
     repeated User users = 1;
+}
+
+message GetApproverInfoRequest {
+    string id = 1;
+}
+
+message GetApproverInfoResponse {
+    ApproverInfo info = 1;
+}
+
+message ApproverInfo {
+    bool canApprove = 1;
+    string unit = 2;
+    repeated string approvers = 3;
 }

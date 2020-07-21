@@ -2,7 +2,7 @@
 
 'use strict';
 var grpc = require('grpc');
-var users_users_pb = require('./users_pb.js');
+var users_users_pb = require('../users/users_pb.js');
 
 function serialize_users_FindUserByNameRequest(arg) {
   if (!(arg instanceof users_users_pb.FindUserByNameRequest)) {
@@ -24,6 +24,28 @@ function serialize_users_FindUserByNameResponse(arg) {
 
 function deserialize_users_FindUserByNameResponse(buffer_arg) {
   return users_users_pb.FindUserByNameResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_users_GetApproverInfoRequest(arg) {
+  if (!(arg instanceof users_users_pb.GetApproverInfoRequest)) {
+    throw new Error('Expected argument of type users.GetApproverInfoRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_users_GetApproverInfoRequest(buffer_arg) {
+  return users_users_pb.GetApproverInfoRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_users_GetApproverInfoResponse(arg) {
+  if (!(arg instanceof users_users_pb.GetApproverInfoResponse)) {
+    throw new Error('Expected argument of type users.GetApproverInfoResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_users_GetApproverInfoResponse(buffer_arg) {
+  return users_users_pb.GetApproverInfoResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_users_GetByIDRequest(arg) {
@@ -93,6 +115,17 @@ var UsersService = exports.UsersService = {
     requestDeserialize: deserialize_users_FindUserByNameRequest,
     responseSerialize: serialize_users_FindUserByNameResponse,
     responseDeserialize: deserialize_users_FindUserByNameResponse,
+  },
+  getApproverInfo: {
+    path: '/users.Users/GetApproverInfo',
+    requestStream: false,
+    responseStream: false,
+    requestType: users_users_pb.GetApproverInfoRequest,
+    responseType: users_users_pb.GetApproverInfoResponse,
+    requestSerialize: serialize_users_GetApproverInfoRequest,
+    requestDeserialize: deserialize_users_GetApproverInfoRequest,
+    responseSerialize: serialize_users_GetApproverInfoResponse,
+    responseDeserialize: deserialize_users_GetApproverInfoResponse,
   },
 };
 
