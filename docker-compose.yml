@@ -1,38 +1,20 @@
-version: "2.1"
+version: "3"
 services:
   user-service:
     build: .
     image: user-service:latest
     ports:
       - "8086:8080"
-    environment:
-      DEBUG_MODE: "false"
-      ELASTIC_APM_SERVER_URL: "http://localhost:8200"
-      ELASTICSEARCH_URL: "http://localhost:9200"
-      KARTOFFEL_URL: "http://kartoffel-master.eastus.cloudapp.azure.com:3001"
-      SPIKE_SERVICE_URL: "spike-service:8080"
-      RPC_PORT: 8080
-      SPIKE_REQUIRED: "true"
-      GRANT_TYPE: "client_credentials"
-      AUDIENCE: "kartoffel"
-      US_APPROVAL_URL: "http://23.102.32.203/api/v1"
-      DOMAINUSERS_QUERY: "nonExternals"
+    env_file:
+      - ../kdrive.env
     depends_on:
       - spike-service
   spike-service:
     image: spike-service:latest
     ports:
       - "8080:8080"
-    environment:
-      AUDIENCE: "kartoffel"
-      GRANT_TYPE: "client_credentials"
-      SPIKE_CLIENT_ID: "EPBpjCiczupCXZgBEq3ARZCinUt4LSXtOsVrI1Ub"
-      SPIKE_CLIENT_SECRET: "u5qxEK0sy17ReZ7t8aVeN1gCcdI9hRiM78i9J_9Z6jA2YWcvbgczcchKqZ4WnXOsdT6jxmuVCLC3~RXuVcE5EsOG4JJi~B8AJQSB"
-      REDIS_URL: "redis://redis:6379"
-      SPIKE_TOKEN_URL: "https://spike.westeurope.cloudapp.azure.com:1337/oauth2/token"
-      SPIKE_PUBKEY_PATH: "https://spike.westeurope.cloudapp.azure.com:1337/.well-known/publickey.pem"
-      SPIKE_PUBLIC_KEY_FULL_PATH: "/usr/src/app/utils/publickey.pem"
-      NODE_TLS_REJECT_UNAUTHORIZED: 0
+    env_file:
+      - ../kdrive.env
     depends_on:
       - redis
   redis:

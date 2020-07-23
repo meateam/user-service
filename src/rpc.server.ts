@@ -152,11 +152,10 @@ export class RPC implements IUsersServer {
      */
     static formatApproverInfo(info: IApproverInfo): ApproverInfo {
         const approverInfoRes: ApproverInfo = new ApproverInfo();
-
+        
         approverInfoRes.setCanapprove(info.isAdmin || info.canApprove);
         approverInfoRes.setUnit(info.unit.name);
         approverInfoRes.setApproversList(info.unit.approvers);
-
         return approverInfoRes;
     }
 }

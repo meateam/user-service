@@ -14,6 +14,9 @@ export class Approval {
             const res: AxiosResponse = await Axios.get(`${approvalUrl}/user/${id}/approverInfo`);
             const info: IApproverInfo = res.data;
 
+            if (!info)
+                throw new UserNotFoundError(`The user with id ${id} is not found`);
+
             return info;
         } catch (err) {
             if (err.response && err.response.status) {
