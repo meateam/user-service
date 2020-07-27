@@ -1394,7 +1394,7 @@ proto.users.GetApproverInfoResponse.prototype.toObject = function(opt_includeIns
  */
 proto.users.GetApproverInfoResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    canapprove: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
+    canapprove: jspb.Message.getFieldWithDefault(msg, 1, false),
     unit: jspb.Message.getFieldWithDefault(msg, 2, ""),
     ranksList: (f = jspb.Message.getRepeatedField(msg, 3)) == null ? undefined : f
   };
@@ -1503,7 +1503,7 @@ proto.users.GetApproverInfoResponse.serializeBinaryToWriter = function(message, 
  * @return {boolean}
  */
 proto.users.GetApproverInfoResponse.prototype.getCanapprove = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 1, false));
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 1, false));
 };
 
 
