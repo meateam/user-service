@@ -5,7 +5,7 @@ import { Approval } from "./approval/approval.service";
 import { IApproverInfo } from './approval/approvers.interface';
 import * as grpc from 'grpc';
 import { UsersService, IUsersServer } from '../proto/users/generated/users/users_grpc_pb';
-import { GetByMailRequest, GetByIDRequest, User, ApproverInfo, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse, GetApproverInfoResponse, GetApproverInfoRequest } from '../proto/users/generated/users/users_pb';
+import { GetByMailRequest, GetByIDRequest, User, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse, GetApproverInfoResponse, GetApproverInfoRequest } from '../proto/users/generated/users/users_pb';
 import { wrapper } from './logger';
 import { UserNotFoundError } from './utils/errors';
 
@@ -65,8 +65,11 @@ export class RPC implements IUsersServer {
         const userID: string = call.request.getId();
         const info: IApproverInfo = await RPC.approvalClient.getApproverInfo(userID);
         const reply: GetApproverInfoResponse = new GetApproverInfoResponse();
-        const formattedInfo: ApproverInfo = RPC.formatApproverInfo(info);
-        reply.setInfo(formattedInfo);
+
+        reply.setRanksList(info.unit.approvers);
+        reply.setCanapprove(info.canApprove);
+        reply.setUnit(info.unit.name)
+        
         return reply;
     }
 
@@ -144,18 +147,5 @@ export class RPC implements IUsersServer {
         userRes.setHierarchyList(user.hierarchy);
         userRes.setHierarchyflat(Kartoffel.flattenHierarchy(user.hierarchy, user.job));
         return userRes;
-    }
-
-    /**
-     * formatApproverInfo gets the Info object and returned it formatted.
-     * @param info is the user approver info from the approval service
-     */
-    static formatApproverInfo(info: IApproverInfo): ApproverInfo {
-        const approverInfoRes: ApproverInfo = new ApproverInfo();
-        
-        approverInfoRes.setCanapprove(info.isAdmin || info.canApprove);
-        approverInfoRes.setUnit(info.unit.name);
-        approverInfoRes.setApproversList(info.unit.approvers);
-        return approverInfoRes;
     }
 }

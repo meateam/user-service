@@ -44,11 +44,7 @@ message GetApproverInfoRequest {
 }
 
 message GetApproverInfoResponse {
-    ApproverInfo info = 1;
-}
-
-message ApproverInfo {
     bool canApprove = 1;
     string unit = 2;
-    repeated string approvers = 3;
+    repeated string ranks = 3;
 }

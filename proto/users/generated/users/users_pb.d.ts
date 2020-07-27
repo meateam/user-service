@@ -185,11 +185,16 @@ export namespace GetApproverInfoRequest {
 }
 
 export class GetApproverInfoResponse extends jspb.Message { 
+    getCanapprove(): boolean;
+    setCanapprove(value: boolean): void;
 
-    hasInfo(): boolean;
-    clearInfo(): void;
-    getInfo(): ApproverInfo | undefined;
-    setInfo(value?: ApproverInfo): void;
+    getUnit(): string;
+    setUnit(value: string): void;
+
+    clearRanksList(): void;
+    getRanksList(): Array<string>;
+    setRanksList(value: Array<string>): void;
+    addRanks(value: string, index?: number): string;
 
 
     serializeBinary(): Uint8Array;
@@ -204,37 +209,8 @@ export class GetApproverInfoResponse extends jspb.Message {
 
 export namespace GetApproverInfoResponse {
     export type AsObject = {
-        info?: ApproverInfo.AsObject,
-    }
-}
-
-export class ApproverInfo extends jspb.Message { 
-    getCanapprove(): boolean;
-    setCanapprove(value: boolean): void;
-
-    getUnit(): string;
-    setUnit(value: string): void;
-
-    clearApproversList(): void;
-    getApproversList(): Array<string>;
-    setApproversList(value: Array<string>): void;
-    addApprovers(value: string, index?: number): string;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): ApproverInfo.AsObject;
-    static toObject(includeInstance: boolean, msg: ApproverInfo): ApproverInfo.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: ApproverInfo, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): ApproverInfo;
-    static deserializeBinaryFromReader(message: ApproverInfo, reader: jspb.BinaryReader): ApproverInfo;
-}
-
-export namespace ApproverInfo {
-    export type AsObject = {
         canapprove: boolean,
         unit: string,
-        approversList: Array<string>,
+        ranksList: Array<string>,
     }
 }
