@@ -37,21 +37,26 @@ export class UserNotFoundError extends ClientError {
     }
 }
 
+export class UnauthorizedError extends ApplicationError {
+    constructor(message?: string) {
+        super(message || "Request wasn't authorized", grpc.status.UNAUTHENTICATED)
+    }
+}
+
 export class SpikeError extends ApplicationError {
     constructor(message?: string) {
-        super(message || 'Error contacting spike', grpc.status.INTERNAL);
+        super(message || 'Error contacting spike', grpc.status.UNAVAILABLE);
     }
 }
 
 export class KartoffelError extends ApplicationError {
     constructor(message?: string) {
-        super(message || 'Error contacting kartoffel', grpc.status.INTERNAL);
+        super(message || 'Error contacting kartoffel', grpc.status.UNAVAILABLE);
     }
 }
 
 export class ApprovalError extends ApplicationError {
     constructor(message?: string) {
-        super(message || 'Error contacting approval service', grpc.status.INTERNAL);
+        super(message || 'Error contacting approval service', grpc.status.UNAVAILABLE);
     }
 }
-

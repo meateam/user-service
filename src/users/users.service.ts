@@ -2,7 +2,7 @@ import * as request from 'request-promise-native';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { IUser } from './users.interface';
 import Spike from '../spike/spike.service';
-import { KartoffelError, UserNotFoundError, ApplicationError, SpikeError } from '../utils/errors';
+import { KartoffelError, UserNotFoundError, ApplicationError, SpikeError, UnauthorizedError } from '../utils/errors';
 import { kartoffelURL, kartoffelQuery } from '../config';
 
 export class Kartoffel {
@@ -34,7 +34,7 @@ export class Kartoffel {
                 }
                 // Unauthorized
                 if (statusCode === 401) {
-                    throw new ApplicationError(`Request to Kartoffel wasn't authorized: ${JSON.stringify(err)} `);
+                    throw new UnauthorizedError(`Request to Kartoffel wasn't authorized: ${JSON.stringify(err)} `);
                 }
                 throw new KartoffelError(`Error in contacting the user service : ${JSON.stringify(err)}`);
             } else {

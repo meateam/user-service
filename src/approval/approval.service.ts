@@ -15,11 +15,14 @@ export class Approval {
             const info: IApproverInfo = res.data;
 
             return info;
+
         } catch (err) {
             if (err.response && err.response.status) {
                 const status: number = err.response.status;
                 if (status === 404) {
                     throw new UserNotFoundError(`The user with id ${id} is not found`);
+                } else if (status === 502) {
+                    throw new ApprovalError(`Error was thrown by the approval service : ${JSON.stringify(err)}`);
                 }
                 throw new ApprovalError(`Error in contacting the approval service : ${JSON.stringify(err)}`);
             } else {
