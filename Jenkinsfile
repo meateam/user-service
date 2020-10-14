@@ -22,11 +22,13 @@ pipeline {
           }
         }
       }
+      // build image for unit test 
       stage('build dockerfile of tests') {
         steps {
             sh "docker build -t unittest -f test.Dockerfile ." 
         }  
       }
+      // run image of unit test
       stage('run unit tests') {   
         steps {
             sh "docker run unittest"  
@@ -37,6 +39,7 @@ pipeline {
           }
         }
       }
+      // login to acr when pushed to branch master or develop
       stage('login to azure container registry') {
         when {
           anyOf {
@@ -48,7 +51,8 @@ pipeline {
             sh "docker login  drivehub.azurecr.io -u ${USER} -p ${PASS}"
           }
         }
-      }  
+      }
+      // when pushed to master or develop build image and push to acr     
       stage('build dockerfile of system only for master and develop and push them to acr') {
         when {
           anyOf {
