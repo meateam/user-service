@@ -6,7 +6,7 @@ COPY package*.json $HOME/app/
 
 WORKDIR $HOME/app
 
-RUN npm install --silent --progress=false
+RUN npm install --silent
 
 COPY . $HOME/app/
 
