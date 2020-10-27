@@ -8,8 +8,6 @@ WORKDIR $HOME/app
 
 RUN npm install --silent --progress=false
 
-RUN npm install -g mocha
-
 COPY . $HOME/app/
 
 EXPOSE 3000
