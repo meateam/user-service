@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- FEAT([60](https://github.com/meateam/user-service/pull/60): new RPC method GetApproverInfo
+- FEAT([60](https://github.com/meateam/user-service/pull/60)): new RPC method GetApproverInfo
 
 ### Fixed
 
-- FIX([53](https://github.com/meateam/user-service/pull/53): fix use undefind lastName and convert it to empty string. 
+- FIX([53](https://github.com/meateam/user-service/pull/53)): fix use undefind lastName and convert it to empty string. 
 
 ## [Unreleased]
 
