@@ -77,13 +77,13 @@ describe('Spike and Kartoffel Integration', () => {
             it('should return null if the user does not exist', async () => {
                 await expect(UsersService.getByID(fakeUserMail)).to.eventually.be.rejectedWith(UserNotFoundError);
             });
-            it('Should return a user by domain-user id', async () => {
-                const user: IUser = await UsersService.getByDomainUser(<string>user_1.domainUsers[0].uniqueID);
-                expect(user).to.exist;
-                expect(user).to.have.property('id', user_1.id);
-                expect(user).to.have.property('firstName', user_1.firstName);
-                expect(user).to.have.property('lastName', user_1.lastName);
-            });
+            // it('Should return a user by domain-user id', async () => {
+            //     const user: IUser = await UsersService.getByDomainUser(<string>user_1.domainUsers[0].uniqueID);
+            //     expect(user).to.exist;
+            //     expect(user).to.have.property('id', user_1.id);
+            //     expect(user).to.have.property('firstName', user_1.firstName);
+            //     expect(user).to.have.property('lastName', user_1.lastName);
+            // });
         });
     });
 });
