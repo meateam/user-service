@@ -37,20 +37,26 @@ export class UserNotFoundError extends ClientError {
     }
 }
 
-export class ProtoPullingError extends ApplicationError {
+export class UnauthorizedError extends ApplicationError {
     constructor(message?: string) {
-        super(message || 'Error with pulling spike proto', grpc.status.INTERNAL);
+        super(message || "Request wasn't authorized", grpc.status.UNAUTHENTICATED)
     }
 }
 
 export class SpikeError extends ApplicationError {
     constructor(message?: string) {
-        super(message || 'Error contacting spike', grpc.status.INTERNAL);
+        super(message || 'Error contacting spike', grpc.status.UNAVAILABLE);
     }
 }
 
 export class KartoffelError extends ApplicationError {
     constructor(message?: string) {
-        super(message || 'Error contacting kartoffel', grpc.status.INTERNAL);
+        super(message || 'Error contacting kartoffel', grpc.status.UNAVAILABLE);
+    }
+}
+
+export class ApprovalError extends ApplicationError {
+    constructor(message?: string) {
+        super(message || 'Error contacting approval service', grpc.status.UNAVAILABLE);
     }
 }

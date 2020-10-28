@@ -15,16 +15,16 @@ services:
       SPIKE_REQUIRED: "true"
       GRANT_TYPE: "client_credentials"
       AUDIENCE: "kartoffel"
+      US_APPROVAL_URL: "http://23.102.32.203/api/v1"
       DOMAINUSERS_QUERY: "nonExternals"
     depends_on:
       - spike-service
-
   spike-service:
     image: spike-service:latest
     ports:
       - "8080:8080"
     environment:
-      AUDIENCE: "MyAudience"
+      AUDIENCE: "kartoffel"
       GRANT_TYPE: "client_credentials"
       SPIKE_CLIENT_ID: "EPBpjCiczupCXZgBEq3ARZCinUt4LSXtOsVrI1Ub"
       SPIKE_CLIENT_SECRET: "u5qxEK0sy17ReZ7t8aVeN1gCcdI9hRiM78i9J_9Z6jA2YWcvbgczcchKqZ4WnXOsdT6jxmuVCLC3~RXuVcE5EsOG4JJi~B8AJQSB"
