@@ -18,4 +18,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 [unreleased]: https://github.com/meateam/user-service/compare/master...develop
-[2.0.0]: https://github.com/meateam/user-service/compare/v1.3...v2.0.0
+[v2.0.0]: https://github.com/meateam/user-service/compare/v1.3...v2.0.0
