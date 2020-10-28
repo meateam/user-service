@@ -3,8 +3,7 @@
 import { describe } from 'mocha';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import SpikeService from '../spike/spike.service';
-import Kartoffel from './users.service';
+import { Kartoffel } from './users.service';
 import { IUser } from './users.interface';
 import { UserNotFoundError } from '../utils/errors';
 
@@ -66,7 +65,7 @@ describe('Spike and Kartoffel Integration', () => {
                 await expect(UsersService.getByID(fakeUserId)).to.eventually.be.rejectedWith(UserNotFoundError);
             });
             it('Should return a user by id', async () => {
-                const user: IUser =  await UsersService.getByID(user_1.id);
+                const user: IUser = await UsersService.getByID(user_1.id);
                 expect(user).to.exist;
                 expect(user).to.have.property('id', user_1.id);
                 expect(user).to.have.property('firstName', user_1.firstName);
