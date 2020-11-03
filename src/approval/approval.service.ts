@@ -1,12 +1,12 @@
 import Axios, { AxiosResponse } from 'axios';
-import { IApproverInfo } from "./approvers.interface";
+import { IApproverInfo } from './approvers.interface';
 import { approvalUrl } from '../config';
 import { ApprovalError, UserNotFoundError, ApplicationError } from '../utils/errors';
 
 export class Approval {
 
     /**
-     * Gets a user approver information from the approval service 
+     * Gets a user approver information from the approval service
      * @param id - the user ID
      */
     async getApproverInfo(id: string): Promise<IApproverInfo> {

@@ -1,14 +1,23 @@
 export interface IApproverInfo {
-    id: string;
+    userId: string;
     isAdmin: boolean;
-    canApproveForHisUnit: boolean;
-    isAdditionalApprover: boolean;
-    canApprove: boolean;
+    isApprover: boolean;
+    isBlocked: boolean;
     unit: {
-        _id: string;
-        id: string;
-        approvers: string[];
-        specialApprovers: string[];
         name: string;
-    }
+        approvers: string[];
+    };
+}
+
+export interface ICanApproveToUser {
+    canApproveToUser: boolean;
+    cantApproveReasons: cantApproveReasons[];
+}
+
+enum cantApproveReasons {
+    'ApproverIsBlocked',
+    'ApproverIsNotTheSameUnit',
+    'ApproverCantApproveInHisUnit',
+    'ApproverHasNoUnit',
+    'UserHasNoUnit',
 }

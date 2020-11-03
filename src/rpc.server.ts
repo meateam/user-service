@@ -1,11 +1,11 @@
 import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
 import { Kartoffel } from './users/users.service';
 import { IUser } from './users/users.interface';
-import { Approval } from "./approval/approval.service";
+import { Approval } from './approval/approval.service';
 import { IApproverInfo } from './approval/approvers.interface';
 import * as grpc from 'grpc';
 import { UsersService, IUsersServer } from '../proto/users/generated/users/users_grpc_pb';
-import { GetByMailRequest, GetByIDRequest, User, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse, GetApproverInfoResponse, GetApproverInfoRequest } from '../proto/users/generated/users/users_pb';
+import { GetByMailRequest, GetByIDRequest, User, Unit, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse, GetApproverInfoResponse, GetApproverInfoRequest, ApproverInfo } from '../proto/users/generated/users/users_pb';
 import { wrapper } from './logger';
 import { UserNotFoundError } from './utils/errors';
 
@@ -66,10 +66,9 @@ export class RPC implements IUsersServer {
         const info: IApproverInfo = await RPC.approvalClient.getApproverInfo(userID);
         const reply: GetApproverInfoResponse = new GetApproverInfoResponse();
 
-        reply.setRanksList(info.unit.approvers);
-        reply.setCanapprove(info.canApprove);
-        reply.setUnit(info.unit.name)
-        
+        const approverInfo: ApproverInfo = RPC.formatApproverInfo(info);
+        reply.setApproverinfo(approverInfo);
+
         return reply;
     }
 
@@ -147,5 +146,19 @@ export class RPC implements IUsersServer {
         userRes.setHierarchyList(user.hierarchy);
         userRes.setHierarchyflat(Kartoffel.flattenHierarchy(user.hierarchy, user.job));
         return userRes;
+    }
+
+    static formatApproverInfo(approverInfo: IApproverInfo): ApproverInfo {
+        const unit = new Unit();
+        unit.setName(approverInfo.unit.name);
+        unit.setApproversList(approverInfo.unit.approvers);
+
+        const approverRes: ApproverInfo = new ApproverInfo();
+        approverRes.setIsadmin(approverInfo.isAdmin);
+        approverRes.setIsapprover(approverInfo.isApprover);
+        approverRes.setIsblocked(approverInfo.isBlocked);
+        approverRes.setUnit(unit);
+
+        return approverRes;
     }
 }

@@ -27,6 +27,19 @@ message User {
     string hierarchyFlat = 7;
 }
 
+message Unit {
+    string name =1;
+    repeated string approvers = 2;
+}
+
+message ApproverInfo {
+    string userId = 1;
+    bool isAdmin = 2;
+    bool isApprover = 3;
+    bool isBlocked = 4;
+    Unit unit = 5;
+}
+
 message GetUserResponse {
     User user = 1;
 }
@@ -44,7 +57,5 @@ message GetApproverInfoRequest {
 }
 
 message GetApproverInfoResponse {
-    bool canApprove = 1;
-    string unit = 2;
-    repeated string ranks = 3;
+    ApproverInfo approverInfo =  1;
 }

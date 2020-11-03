@@ -15,7 +15,7 @@ In order to compile the proto file make sure you have `protobuf` and `protoc-gen
 `go get -u github.com/golang/protobuf/protoc-gen-go`
 
 **Compiling Protobuf To Golang:**
-`protoc -I proto/ proto/users/users.proto --go_out=plugins=grpc:./proto`
+`Unit`
 
 ## Compile proto to js/ts
 
