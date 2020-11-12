@@ -11,7 +11,7 @@ export class Approval {
      */
     async getApproverInfo(id: string): Promise<IApproverInfo> {
         try {
-            const res: AxiosResponse = await Axios.get(`${approvalUrl}/user/${id}/approverInfo`);
+            const res: AxiosResponse = await Axios.get(`${approvalUrl}/api/v1/users/${id}/approverInfo`);
             const info: IApproverInfo = res.data;
 
             return info;

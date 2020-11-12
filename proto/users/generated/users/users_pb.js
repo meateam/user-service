@@ -1047,9 +1047,9 @@ proto.users.ApproverInfo.prototype.toObject = function(opt_includeInstance) {
 proto.users.ApproverInfo.toObject = function(includeInstance, msg) {
   var f, obj = {
     userid: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    isadmin: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
-    isapprover: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
-    isblocked: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
+    isadmin: jspb.Message.getFieldWithDefault(msg, 2, false),
+    isapprover: jspb.Message.getFieldWithDefault(msg, 3, false),
+    isblocked: jspb.Message.getFieldWithDefault(msg, 4, false),
     unit: (f = msg.getUnit()) && proto.users.Unit.toObject(includeInstance, f)
   };
 
@@ -1199,7 +1199,7 @@ proto.users.ApproverInfo.prototype.setUserid = function(value) {
  * @return {boolean}
  */
 proto.users.ApproverInfo.prototype.getIsadmin = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 2, false));
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 2, false));
 };
 
 
@@ -1217,7 +1217,7 @@ proto.users.ApproverInfo.prototype.setIsadmin = function(value) {
  * @return {boolean}
  */
 proto.users.ApproverInfo.prototype.getIsapprover = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 3, false));
 };
 
 
@@ -1235,7 +1235,7 @@ proto.users.ApproverInfo.prototype.setIsapprover = function(value) {
  * @return {boolean}
  */
 proto.users.ApproverInfo.prototype.getIsblocked = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 4, false));
 };
 
 
