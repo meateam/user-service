@@ -11,13 +11,5 @@ export interface IApproverInfo {
 
 export interface ICanApproveToUser {
     canApproveToUser: boolean;
-    cantApproveReasons: cantApproveReasons[];
-}
-
-enum cantApproveReasons {
-    'ApproverIsBlocked',
-    'ApproverIsNotTheSameUnit',
-    'ApproverCantApproveInHisUnit',
-    'ApproverHasNoUnit',
-    'UserHasNoUnit',
+    cantApproveReasons?: string[];
 }

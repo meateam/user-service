@@ -274,3 +274,55 @@ export namespace GetApproverInfoResponse {
         approverinfo?: ApproverInfo.AsObject,
     }
 }
+
+export class CanApproveToUserRequest extends jspb.Message { 
+    getApproverid(): string;
+    setApproverid(value: string): void;
+
+    getUserid(): string;
+    setUserid(value: string): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): CanApproveToUserRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: CanApproveToUserRequest): CanApproveToUserRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: CanApproveToUserRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): CanApproveToUserRequest;
+    static deserializeBinaryFromReader(message: CanApproveToUserRequest, reader: jspb.BinaryReader): CanApproveToUserRequest;
+}
+
+export namespace CanApproveToUserRequest {
+    export type AsObject = {
+        approverid: string,
+        userid: string,
+    }
+}
+
+export class CanApproveToUserResponse extends jspb.Message { 
+    getCanapprovetouser(): boolean;
+    setCanapprovetouser(value: boolean): void;
+
+    clearCantapprovereasonsList(): void;
+    getCantapprovereasonsList(): Array<string>;
+    setCantapprovereasonsList(value: Array<string>): void;
+    addCantapprovereasons(value: string, index?: number): string;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): CanApproveToUserResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: CanApproveToUserResponse): CanApproveToUserResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: CanApproveToUserResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): CanApproveToUserResponse;
+    static deserializeBinaryFromReader(message: CanApproveToUserResponse, reader: jspb.BinaryReader): CanApproveToUserResponse;
+}
+
+export namespace CanApproveToUserResponse {
+    export type AsObject = {
+        canapprovetouser: boolean,
+        cantapprovereasonsList: Array<string>,
+    }
+}
