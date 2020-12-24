@@ -13,9 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- FIX([53](https://github.com/meateam/user-service/pull/53)): fix use undefind lastName and convert it to empty string. 
+- FIX([53](https://github.com/meateam/user-service/pull/53)): fix use undefind lastName and convert it to empty string.
 
 ## [Unreleased]
+
+### Fixed
+
+- FIX([62](https://github.com/meateam/user-service/pull/62)): fix GetApproverInfo with rabaz integration.
+
+### Added
+
+- FEAT([75](https://github.com/meateam/user-service/pull/62)): new RPC method CanApproveToUser
 
 [unreleased]: https://github.com/meateam/user-service/compare/master...develop
 [v2.0.0]: https://github.com/meateam/user-service/compare/v1.3...v2.0.0

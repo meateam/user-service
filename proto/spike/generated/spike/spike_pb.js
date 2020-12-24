@@ -822,7 +822,7 @@ proto.spike.ValidateTokenResponse.prototype.toObject = function(opt_includeInsta
  */
 proto.spike.ValidateTokenResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    valid: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
+    valid: jspb.Message.getFieldWithDefault(msg, 1, false),
     scopesList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
     message: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
@@ -931,7 +931,7 @@ proto.spike.ValidateTokenResponse.serializeBinaryToWriter = function(message, wr
  * @return {boolean}
  */
 proto.spike.ValidateTokenResponse.prototype.getValid = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 1, false));
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 1, false));
 };
 
 

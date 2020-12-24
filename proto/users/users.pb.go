@@ -189,6 +189,124 @@ func (m *User) GetHierarchyFlat() string {
 	return ""
 }
 
+type Unit struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Approvers            []string `protobuf:"bytes,2,rep,name=approvers,proto3" json:"approvers,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Unit) Reset()         { *m = Unit{} }
+func (m *Unit) String() string { return proto.CompactTextString(m) }
+func (*Unit) ProtoMessage()    {}
+func (*Unit) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b48c37af7f888781, []int{3}
+}
+
+func (m *Unit) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Unit.Unmarshal(m, b)
+}
+func (m *Unit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Unit.Marshal(b, m, deterministic)
+}
+func (m *Unit) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Unit.Merge(m, src)
+}
+func (m *Unit) XXX_Size() int {
+	return xxx_messageInfo_Unit.Size(m)
+}
+func (m *Unit) XXX_DiscardUnknown() {
+	xxx_messageInfo_Unit.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Unit proto.InternalMessageInfo
+
+func (m *Unit) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Unit) GetApprovers() []string {
+	if m != nil {
+		return m.Approvers
+	}
+	return nil
+}
+
+type ApproverInfo struct {
+	UserId               string   `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	IsAdmin              bool     `protobuf:"varint,2,opt,name=isAdmin,proto3" json:"isAdmin,omitempty"`
+	IsApprover           bool     `protobuf:"varint,3,opt,name=isApprover,proto3" json:"isApprover,omitempty"`
+	IsBlocked            bool     `protobuf:"varint,4,opt,name=isBlocked,proto3" json:"isBlocked,omitempty"`
+	Unit                 *Unit    `protobuf:"bytes,5,opt,name=unit,proto3" json:"unit,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ApproverInfo) Reset()         { *m = ApproverInfo{} }
+func (m *ApproverInfo) String() string { return proto.CompactTextString(m) }
+func (*ApproverInfo) ProtoMessage()    {}
+func (*ApproverInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b48c37af7f888781, []int{4}
+}
+
+func (m *ApproverInfo) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ApproverInfo.Unmarshal(m, b)
+}
+func (m *ApproverInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ApproverInfo.Marshal(b, m, deterministic)
+}
+func (m *ApproverInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ApproverInfo.Merge(m, src)
+}
+func (m *ApproverInfo) XXX_Size() int {
+	return xxx_messageInfo_ApproverInfo.Size(m)
+}
+func (m *ApproverInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_ApproverInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ApproverInfo proto.InternalMessageInfo
+
+func (m *ApproverInfo) GetUserId() string {
+	if m != nil {
+		return m.UserId
+	}
+	return ""
+}
+
+func (m *ApproverInfo) GetIsAdmin() bool {
+	if m != nil {
+		return m.IsAdmin
+	}
+	return false
+}
+
+func (m *ApproverInfo) GetIsApprover() bool {
+	if m != nil {
+		return m.IsApprover
+	}
+	return false
+}
+
+func (m *ApproverInfo) GetIsBlocked() bool {
+	if m != nil {
+		return m.IsBlocked
+	}
+	return false
+}
+
+func (m *ApproverInfo) GetUnit() *Unit {
+	if m != nil {
+		return m.Unit
+	}
+	return nil
+}
+
 type GetUserResponse struct {
 	User                 *User    `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -200,7 +318,7 @@ func (m *GetUserResponse) Reset()         { *m = GetUserResponse{} }
 func (m *GetUserResponse) String() string { return proto.CompactTextString(m) }
 func (*GetUserResponse) ProtoMessage()    {}
 func (*GetUserResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b48c37af7f888781, []int{3}
+	return fileDescriptor_b48c37af7f888781, []int{5}
 }
 
 func (m *GetUserResponse) XXX_Unmarshal(b []byte) error {
@@ -239,7 +357,7 @@ func (m *FindUserByNameRequest) Reset()         { *m = FindUserByNameRequest{} }
 func (m *FindUserByNameRequest) String() string { return proto.CompactTextString(m) }
 func (*FindUserByNameRequest) ProtoMessage()    {}
 func (*FindUserByNameRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b48c37af7f888781, []int{4}
+	return fileDescriptor_b48c37af7f888781, []int{6}
 }
 
 func (m *FindUserByNameRequest) XXX_Unmarshal(b []byte) error {
@@ -278,7 +396,7 @@ func (m *FindUserByNameResponse) Reset()         { *m = FindUserByNameResponse{}
 func (m *FindUserByNameResponse) String() string { return proto.CompactTextString(m) }
 func (*FindUserByNameResponse) ProtoMessage()    {}
 func (*FindUserByNameResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b48c37af7f888781, []int{5}
+	return fileDescriptor_b48c37af7f888781, []int{7}
 }
 
 func (m *FindUserByNameResponse) XXX_Unmarshal(b []byte) error {
@@ -317,7 +435,7 @@ func (m *GetApproverInfoRequest) Reset()         { *m = GetApproverInfoRequest{}
 func (m *GetApproverInfoRequest) String() string { return proto.CompactTextString(m) }
 func (*GetApproverInfoRequest) ProtoMessage()    {}
 func (*GetApproverInfoRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b48c37af7f888781, []int{6}
+	return fileDescriptor_b48c37af7f888781, []int{8}
 }
 
 func (m *GetApproverInfoRequest) XXX_Unmarshal(b []byte) error {
@@ -346,19 +464,17 @@ func (m *GetApproverInfoRequest) GetId() string {
 }
 
 type GetApproverInfoResponse struct {
-	CanApprove           bool     `protobuf:"varint,1,opt,name=canApprove,proto3" json:"canApprove,omitempty"`
-	Unit                 string   `protobuf:"bytes,2,opt,name=unit,proto3" json:"unit,omitempty"`
-	Ranks                []string `protobuf:"bytes,3,rep,name=ranks,proto3" json:"ranks,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	ApproverInfo         *ApproverInfo `protobuf:"bytes,1,opt,name=approverInfo,proto3" json:"approverInfo,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
 }
 
 func (m *GetApproverInfoResponse) Reset()         { *m = GetApproverInfoResponse{} }
 func (m *GetApproverInfoResponse) String() string { return proto.CompactTextString(m) }
 func (*GetApproverInfoResponse) ProtoMessage()    {}
 func (*GetApproverInfoResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b48c37af7f888781, []int{7}
+	return fileDescriptor_b48c37af7f888781, []int{9}
 }
 
 func (m *GetApproverInfoResponse) XXX_Unmarshal(b []byte) error {
@@ -379,23 +495,103 @@ func (m *GetApproverInfoResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GetApproverInfoResponse proto.InternalMessageInfo
 
-func (m *GetApproverInfoResponse) GetCanApprove() bool {
+func (m *GetApproverInfoResponse) GetApproverInfo() *ApproverInfo {
 	if m != nil {
-		return m.CanApprove
+		return m.ApproverInfo
 	}
-	return false
+	return nil
 }
 
-func (m *GetApproverInfoResponse) GetUnit() string {
+type CanApproveToUserRequest struct {
+	ApproverID           string   `protobuf:"bytes,1,opt,name=approverID,proto3" json:"approverID,omitempty"`
+	UserID               string   `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *CanApproveToUserRequest) Reset()         { *m = CanApproveToUserRequest{} }
+func (m *CanApproveToUserRequest) String() string { return proto.CompactTextString(m) }
+func (*CanApproveToUserRequest) ProtoMessage()    {}
+func (*CanApproveToUserRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b48c37af7f888781, []int{10}
+}
+
+func (m *CanApproveToUserRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CanApproveToUserRequest.Unmarshal(m, b)
+}
+func (m *CanApproveToUserRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CanApproveToUserRequest.Marshal(b, m, deterministic)
+}
+func (m *CanApproveToUserRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CanApproveToUserRequest.Merge(m, src)
+}
+func (m *CanApproveToUserRequest) XXX_Size() int {
+	return xxx_messageInfo_CanApproveToUserRequest.Size(m)
+}
+func (m *CanApproveToUserRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CanApproveToUserRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CanApproveToUserRequest proto.InternalMessageInfo
+
+func (m *CanApproveToUserRequest) GetApproverID() string {
 	if m != nil {
-		return m.Unit
+		return m.ApproverID
 	}
 	return ""
 }
 
-func (m *GetApproverInfoResponse) GetRanks() []string {
+func (m *CanApproveToUserRequest) GetUserID() string {
 	if m != nil {
-		return m.Ranks
+		return m.UserID
+	}
+	return ""
+}
+
+type CanApproveToUserResponse struct {
+	CanApproveToUser     bool     `protobuf:"varint,1,opt,name=canApproveToUser,proto3" json:"canApproveToUser,omitempty"`
+	CantApproveReasons   []string `protobuf:"bytes,2,rep,name=cantApproveReasons,proto3" json:"cantApproveReasons,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *CanApproveToUserResponse) Reset()         { *m = CanApproveToUserResponse{} }
+func (m *CanApproveToUserResponse) String() string { return proto.CompactTextString(m) }
+func (*CanApproveToUserResponse) ProtoMessage()    {}
+func (*CanApproveToUserResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b48c37af7f888781, []int{11}
+}
+
+func (m *CanApproveToUserResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CanApproveToUserResponse.Unmarshal(m, b)
+}
+func (m *CanApproveToUserResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CanApproveToUserResponse.Marshal(b, m, deterministic)
+}
+func (m *CanApproveToUserResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CanApproveToUserResponse.Merge(m, src)
+}
+func (m *CanApproveToUserResponse) XXX_Size() int {
+	return xxx_messageInfo_CanApproveToUserResponse.Size(m)
+}
+func (m *CanApproveToUserResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CanApproveToUserResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CanApproveToUserResponse proto.InternalMessageInfo
+
+func (m *CanApproveToUserResponse) GetCanApproveToUser() bool {
+	if m != nil {
+		return m.CanApproveToUser
+	}
+	return false
+}
+
+func (m *CanApproveToUserResponse) GetCantApproveReasons() []string {
+	if m != nil {
+		return m.CantApproveReasons
 	}
 	return nil
 }
@@ -404,43 +600,57 @@ func init() {
 	proto.RegisterType((*GetByMailRequest)(nil), "users.GetByMailRequest")
 	proto.RegisterType((*GetByIDRequest)(nil), "users.GetByIDRequest")
 	proto.RegisterType((*User)(nil), "users.User")
+	proto.RegisterType((*Unit)(nil), "users.Unit")
+	proto.RegisterType((*ApproverInfo)(nil), "users.ApproverInfo")
 	proto.RegisterType((*GetUserResponse)(nil), "users.GetUserResponse")
 	proto.RegisterType((*FindUserByNameRequest)(nil), "users.FindUserByNameRequest")
 	proto.RegisterType((*FindUserByNameResponse)(nil), "users.FindUserByNameResponse")
 	proto.RegisterType((*GetApproverInfoRequest)(nil), "users.GetApproverInfoRequest")
 	proto.RegisterType((*GetApproverInfoResponse)(nil), "users.GetApproverInfoResponse")
+	proto.RegisterType((*CanApproveToUserRequest)(nil), "users.CanApproveToUserRequest")
+	proto.RegisterType((*CanApproveToUserResponse)(nil), "users.CanApproveToUserResponse")
 }
 
 func init() { proto.RegisterFile("users/users.proto", fileDescriptor_b48c37af7f888781) }
 
 var fileDescriptor_b48c37af7f888781 = []byte{
-	// 415 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x53, 0xed, 0x8a, 0xda, 0x40,
-	0x14, 0x6d, 0xbe, 0xac, 0x5e, 0xd1, 0xb6, 0x43, 0xd5, 0x10, 0xd4, 0xa6, 0xa1, 0x14, 0xa1, 0x60,
-	0xc1, 0xfe, 0x2c, 0x14, 0x2a, 0xa2, 0xf8, 0xa3, 0x2d, 0x04, 0xfa, 0x00, 0x53, 0x1d, 0x71, 0x68,
-	0x4c, 0xb2, 0x33, 0x93, 0x05, 0xdf, 0x6a, 0x1f, 0x62, 0x1f, 0x6c, 0x99, 0xc9, 0xe4, 0xc3, 0xac,
-	0xee, 0x9f, 0x30, 0xf7, 0x9e, 0x33, 0xe7, 0xde, 0x39, 0xf7, 0x06, 0xde, 0x65, 0x9c, 0x30, 0xfe,
-	0x55, 0x7d, 0xe7, 0x29, 0x4b, 0x44, 0x82, 0x1c, 0x15, 0x04, 0x9f, 0xe1, 0xed, 0x86, 0x88, 0xe5,
-	0xf9, 0x17, 0xa6, 0x51, 0x48, 0xee, 0x32, 0xc2, 0x05, 0x42, 0x60, 0x9f, 0x30, 0x8d, 0x5c, 0xc3,
-	0x37, 0x66, 0x9d, 0x50, 0x9d, 0x03, 0x1f, 0xfa, 0x8a, 0xb7, 0x5d, 0x15, 0xac, 0x3e, 0x98, 0x74,
-	0xaf, 0x39, 0x26, 0xdd, 0x07, 0x8f, 0x06, 0xd8, 0x7f, 0x39, 0x61, 0x4d, 0xa0, 0x94, 0x33, 0x2b,
-	0x39, 0x34, 0x86, 0xce, 0x81, 0x32, 0x2e, 0x7e, 0xe3, 0x13, 0x71, 0x2d, 0x05, 0x54, 0x09, 0xe4,
-	0x41, 0x3b, 0xc2, 0x1a, 0xb4, 0x15, 0x58, 0xc6, 0x12, 0x3b, 0x64, 0x51, 0xa4, 0x30, 0x27, 0xc7,
-	0x8a, 0x58, 0xaa, 0x1e, 0x29, 0x61, 0x98, 0xed, 0x8e, 0x67, 0xb7, 0xe5, 0x5b, 0x52, 0xb5, 0x4c,
-	0xa0, 0x4f, 0xd0, 0x2b, 0x83, 0x75, 0x84, 0x85, 0xfb, 0x5a, 0x5d, 0xbf, 0x4c, 0x06, 0x0b, 0x78,
-	0xb3, 0x21, 0x42, 0x3e, 0x24, 0x24, 0x3c, 0x4d, 0x62, 0x4e, 0xd0, 0x07, 0xb0, 0xa5, 0x59, 0xea,
-	0x49, 0xdd, 0x45, 0x77, 0x9e, 0xdb, 0xa8, 0x28, 0x0a, 0x08, 0xbe, 0xc0, 0x60, 0x4d, 0xe3, 0xbd,
-	0xcc, 0x2c, 0xcf, 0xb2, 0x93, 0x9a, 0x93, 0xb1, 0x6c, 0x54, 0x3b, 0x29, 0xcf, 0xc1, 0x77, 0x18,
-	0x36, 0xc9, 0xba, 0xce, 0x47, 0xc8, 0x87, 0xe2, 0x1a, 0xbe, 0xd5, 0x2c, 0xa4, 0xc7, 0x35, 0x83,
-	0xe1, 0x86, 0x88, 0x9f, 0x69, 0xca, 0x92, 0x7b, 0xc2, 0xb6, 0xf1, 0x21, 0xb9, 0x35, 0x8e, 0x1d,
-	0x8c, 0x9e, 0x31, 0x75, 0x9d, 0x29, 0xc0, 0x0e, 0xc7, 0x1a, 0x52, 0x57, 0xda, 0x61, 0x2d, 0x23,
-	0xbb, 0xce, 0x62, 0x2a, 0x8a, 0x81, 0xc9, 0x33, 0x7a, 0x0f, 0x0e, 0xc3, 0xf1, 0x7f, 0xee, 0x5a,
-	0xca, 0xd6, 0x3c, 0x58, 0x3c, 0x98, 0xe0, 0xc8, 0xf6, 0x38, 0x5a, 0x42, 0x4f, 0xdb, 0x96, 0xef,
-	0x12, 0x1a, 0xe9, 0xee, 0x9b, 0xdb, 0xe5, 0x0d, 0x2b, 0xa0, 0xee, 0x72, 0xf0, 0x0a, 0xfd, 0x80,
-	0x6e, 0xa9, 0xb1, 0x5d, 0xa1, 0x41, 0x5d, 0xa1, 0xdc, 0xbb, 0x17, 0xee, 0xff, 0x81, 0xfe, 0xa5,
-	0xb3, 0x68, 0xac, 0xb9, 0x57, 0xa7, 0xe3, 0x4d, 0x6e, 0xa0, 0xa5, 0x60, 0xa8, 0x76, 0xa1, 0xee,
-	0x21, 0x9a, 0x54, 0xd5, 0xaf, 0x4c, 0xc1, 0x9b, 0xde, 0x82, 0x0b, 0xcd, 0x7f, 0x2d, 0xf5, 0xfb,
-	0x7d, 0x7b, 0x0a, 0x00, 0x00, 0xff, 0xff, 0x16, 0xf1, 0x39, 0x0b, 0x93, 0x03, 0x00, 0x00,
+	// 563 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x54, 0xff, 0x6e, 0x12, 0x41,
+	0x10, 0x96, 0x9f, 0xa5, 0x43, 0x8b, 0xb8, 0xa6, 0x70, 0x21, 0x2d, 0xc5, 0x8d, 0x31, 0x8d, 0x26,
+	0x98, 0xe0, 0x1f, 0x9a, 0x98, 0x98, 0x14, 0x49, 0x09, 0x7f, 0xa8, 0x71, 0x23, 0x0f, 0xb0, 0xc2,
+	0x92, 0x6e, 0x3c, 0xf6, 0xf0, 0xf6, 0x68, 0xc2, 0x13, 0xf8, 0x18, 0xbe, 0x8c, 0x0f, 0x66, 0x76,
+	0x6e, 0x6f, 0xb9, 0x3b, 0xb8, 0xfe, 0x43, 0x98, 0xf9, 0x66, 0xbe, 0xd9, 0xfd, 0xe6, 0xdb, 0x83,
+	0x67, 0x5b, 0x2d, 0x42, 0xfd, 0x16, 0x7f, 0x87, 0x9b, 0x30, 0x88, 0x02, 0x52, 0xc3, 0x80, 0xbe,
+	0x82, 0xf6, 0x54, 0x44, 0xe3, 0xdd, 0x17, 0x2e, 0x7d, 0x26, 0x7e, 0x6f, 0x85, 0x8e, 0x08, 0x81,
+	0xea, 0x9a, 0x4b, 0xdf, 0x2b, 0x0d, 0x4a, 0x37, 0xa7, 0x0c, 0xff, 0xd3, 0x01, 0xb4, 0xb0, 0x6e,
+	0x36, 0x49, 0xaa, 0x5a, 0x50, 0x96, 0x4b, 0x5b, 0x53, 0x96, 0x4b, 0xfa, 0xaf, 0x04, 0xd5, 0xb9,
+	0x16, 0x61, 0x1e, 0x70, 0x74, 0xe5, 0x3d, 0x1d, 0xb9, 0x84, 0xd3, 0x95, 0x0c, 0x75, 0xf4, 0x95,
+	0xaf, 0x85, 0x57, 0x41, 0x60, 0x9f, 0x20, 0x3d, 0x68, 0xf8, 0xdc, 0x82, 0x55, 0x04, 0x5d, 0x6c,
+	0xb0, 0xd5, 0xd6, 0xf7, 0x11, 0xab, 0xc5, 0x58, 0x12, 0x1b, 0xd6, 0x7b, 0x29, 0x42, 0x1e, 0x2e,
+	0xee, 0x77, 0x5e, 0x7d, 0x50, 0x31, 0xac, 0x2e, 0x41, 0x5e, 0xc2, 0xb9, 0x0b, 0xee, 0x7c, 0x1e,
+	0x79, 0x27, 0xd8, 0x9e, 0x4d, 0xd2, 0x0f, 0x50, 0x9d, 0x2b, 0x89, 0x22, 0x28, 0x33, 0xc3, 0x8a,
+	0xa0, 0x2c, 0x3f, 0xdf, 0x6c, 0xc2, 0xe0, 0x41, 0x84, 0xda, 0x2b, 0xc7, 0xfc, 0x2e, 0x41, 0xff,
+	0x96, 0xe0, 0xec, 0xd6, 0x46, 0x33, 0xb5, 0x0a, 0x48, 0x07, 0xea, 0x46, 0xe4, 0x59, 0x22, 0x86,
+	0x8d, 0x88, 0x07, 0x27, 0x52, 0xdf, 0x2e, 0xd7, 0x52, 0xa1, 0x26, 0x0d, 0x96, 0x84, 0xa4, 0x0f,
+	0x20, 0x75, 0xc2, 0x81, 0xba, 0x34, 0x58, 0x2a, 0x63, 0x0e, 0x20, 0xf5, 0xd8, 0x0f, 0x16, 0xbf,
+	0xc4, 0x12, 0x95, 0x69, 0xb0, 0x7d, 0x82, 0x5c, 0x43, 0x75, 0xab, 0x64, 0x84, 0xb2, 0x34, 0x47,
+	0xcd, 0x61, 0xbc, 0x6e, 0x73, 0x1b, 0x86, 0x00, 0x1d, 0xc1, 0xd3, 0xa9, 0x88, 0xcc, 0x92, 0x98,
+	0xd0, 0x9b, 0x40, 0x69, 0x81, 0x3d, 0x5a, 0x84, 0x78, 0xc2, 0x54, 0x8f, 0x29, 0x41, 0x80, 0xbe,
+	0x81, 0x8b, 0x3b, 0xa9, 0x96, 0x26, 0x33, 0xde, 0x19, 0x95, 0x53, 0x2e, 0xc9, 0x0b, 0x44, 0x3f,
+	0x42, 0x27, 0x5f, 0x6c, 0xe7, 0xbc, 0x80, 0xd8, 0x70, 0x5e, 0x69, 0x50, 0xc9, 0x0f, 0xb2, 0x56,
+	0xbc, 0x81, 0xce, 0x54, 0x44, 0x69, 0x05, 0x8b, 0xac, 0xc6, 0xa0, 0x7b, 0x50, 0x69, 0xe7, 0xbc,
+	0x87, 0x33, 0x9e, 0xca, 0xdb, 0x7b, 0x3d, 0xb7, 0xe3, 0x32, 0x2d, 0x99, 0x42, 0xfa, 0x1d, 0xba,
+	0x9f, 0xb9, 0xb2, 0x05, 0x3f, 0x82, 0x58, 0xa4, 0x78, 0x7c, 0x1f, 0xc0, 0x95, 0x4e, 0xec, 0x31,
+	0x52, 0x19, 0xb7, 0xe7, 0x89, 0xb5, 0xb8, 0x8d, 0xe8, 0x03, 0x78, 0x87, 0x94, 0xf6, 0x9c, 0xaf,
+	0xa1, 0xbd, 0xc8, 0x61, 0xc8, 0xdc, 0x60, 0x07, 0x79, 0x32, 0x04, 0xb2, 0xe0, 0x2a, 0xb9, 0x2f,
+	0x13, 0x5c, 0x07, 0x2a, 0xf1, 0xdf, 0x11, 0x64, 0xf4, 0xa7, 0x02, 0x35, 0xd3, 0xa8, 0xc9, 0x18,
+	0xce, 0xed, 0xc2, 0xe3, 0x17, 0x4e, 0xba, 0x56, 0x88, 0xfc, 0x9b, 0xef, 0x75, 0xf6, 0x40, 0xfa,
+	0x9c, 0xf4, 0x09, 0xf9, 0x04, 0x4d, 0xc7, 0x31, 0x9b, 0x90, 0x8b, 0x34, 0x83, 0xfb, 0x1a, 0x3c,
+	0xd2, 0xff, 0x0d, 0x5a, 0x59, 0x4f, 0x90, 0x4b, 0x5b, 0x7b, 0xd4, 0x57, 0xbd, 0xab, 0x02, 0xd4,
+	0x11, 0x32, 0x74, 0x71, 0xe6, 0xa5, 0x5d, 0xed, 0xa7, 0x1f, 0xf1, 0x4f, 0xaf, 0x5f, 0x04, 0x3b,
+	0xce, 0x39, 0xb4, 0xf3, 0xab, 0x22, 0x49, 0x57, 0x81, 0x2d, 0x7a, 0xd7, 0x85, 0x78, 0x42, 0xfb,
+	0xb3, 0x8e, 0xdf, 0xda, 0x77, 0xff, 0x03, 0x00, 0x00, 0xff, 0xff, 0x60, 0x6f, 0x83, 0x9b, 0x80,
+	0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -459,6 +669,7 @@ type UsersClient interface {
 	GetUserByID(ctx context.Context, in *GetByIDRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	FindUserByName(ctx context.Context, in *FindUserByNameRequest, opts ...grpc.CallOption) (*FindUserByNameResponse, error)
 	GetApproverInfo(ctx context.Context, in *GetApproverInfoRequest, opts ...grpc.CallOption) (*GetApproverInfoResponse, error)
+	CanApproveToUser(ctx context.Context, in *CanApproveToUserRequest, opts ...grpc.CallOption) (*CanApproveToUserResponse, error)
 }
 
 type usersClient struct {
@@ -505,12 +716,22 @@ func (c *usersClient) GetApproverInfo(ctx context.Context, in *GetApproverInfoRe
 	return out, nil
 }
 
+func (c *usersClient) CanApproveToUser(ctx context.Context, in *CanApproveToUserRequest, opts ...grpc.CallOption) (*CanApproveToUserResponse, error) {
+	out := new(CanApproveToUserResponse)
+	err := c.cc.Invoke(ctx, "/users.Users/CanApproveToUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UsersServer is the server API for Users service.
 type UsersServer interface {
 	GetUserByMail(context.Context, *GetByMailRequest) (*GetUserResponse, error)
 	GetUserByID(context.Context, *GetByIDRequest) (*GetUserResponse, error)
 	FindUserByName(context.Context, *FindUserByNameRequest) (*FindUserByNameResponse, error)
 	GetApproverInfo(context.Context, *GetApproverInfoRequest) (*GetApproverInfoResponse, error)
+	CanApproveToUser(context.Context, *CanApproveToUserRequest) (*CanApproveToUserResponse, error)
 }
 
 // UnimplementedUsersServer can be embedded to have forward compatible implementations.
@@ -528,6 +749,9 @@ func (*UnimplementedUsersServer) FindUserByName(ctx context.Context, req *FindUs
 }
 func (*UnimplementedUsersServer) GetApproverInfo(ctx context.Context, req *GetApproverInfoRequest) (*GetApproverInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetApproverInfo not implemented")
+}
+func (*UnimplementedUsersServer) CanApproveToUser(ctx context.Context, req *CanApproveToUserRequest) (*CanApproveToUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CanApproveToUser not implemented")
 }
 
 func RegisterUsersServer(s *grpc.Server, srv UsersServer) {
@@ -606,6 +830,24 @@ func _Users_GetApproverInfo_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Users_CanApproveToUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CanApproveToUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServer).CanApproveToUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.Users/CanApproveToUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServer).CanApproveToUser(ctx, req.(*CanApproveToUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Users_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "users.Users",
 	HandlerType: (*UsersServer)(nil),
@@ -625,6 +867,10 @@ var _Users_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetApproverInfo",
 			Handler:    _Users_GetApproverInfo_Handler,
+		},
+		{
+			MethodName: "CanApproveToUser",
+			Handler:    _Users_CanApproveToUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
