@@ -1,16 +1,11 @@
-FROM node:latest
+FROM node:10.16-alpine
+ENV NODE_ENV=development
+WORKDIR /usr/src/app
+COPY ["package.json", "package-lock.json*", "./"]
 
-ENV HOME=/home/pandora
+RUN npm install --silent
 
-COPY package*.json $HOME/app/
-
-WORKDIR $HOME/app
-
-RUN npm install --silent --progress=false
-
-RUN npm install -g mocha
-
-COPY . $HOME/app/
+COPY . .
 
 EXPOSE 3000
 

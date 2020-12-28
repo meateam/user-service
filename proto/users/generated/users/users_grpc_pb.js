@@ -4,6 +4,28 @@
 var grpc = require('grpc');
 var users_users_pb = require('../users/users_pb.js');
 
+function serialize_users_CanApproveToUserRequest(arg) {
+  if (!(arg instanceof users_users_pb.CanApproveToUserRequest)) {
+    throw new Error('Expected argument of type users.CanApproveToUserRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_users_CanApproveToUserRequest(buffer_arg) {
+  return users_users_pb.CanApproveToUserRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_users_CanApproveToUserResponse(arg) {
+  if (!(arg instanceof users_users_pb.CanApproveToUserResponse)) {
+    throw new Error('Expected argument of type users.CanApproveToUserResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_users_CanApproveToUserResponse(buffer_arg) {
+  return users_users_pb.CanApproveToUserResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_users_FindUserByNameRequest(arg) {
   if (!(arg instanceof users_users_pb.FindUserByNameRequest)) {
     throw new Error('Expected argument of type users.FindUserByNameRequest');
@@ -126,6 +148,17 @@ var UsersService = exports.UsersService = {
     requestDeserialize: deserialize_users_GetApproverInfoRequest,
     responseSerialize: serialize_users_GetApproverInfoResponse,
     responseDeserialize: deserialize_users_GetApproverInfoResponse,
+  },
+  canApproveToUser: {
+    path: '/users.Users/CanApproveToUser',
+    requestStream: false,
+    responseStream: false,
+    requestType: users_users_pb.CanApproveToUserRequest,
+    responseType: users_users_pb.CanApproveToUserResponse,
+    requestSerialize: serialize_users_CanApproveToUserRequest,
+    requestDeserialize: deserialize_users_CanApproveToUserRequest,
+    responseSerialize: serialize_users_CanApproveToUserResponse,
+    responseDeserialize: deserialize_users_CanApproveToUserResponse,
   },
 };
 

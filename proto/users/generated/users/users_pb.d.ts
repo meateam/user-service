@@ -95,6 +95,73 @@ export namespace User {
     }
 }
 
+export class Unit extends jspb.Message { 
+    getName(): string;
+    setName(value: string): void;
+
+    clearApproversList(): void;
+    getApproversList(): Array<string>;
+    setApproversList(value: Array<string>): void;
+    addApprovers(value: string, index?: number): string;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Unit.AsObject;
+    static toObject(includeInstance: boolean, msg: Unit): Unit.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Unit, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Unit;
+    static deserializeBinaryFromReader(message: Unit, reader: jspb.BinaryReader): Unit;
+}
+
+export namespace Unit {
+    export type AsObject = {
+        name: string,
+        approversList: Array<string>,
+    }
+}
+
+export class ApproverInfo extends jspb.Message { 
+    getUserid(): string;
+    setUserid(value: string): void;
+
+    getIsadmin(): boolean;
+    setIsadmin(value: boolean): void;
+
+    getIsapprover(): boolean;
+    setIsapprover(value: boolean): void;
+
+    getIsblocked(): boolean;
+    setIsblocked(value: boolean): void;
+
+
+    hasUnit(): boolean;
+    clearUnit(): void;
+    getUnit(): Unit | undefined;
+    setUnit(value?: Unit): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ApproverInfo.AsObject;
+    static toObject(includeInstance: boolean, msg: ApproverInfo): ApproverInfo.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ApproverInfo, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ApproverInfo;
+    static deserializeBinaryFromReader(message: ApproverInfo, reader: jspb.BinaryReader): ApproverInfo;
+}
+
+export namespace ApproverInfo {
+    export type AsObject = {
+        userid: string,
+        isadmin: boolean,
+        isapprover: boolean,
+        isblocked: boolean,
+        unit?: Unit.AsObject,
+    }
+}
+
 export class GetUserResponse extends jspb.Message { 
 
     hasUser(): boolean;
@@ -185,16 +252,11 @@ export namespace GetApproverInfoRequest {
 }
 
 export class GetApproverInfoResponse extends jspb.Message { 
-    getCanapprove(): boolean;
-    setCanapprove(value: boolean): void;
 
-    getUnit(): string;
-    setUnit(value: string): void;
-
-    clearRanksList(): void;
-    getRanksList(): Array<string>;
-    setRanksList(value: Array<string>): void;
-    addRanks(value: string, index?: number): string;
+    hasApproverinfo(): boolean;
+    clearApproverinfo(): void;
+    getApproverinfo(): ApproverInfo | undefined;
+    setApproverinfo(value?: ApproverInfo): void;
 
 
     serializeBinary(): Uint8Array;
@@ -209,8 +271,58 @@ export class GetApproverInfoResponse extends jspb.Message {
 
 export namespace GetApproverInfoResponse {
     export type AsObject = {
-        canapprove: boolean,
-        unit: string,
-        ranksList: Array<string>,
+        approverinfo?: ApproverInfo.AsObject,
+    }
+}
+
+export class CanApproveToUserRequest extends jspb.Message { 
+    getApproverid(): string;
+    setApproverid(value: string): void;
+
+    getUserid(): string;
+    setUserid(value: string): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): CanApproveToUserRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: CanApproveToUserRequest): CanApproveToUserRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: CanApproveToUserRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): CanApproveToUserRequest;
+    static deserializeBinaryFromReader(message: CanApproveToUserRequest, reader: jspb.BinaryReader): CanApproveToUserRequest;
+}
+
+export namespace CanApproveToUserRequest {
+    export type AsObject = {
+        approverid: string,
+        userid: string,
+    }
+}
+
+export class CanApproveToUserResponse extends jspb.Message { 
+    getCanapprovetouser(): boolean;
+    setCanapprovetouser(value: boolean): void;
+
+    clearCantapprovereasonsList(): void;
+    getCantapprovereasonsList(): Array<string>;
+    setCantapprovereasonsList(value: Array<string>): void;
+    addCantapprovereasons(value: string, index?: number): string;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): CanApproveToUserResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: CanApproveToUserResponse): CanApproveToUserResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: CanApproveToUserResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): CanApproveToUserResponse;
+    static deserializeBinaryFromReader(message: CanApproveToUserResponse, reader: jspb.BinaryReader): CanApproveToUserResponse;
+}
+
+export namespace CanApproveToUserResponse {
+    export type AsObject = {
+        canapprovetouser: boolean,
+        cantapprovereasonsList: Array<string>,
     }
 }
