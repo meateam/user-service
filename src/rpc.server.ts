@@ -1,6 +1,7 @@
-import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
+import { GrpcHealthCheck, HealthCheckResponse, HealthService, HealthClient, HealthCheckRequest } from 'grpc-ts-health-check';
 import { Kartoffel } from './users/users.service';
 import { IUser } from './users/users.interface';
+import {serviceName} from './config';
 import { Approval } from './approval/approval.service';
 import { IApproverInfo, ICanApproveToUser } from './approval/approvers.interface';
 import * as grpc from 'grpc';
@@ -9,14 +10,16 @@ import { GetByMailRequest, GetByIDRequest, User, Unit, FindUserByNameRequest, Fi
 import { wrapper } from './logger';
 import { UserNotFoundError } from './utils/errors';
 
+
 const StatusesEnum = HealthCheckResponse.ServingStatus;
 
-const healthCheckStatusMap = {
+const healthCheckStatusMap: any = {
     '': StatusesEnum.UNKNOWN,
-    serviceName: StatusesEnum.UNKNOWN,
+    [serviceName]: StatusesEnum.UNKNOWN,
 };
-const serviceNames: string[] = ['', 'users.Users'];
-const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
+
+const servicesNum = Object.keys(healthCheckStatusMap).length;
+let requests = new Array<HealthCheckRequest>(servicesNum);
 
 /**
  * Spike is a class that implements a grpc client of the spike-service.
@@ -35,25 +38,54 @@ export class RPC implements IUsersServer {
      * @param rpcPort
      */
     static start(rpcPort: string) {
+        // Create the server
         const usersServer = new RPC();
         const grpcServer: grpc.Server = new grpc.Server();
-        const grpcHealthCheck: GrpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
 
-        // Register UsersService
+        // Register the Users Service
         grpcServer.addService(UsersService, usersServer);
 
         // Register the health service
+        const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
         grpcServer.addService(HealthService, grpcHealthCheck);
-
+        
+        // Bind and start the server
         grpcServer.bind(`0.0.0.0:${rpcPort}`, grpc.ServerCredentials.createInsecure());
         grpcServer.start();
         console.log(`Server is listening on port ${rpcPort}`);
-        this.setHealthStatus(usersServer, HealthCheckResponse.ServingStatus.SERVING);
+
+        // Create the health client
+        const healthClient = new HealthClient(`0.0.0.0:${rpcPort}`, grpc.credentials.createInsecure());
+        this.addServices();
+
+        setInterval(function () {
+            requests.forEach(request => {  
+                // Check health status, this will provide the current health status of the service when the request is executed.
+                healthClient.check(request, (error: Error | null, response: HealthCheckResponse) => {
+                    if (error) {
+                        console.log(`${serviceName} Service: Health Check Failed`);
+                        console.log(error);
+                    } 
+                }); 
+            });
+        },1000);
+
+        this.setHealthStatus(HealthCheckResponse.ServingStatus.SERVING);
     }
 
-    static setHealthStatus(server: RPC, status: number): void {
-        for (let i = 0; i < serviceNames.length; i++) {
-            grpcHealthCheck.setStatus(serviceNames[i], status);
+    static setHealthStatus(status: HealthCheckResponse.ServingStatus): void {
+        requests.forEach(request => {
+            const serviceName: string = request.getService();
+            healthCheckStatusMap[serviceName] = status;
+        })
+    }
+
+    static addServices() {
+        // Set services
+        for (const service in healthCheckStatusMap) {
+            const request = new HealthCheckRequest();
+            request.setService(service);
+            requests.push(request);
         }
     }
 
@@ -69,7 +101,7 @@ export class RPC implements IUsersServer {
 
         replay.setCanapprovetouser(canApprove.canApproveToUser);
         replay.setCantapprovereasonsList(canApprove.cantApproveReasons || []);
-
+        StatusesEnum
         return replay;
     }
 

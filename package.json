@@ -46,7 +46,7 @@
     "axios": "^0.21.1",
     "elastic-apm-node": "^3.9.0",
     "grpc": "^1.23.3",
-    "grpc-ts-health-check": "^1.0.14",
+    "grpc-ts-health-check": "^2.0.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
     "snyk": "^1.316.1",
