@@ -39,7 +39,7 @@ export class UserNotFoundError extends ClientError {
 
 export class UnauthorizedError extends ApplicationError {
     constructor(message?: string) {
-        super(message || "Request wasn't authorized", grpc.status.UNAUTHENTICATED)
+        super(message || "Request wasn't authorized", grpc.status.UNAUTHENTICATED);
     }
 }
 
