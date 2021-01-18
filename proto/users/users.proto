@@ -26,6 +26,7 @@ message User {
     string fullName = 5;
     repeated string hierarchy = 6;
     string hierarchyFlat = 7;
+    string adfsId = 8;
 }
 
 message Unit {

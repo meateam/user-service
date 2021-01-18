@@ -57,4 +57,5 @@ export interface IUser {
     clearance?: string;
     // Calculated
     fullName?: string;
+    adfsId: string;
 }

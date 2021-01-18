@@ -46,6 +46,7 @@ const user_1: IUser = {
     }],
     fullName: 'נייטרו הגלטין',
     id: '5d6f8fd5f7709b8b73df3fb2',
+    adfsId: 't23456789@jello',
 };
 
 const fakeUserId = '5c8f5f3c039b31198058d812';
@@ -66,6 +67,7 @@ describe('Spike and Kartoffel Integration', () => {
             });
             it('Should return a user by id', async () => {
                 const user: IUser = await UsersService.getByID(user_1.id);
+                console.log(user);
                 expect(user).to.exist;
                 expect(user).to.have.property('id', user_1.id);
                 expect(user).to.have.property('firstName', user_1.firstName);
