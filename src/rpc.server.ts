@@ -1,8 +1,6 @@
 import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
 import { Kartoffel } from './users/users.service';
 import { IUser } from './users/users.interface';
-import { Approval } from './approval/approval.service';
-import { IApproverInfo, ICanApproveToUser } from './approval/approvers.interface';
 import * as grpc from 'grpc';
 import { UsersService, IUsersServer } from '../proto/users/generated/users/users_grpc_pb';
 import { GetByMailRequest, GetByIDRequest, User, Unit, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse, GetApproverInfoResponse, GetApproverInfoRequest, ApproverInfo, CanApproveToUserRequest, CanApproveToUserResponse } from '../proto/users/generated/users/users_pb';
@@ -23,11 +21,9 @@ const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
  */
 export class RPC implements IUsersServer {
     static karttofelClient: Kartoffel;
-    static approvalClient: Approval;
 
     constructor() {
         RPC.karttofelClient = new Kartoffel();
-        RPC.approvalClient = new Approval();
     }
 
     /**
@@ -55,37 +51,6 @@ export class RPC implements IUsersServer {
         for (let i = 0; i < serviceNames.length; i++) {
             grpcHealthCheck.setStatus(serviceNames[i], status);
         }
-    }
-
-    async canApproveToUser(call: grpc.ServerUnaryCall<CanApproveToUserRequest>, callback: grpc.sendUnaryData<CanApproveToUserResponse>) {
-        await wrapper<CanApproveToUserRequest, CanApproveToUserResponse>(RPC.canApproveToUserHandler, call, callback);
-    }
-
-    static async canApproveToUserHandler(call: grpc.ServerUnaryCall<CanApproveToUserRequest>) {
-        const userID: string = call.request.getUserid();
-        const approverID: string = call.request.getApproverid();
-        const replay: CanApproveToUserResponse = new CanApproveToUserResponse();
-        const canApprove: ICanApproveToUser = await RPC.approvalClient.canApproveToUser(approverID, userID);
-
-        replay.setCanapprovetouser(canApprove.canApproveToUser);
-        replay.setCantapprovereasonsList(canApprove.cantApproveReasons || []);
-
-        return replay;
-    }
-
-    async getApproverInfo(call: grpc.ServerUnaryCall<GetApproverInfoRequest>, callback: grpc.sendUnaryData<GetApproverInfoResponse>) {
-        await wrapper<GetApproverInfoRequest, GetApproverInfoResponse>(RPC.getApproverInfoHandler, call, callback);
-    }
-
-    static async getApproverInfoHandler(call: grpc.ServerUnaryCall<GetApproverInfoRequest>) {
-        const userID: string = call.request.getId();
-        const info: IApproverInfo = await RPC.approvalClient.getApproverInfo(userID);
-        const reply: GetApproverInfoResponse = new GetApproverInfoResponse();
-
-        const approverInfo: ApproverInfo = RPC.formatApproverInfo(info);
-        reply.setApproverinfo(approverInfo);
-
-        return reply;
     }
 
     /**
