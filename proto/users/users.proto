@@ -25,12 +25,14 @@ message User {
     string fullName = 5;
     repeated string hierarchy = 6;
     string hierarchyFlat = 7;
+    DomainUser domainUser = 8;
 }
 
-// message Unit {
-//     string name =1;
-//     repeated string approvers = 2;
-// }
+message DomainUser {
+    string uniqueID = 1;
+    string adfsUID = 2;
+    string dataSource = 3;
+}
 
 message GetUserResponse {
     User user = 1;

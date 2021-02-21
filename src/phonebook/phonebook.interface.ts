@@ -1,4 +1,5 @@
-interface IPhoneBookUser {
+export interface IPhoneBookUser {
+    _id?:string;
     id: string;
     armyId: string;
     displayName: string;

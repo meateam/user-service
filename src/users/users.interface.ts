@@ -1,3 +1,5 @@
+import { IDomainUser } from "../kartoffel/kartoffel.interface";
+
 export interface IUser {
     id: string;
     fullName: string;
@@ -6,9 +8,10 @@ export interface IUser {
     hierarchy?: string[];
     hierarchyFlat: string;
     mail: string;
+    domainUser?: IDomainUser;
 }
 
-export const enum EXTERNAL_DESTS {
-    PHONEBOOK='phonebook', 
-    CTS='cts'
+export enum EXTERNAL_DESTS {
+    z='z', 
+    c='c'
 };

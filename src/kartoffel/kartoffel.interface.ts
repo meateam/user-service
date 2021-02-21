@@ -19,6 +19,7 @@ export interface IDomainUser {
     id?: string;
     domain?: string;
     name?: string;
+    dataSource?:string;
     uniqueID?: string;
     adfsUID?: string;
     personId?: Types.ObjectId | string | IKartoffelUser;

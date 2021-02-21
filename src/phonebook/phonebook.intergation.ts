@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { PhoneBookError, UserNotFoundError, ApplicationError } from '../utils/errors';
 import { phoneBookURL } from '../config';
 import { IUser } from '../users/users.interface';
+import { IPhoneBookUser } from './phonebook.interface';
 
 export class Phonebook {
     private instance: AxiosInstance;

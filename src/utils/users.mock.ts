@@ -1,4 +1,4 @@
-import { IUser } from '../users/users.interface';
+import { IKartoffelUser } from '../kartoffel/kartoffel.interface';
 
 const USERS = [
     {
@@ -86,6 +86,6 @@ const USERS = [
     },
 ];
 
-export default function getMockUsers(): IUser[] {
+export default function getMockUsers(): IKartoffelUser[] {
     return USERS;
 }

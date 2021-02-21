@@ -11,7 +11,8 @@ export const grantType :string = process.env.GRANT_TYPE || 'client_credentials';
 export const spikeServiceURL: string = process.env.SPIKE_SERVICE_URL || 'spike-service:8080';
 export const kartoffelQuery: string = `/search?domainusers.datasource=${process.env.DOMAINUSERS_QUERY || 'nonExternals'}`;
 export const kartoffelURL: string = `${process.env.KARTOFFEL_URL || 'http://localhost:3001'}/api/persons`;
-export const kartoffelCTSQuery: string = `/search?domainusers.datasource=${process.env.CTS_SOURCE || 'CTS'}`;
+export const kartoffelCTSQuery: string = `/search?domainusers.datasource=${process.env.USER_KARTOFFEL_CTS_DATASOURCE || 'dataSource1'}`;
+export const ctsDatasource: string = process.env.USER_KARTOFFEL_CTS_DATASOURCE || 'dataSource1';
 export const phoneBookURL: string = `${process.env.PHONE_BOOK_URL || 'http://localhost'}:${process.env.PHONE_BOOK_PORT || '80'}`;
 
 export const debugMode: boolean = process.env.DEBUG_MODE === 'true';

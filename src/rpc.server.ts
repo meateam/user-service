@@ -1,11 +1,13 @@
 import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
-import { EXTERNAL_DESTS, IUser } from './users/users.interface';
 import * as grpc from 'grpc';
 import { UsersService, IUsersServer } from '../proto/users/generated/users/users_grpc_pb';
-import { GetByMailRequest, GetByIDRequest, User, Unit, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse, GetApproverInfoResponse, GetApproverInfoRequest, ApproverInfo, CanApproveToUserRequest, CanApproveToUserResponse } from '../proto/users/generated/users/users_pb';
+import { GetByMailRequest, GetByIDRequest, User, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse, DomainUser } from '../proto/users/generated/users/users_pb';
 import { wrapper } from './logger';
-import { UserNotFoundError } from './utils/errors';
+import { ClientError, UserNotFoundError } from './utils/errors';
+import { EXTERNAL_DESTS, IUser } from './users/users.interface';
 import { UserService } from './users/users.service';
+import { domain } from 'process';
+import { IDomainUser } from './kartoffel/kartoffel.interface';
 
 const StatusesEnum = HealthCheckResponse.ServingStatus;
 
@@ -15,7 +17,6 @@ const healthCheckStatusMap = {
 };
 const serviceNames: string[] = ['', 'users.Users'];
 const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
-
 
 /**
  * Spike is a class that implements a grpc client of the spike-service.
@@ -65,8 +66,12 @@ export class RPC implements IUsersServer {
 
     static async getUserByIDHandler(call: grpc.ServerUnaryCall<GetByIDRequest>) {
         const userID: string = call.request.getId();
-        const destination: EXTERNAL_DESTS = call.request.getDestination();
+        const destination: string = call.request.getDestination();
 
+        if (destination && !(destination in EXTERNAL_DESTS)) {
+            throw new ClientError(`The destination ${destination}, is not found`);
+        }
+        
         const user: IUser = await RPC.userService.getByID(userID, destination);
         const reply: GetUserResponse = new GetUserResponse();
         if (!user) {
@@ -90,7 +95,10 @@ export class RPC implements IUsersServer {
     static async findUserByNameHandler(call: grpc.ServerUnaryCall<FindUserByNameRequest>) {
         const userName: string = call.request.getName();
         const destination: string = call.request.getDestination();
-
+        
+        if (destination && !(destination in EXTERNAL_DESTS)) {
+            throw new ClientError(`The destination ${destination}, is not found`);
+        }
         const usersRes: IUser[] = await RPC.userService.searchByName(userName, destination);
         const users: User[] = usersRes.map(user => RPC.formatUser(user));
         const reply: FindUserByNameResponse = new FindUserByNameResponse();
@@ -125,6 +133,16 @@ export class RPC implements IUsersServer {
     */
     static formatUser(user: IUser): User {
         const userRes: User = new User();
+        const domainRes: DomainUser = new DomainUser();
+
+        if(user.domainUser) {
+            domainRes.setDatasource(user.domainUser.dataSource as string);
+            domainRes.setUniqueid(user.domainUser.uniqueID as string);
+            domainRes.setAdfsuid(user.domainUser.adfsUID as string);
+
+            userRes.setDomainuser(domainRes);
+        }
+
         userRes.setFirstname(user.firstName);
         userRes.setLastname(user.lastName || ' ');
         userRes.setId(user.id);

@@ -50,22 +50,23 @@ const user_1: IKartoffelUser = {
 
 const fakeUserId = '5c8f5f3c039b31198058d812';
 const fakeUserMail = 'apple@kuchen';
+const fakeUserName = 'dkdldl';
 
 describe('Spike and Kartoffel Integration', () => {
 
-    let UsersService: Kartoffel;
+    let KartoffelService: Kartoffel;
 
     before(async () => {
-        UsersService = new Kartoffel();
+        KartoffelService = new Kartoffel();
     });
 
     describe('Kartoffel', () => {
         describe('Get user by id', () => {
             it('should return null if the user does not exist', async () => {
-                await expect(UsersService.getByID(fakeUserId)).to.eventually.be.rejectedWith(UserNotFoundError);
+                await expect(KartoffelService.getByID(fakeUserId)).to.eventually.be.rejectedWith(UserNotFoundError);
             });
             it('Should return a user by id', async () => {
-                const user: IUser = await UsersService.getByID(user_1.id);
+                const user: IUser = await KartoffelService.getByID(user_1.id);
                 expect(user).to.exist;
                 expect(user).to.have.property('id', user_1.id);
                 expect(user).to.have.property('firstName', user_1.firstName);
@@ -75,14 +76,27 @@ describe('Spike and Kartoffel Integration', () => {
 
         describe('Get user by mail', () => {
             it('should return null if the user does not exist', async () => {
-                await expect(UsersService.getByID(fakeUserMail)).to.eventually.be.rejectedWith(UserNotFoundError);
+                await expect(KartoffelService.getByID(fakeUserMail)).to.eventually.be.rejectedWith(UserNotFoundError);
             });
             it('Should return a user by domain-user id', async () => {
-                const user: IUser = await UsersService.getByDomainUser(<string>user_1.domainUsers[0].uniqueID);
+                const user: IUser = await KartoffelService.getByDomainUser(<string>user_1.domainUsers[0].uniqueID);
                 expect(user).to.exist;
                 expect(user).to.have.property('id', user_1.id);
                 expect(user).to.have.property('firstName', user_1.firstName);
                 expect(user).to.have.property('lastName', user_1.lastName);
+            });
+        });
+
+        describe('Get user by partial name', () => {
+            it('should return null if the user does not exist', async () => {
+                await expect(KartoffelService.searchByName(fakeUserName)).to.eventually.be.rejectedWith(UserNotFoundError);
+            });
+            it('Should return a user by partial name', async () => {
+                const user: IUser[] = await KartoffelService.searchByName(user_1.firstName);
+                expect(user[0]).to.exist;
+                expect(user[0]).to.have.property('id', user_1.id);
+                expect(user[0]).to.have.property('firstName', user_1.firstName);
+                expect(user[0]).to.have.property('lastName', user_1.lastName);
             });
         });
     });

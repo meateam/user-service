@@ -1,8 +1,8 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import Spike from '../spike/spike.service';
 import { UserNotFoundError, ApplicationError, SpikeError, UnauthorizedError, KartoffelError } from '../utils/errors';
-import { kartoffelCTSQuery, kartoffelQuery, kartoffelURL } from '../config';
-import { IKartoffelUser } from './kartoffel.interface';
+import { ctsDatasource, kartoffelCTSQuery, kartoffelQuery, kartoffelURL } from '../config';
+import { IDomainUser, IKartoffelUser } from './kartoffel.interface';
 import { EXTERNAL_DESTS, IUser } from '../users/users.interface';
 
 export class Kartoffel {
@@ -82,16 +82,17 @@ export class Kartoffel {
      * Search user suggestions by a partial name. returns a list of users ordered by resemblance score
      * @param partialName - the partial name to search by.
      */
-    public async searchByName(partialName: string, dest?: EXTERNAL_DESTS): Promise<IUser[]> {
+    public async searchByName(partialName: string, dest?: string): Promise<IUser[]> {
         let res: AxiosResponse;
         try {
-            let query: string = (dest && dest == EXTERNAL_DESTS.CTS)? kartoffelCTSQuery: kartoffelQuery;
+            let query: string = (dest && dest == EXTERNAL_DESTS.c)? kartoffelCTSQuery: kartoffelQuery;
             res = await this.instance.get(query, { params: { fullname: partialName } });
         } catch (err) {
             throw new ApplicationError(`Unknown Error: ${err} `);
         }
+        let dest_domain: string = (dest && dest == EXTERNAL_DESTS.c)? ctsDatasource: '';
         const users: IKartoffelUser[] = res.data;
-        const generalUsers = users.map(user=>this.setUser(user));
+        const generalUsers = users.map(user=>this.setUser(user, dest_domain));
         return generalUsers;
     }
 
@@ -125,7 +126,8 @@ export class Kartoffel {
         });
     }
 
-    private setUser(userData: IKartoffelUser): IUser {
+    private setUser(userData: IKartoffelUser, dest?: string): IUser {
+        const domainUser: IDomainUser[] = userData.domainUsers.filter(domainUser => {return domainUser.dataSource === dest})
         const user: IUser = {
             id: userData.id,
             mail: userData.mail as string,
@@ -133,9 +135,10 @@ export class Kartoffel {
             lastName: userData.lastName,
             fullName: `${userData.firstName} ${userData.lastName}`,
             hierarchyFlat: Kartoffel.flattenHierarchy(userData.hierarchy, userData.job),
-            hierarchy: userData.hierarchy
+            hierarchy: userData.hierarchy,
+            domainUser: domainUser[0]? domainUser[0]: undefined
         };
-    
+
         return user;
     }
 }
