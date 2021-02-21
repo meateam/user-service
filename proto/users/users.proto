@@ -14,6 +14,7 @@ message GetByMailRequest {
 
 message GetByIDRequest {
     string id = 1;
+    string destination = 2;
 }
 
 message User {
@@ -26,10 +27,10 @@ message User {
     string hierarchyFlat = 7;
 }
 
-message Unit {
-    string name =1;
-    repeated string approvers = 2;
-}
+// message Unit {
+//     string name =1;
+//     repeated string approvers = 2;
+// }
 
 message GetUserResponse {
     User user = 1;
@@ -37,6 +38,7 @@ message GetUserResponse {
 
 message FindUserByNameRequest {
     string name = 1;
+    string destination = 2;
 }
 
 message FindUserByNameResponse {

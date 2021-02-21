@@ -1,11 +1,11 @@
 import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
-import { Kartoffel } from './users/users.service';
-import { IUser } from './users/users.interface';
+import { EXTERNAL_DESTS, IUser } from './users/users.interface';
 import * as grpc from 'grpc';
 import { UsersService, IUsersServer } from '../proto/users/generated/users/users_grpc_pb';
 import { GetByMailRequest, GetByIDRequest, User, Unit, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse, GetApproverInfoResponse, GetApproverInfoRequest, ApproverInfo, CanApproveToUserRequest, CanApproveToUserResponse } from '../proto/users/generated/users/users_pb';
 import { wrapper } from './logger';
 import { UserNotFoundError } from './utils/errors';
+import { UserService } from './users/users.service';
 
 const StatusesEnum = HealthCheckResponse.ServingStatus;
 
@@ -16,14 +16,15 @@ const healthCheckStatusMap = {
 const serviceNames: string[] = ['', 'users.Users'];
 const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
 
+
 /**
  * Spike is a class that implements a grpc client of the spike-service.
  */
 export class RPC implements IUsersServer {
-    static karttofelClient: Kartoffel;
+    static userService: UserService;
 
     constructor() {
-        RPC.karttofelClient = new Kartoffel();
+        RPC.userService = new UserService();
     }
 
     /**
@@ -64,11 +65,14 @@ export class RPC implements IUsersServer {
 
     static async getUserByIDHandler(call: grpc.ServerUnaryCall<GetByIDRequest>) {
         const userID: string = call.request.getId();
-        const user: IUser = await RPC.karttofelClient.getByID(userID);
+        const destination: EXTERNAL_DESTS = call.request.getDestination();
+
+        const user: IUser = await RPC.userService.getByID(userID, destination);
         const reply: GetUserResponse = new GetUserResponse();
         if (!user) {
             throw new UserNotFoundError(`The user with ID ${userID}, is not found`);
         }
+        
         const userRes: User = RPC.formatUser(user);
         reply.setUser(userRes);
         return reply;
@@ -85,7 +89,9 @@ export class RPC implements IUsersServer {
 
     static async findUserByNameHandler(call: grpc.ServerUnaryCall<FindUserByNameRequest>) {
         const userName: string = call.request.getName();
-        const usersRes: IUser[] = await RPC.karttofelClient.searchByName(userName);
+        const destination: string = call.request.getDestination();
+
+        const usersRes: IUser[] = await RPC.userService.searchByName(userName, destination);
         const users: User[] = usersRes.map(user => RPC.formatUser(user));
         const reply: FindUserByNameResponse = new FindUserByNameResponse();
         reply.setUsersList(users);
@@ -103,7 +109,7 @@ export class RPC implements IUsersServer {
 
     static async getUserByMailHandler(call: grpc.ServerUnaryCall<GetByMailRequest>) {
         const userMail: string = call.request.getMail();
-        const user: IUser = await RPC.karttofelClient.getByDomainUser(userMail);
+        const user: IUser = await RPC.userService.getByDomainUser(userMail);
         const reply: GetUserResponse = new GetUserResponse();
         if (!user) {
             throw new UserNotFoundError(`The user with Mail ${userMail}, is not found`);
@@ -114,9 +120,9 @@ export class RPC implements IUsersServer {
     }
 
     /**
-* formatUser gets a User object and returned it formatted.
-* @param user- a user object from Kartoffel.
-*/
+    * formatUser gets a User object and returned it formatted.
+    * @param user- a user object from user service.
+    */
     static formatUser(user: IUser): User {
         const userRes: User = new User();
         userRes.setFirstname(user.firstName);
@@ -124,22 +130,8 @@ export class RPC implements IUsersServer {
         userRes.setId(user.id);
         userRes.setMail(user.mail as string);
         userRes.setFullname(user.fullName as string);
-        userRes.setHierarchyList(user.hierarchy);
-        userRes.setHierarchyflat(Kartoffel.flattenHierarchy(user.hierarchy, user.job));
+        userRes.setHierarchyList(user.hierarchy as string[]);
+        userRes.setHierarchyflat(user.hierarchyFlat);
         return userRes;
-    }
-
-    static formatApproverInfo(approverInfo: IApproverInfo): ApproverInfo {
-        const unit = new Unit();
-        unit.setName(approverInfo.unit.name);
-        unit.setApproversList(approverInfo.unit.approvers);
-
-        const approverRes: ApproverInfo = new ApproverInfo();
-        approverRes.setIsadmin(approverInfo.isAdmin);
-        approverRes.setIsapprover(approverInfo.isApprover);
-        approverRes.setIsblocked(approverInfo.isBlocked);
-        approverRes.setUnit(unit);
-
-        return approverRes;
     }
 }

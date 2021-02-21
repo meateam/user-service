@@ -1,16 +1,16 @@
 // Integration Tests
-
 import { describe } from 'mocha';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import { Kartoffel } from './users.service';
-import { IUser } from './users.interface';
+import { Kartoffel } from './kartoffel.intergation';
+import { IKartoffelUser } from './kartoffel.interface';
 import { UserNotFoundError } from '../utils/errors';
+import { IUser } from '../users/users.interface';
 
 const expect: Chai.ExpectStatic = chai.expect;
 chai.use(chaiAsPromised);
 
-const user_1: IUser = {
+const user_1: IKartoffelUser = {
     alive: true,
     job: 'רוצח',
     responsibility: 'none',
