@@ -77,12 +77,6 @@ export class User extends jspb.Message {
     setHierarchyflat(value: string): void;
 
 
-    hasDomainuser(): boolean;
-    clearDomainuser(): void;
-    getDomainuser(): DomainUser | undefined;
-    setDomainuser(value?: DomainUser): void;
-
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): User.AsObject;
     static toObject(includeInstance: boolean, msg: User): User.AsObject;
@@ -102,36 +96,6 @@ export namespace User {
         fullname: string,
         hierarchyList: Array<string>,
         hierarchyflat: string,
-        domainuser?: DomainUser.AsObject,
-    }
-}
-
-export class DomainUser extends jspb.Message { 
-    getUniqueid(): string;
-    setUniqueid(value: string): void;
-
-    getAdfsuid(): string;
-    setAdfsuid(value: string): void;
-
-    getDatasource(): string;
-    setDatasource(value: string): void;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): DomainUser.AsObject;
-    static toObject(includeInstance: boolean, msg: DomainUser): DomainUser.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: DomainUser, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): DomainUser;
-    static deserializeBinaryFromReader(message: DomainUser, reader: jspb.BinaryReader): DomainUser;
-}
-
-export namespace DomainUser {
-    export type AsObject = {
-        uniqueid: string,
-        adfsuid: string,
-        datasource: string,
     }
 }
 

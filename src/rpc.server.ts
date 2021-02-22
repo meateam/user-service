@@ -73,12 +73,12 @@ export class RPC implements IUsersServer {
         }
         
         const user: IUser = await RPC.userService.getByID(userID, destination);
-        const reply: GetUserResponse = new GetUserResponse();
         if (!user) {
             throw new UserNotFoundError(`The user with ID ${userID}, is not found`);
         }
-        
         const userRes: User = RPC.formatUser(user);
+
+        const reply: GetUserResponse = new GetUserResponse();
         reply.setUser(userRes);
         return reply;
     }
@@ -102,6 +102,7 @@ export class RPC implements IUsersServer {
 
         const usersRes: IUser[] = await RPC.userService.searchByName(userName, destination);
         const users: User[] = usersRes.map(user => RPC.formatUser(user));
+
         const reply: FindUserByNameResponse = new FindUserByNameResponse();
         reply.setUsersList(users);
         return reply;
@@ -135,16 +136,6 @@ export class RPC implements IUsersServer {
     static formatUser(user: IUser): User {
         const userRes: User = new User();
 
-        // if(user.domainUser) {
-        //     const domainRes: DomainUser = new DomainUser();
-
-        //     domainRes.setDatasource(user.domainUser.dataSource as string);
-        //     domainRes.setUniqueid(user.domainUser.uniqueID as string);
-        //     domainRes.setAdfsuid(user.domainUser.adfsUID as string);
-
-        //     userRes.setDomainuser(domainRes);
-        // }
-
         userRes.setFirstname(user.firstName);
         userRes.setLastname(user.lastName || ' ');
         userRes.setId(user.id);
@@ -152,6 +143,7 @@ export class RPC implements IUsersServer {
         userRes.setFullname(user.fullName as string);
         userRes.setHierarchyList(user.hierarchy as string[]);
         userRes.setHierarchyflat(user.hierarchyFlat);
+
         return userRes;
     }
 }

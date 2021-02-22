@@ -93,7 +93,7 @@ export class Kartoffel {
         }
         let dest_domain: string = (dest && dest == EXTERNAL_DESTS.c)? ctsDatasource: '';
         const users: IKartoffelUser[] = res.data;
-        const generalUsers = users.map(user=>this.setUser(user, dest_domain));
+        const generalUsers = users.map(user=>this.setUser(user));
         return generalUsers;
     }
 
@@ -127,7 +127,7 @@ export class Kartoffel {
         });
     }
 
-    private setUser(userData: IKartoffelUser, dest?: string): IUser {
+    private setUser(userData: IKartoffelUser): IUser {
         let user: IUser = {
             id: userData.id,
             mail: userData.mail as string,
@@ -137,11 +137,6 @@ export class Kartoffel {
             hierarchyFlat: Kartoffel.flattenHierarchy(userData.hierarchy, userData.job),
             hierarchy: userData.hierarchy,
         };
-
-        // if(dest) {
-        //     const domainUser: IDomainUser[] = userData.domainUsers.filter(domainUser => {return domainUser.dataSource === dest});
-        //     user.domainUser = domainUser[0];
-        // }
 
         return user;
     }
