@@ -1,13 +1,11 @@
 import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
 import * as grpc from 'grpc';
 import { UsersService, IUsersServer } from '../proto/users/generated/users/users_grpc_pb';
-import { GetByMailRequest, GetByIDRequest, User, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse, DomainUser } from '../proto/users/generated/users/users_pb';
+import { GetByMailRequest, GetByIDRequest, User, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse } from '../proto/users/generated/users/users_pb';
 import { wrapper } from './logger';
 import { ClientError, UserNotFoundError } from './utils/errors';
 import { EXTERNAL_DESTS, IUser } from './users/users.interface';
 import { UserService } from './users/users.service';
-import { domain } from 'process';
-import { IDomainUser } from './kartoffel/kartoffel.interface';
 
 const StatusesEnum = HealthCheckResponse.ServingStatus;
 

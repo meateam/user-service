@@ -1,8 +1,8 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import Spike from '../spike/spike.service';
 import { UserNotFoundError, ApplicationError, SpikeError, UnauthorizedError, KartoffelError } from '../utils/errors';
-import { ctsDatasource, kartoffelCTSQueryGet, kartoffelCTSQuerySearch, kartoffelQuery, kartoffelURL } from '../config';
-import { IDomainUser, IKartoffelUser } from './kartoffel.interface';
+import { kartoffelCTSQueryGet, kartoffelCTSQuerySearch, kartoffelQuery, kartoffelURL } from '../config';
+import { IKartoffelUser } from './kartoffel.interface';
 import { EXTERNAL_DESTS, IUser } from '../users/users.interface';
 
 export class Kartoffel {
@@ -91,7 +91,6 @@ export class Kartoffel {
         } catch (err) {
             throw new ApplicationError(`Unknown Error: ${err} `);
         }
-        let dest_domain: string = (dest && dest == EXTERNAL_DESTS.c)? ctsDatasource: '';
         const users: IKartoffelUser[] = res.data;
         const generalUsers = users.map(user=>this.setUser(user));
         return generalUsers;

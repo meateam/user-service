@@ -1,5 +1,3 @@
-import { IDomainUser } from "../kartoffel/kartoffel.interface";
-
 export interface IUser {
     id: string;
     fullName: string;
