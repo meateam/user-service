@@ -8,7 +8,7 @@ export interface IUser {
     hierarchy?: string[];
     hierarchyFlat: string;
     mail: string;
-    domainUser?: IDomainUser;
+    // domainUser?: IDomainUser;
 }
 
 export enum EXTERNAL_DESTS {

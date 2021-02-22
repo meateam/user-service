@@ -99,6 +99,7 @@ export class RPC implements IUsersServer {
         if (destination && !(destination in EXTERNAL_DESTS)) {
             throw new ClientError(`The destination ${destination}, is not found`);
         }
+
         const usersRes: IUser[] = await RPC.userService.searchByName(userName, destination);
         const users: User[] = usersRes.map(user => RPC.formatUser(user));
         const reply: FindUserByNameResponse = new FindUserByNameResponse();
@@ -133,15 +134,16 @@ export class RPC implements IUsersServer {
     */
     static formatUser(user: IUser): User {
         const userRes: User = new User();
-        const domainRes: DomainUser = new DomainUser();
 
-        if(user.domainUser) {
-            domainRes.setDatasource(user.domainUser.dataSource as string);
-            domainRes.setUniqueid(user.domainUser.uniqueID as string);
-            domainRes.setAdfsuid(user.domainUser.adfsUID as string);
+        // if(user.domainUser) {
+        //     const domainRes: DomainUser = new DomainUser();
 
-            userRes.setDomainuser(domainRes);
-        }
+        //     domainRes.setDatasource(user.domainUser.dataSource as string);
+        //     domainRes.setUniqueid(user.domainUser.uniqueID as string);
+        //     domainRes.setAdfsuid(user.domainUser.adfsUID as string);
+
+        //     userRes.setDomainuser(domainRes);
+        // }
 
         userRes.setFirstname(user.firstName);
         userRes.setLastname(user.lastName || ' ');

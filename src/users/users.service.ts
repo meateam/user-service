@@ -20,7 +20,7 @@ export class UserService {
                 user = await this.phonebook.getUserByID(id);
                 break;
             default:
-                user = await this.kartoffel.getByID(id);
+                user = await this.kartoffel.getByID(id, destination);
                 break;
         }
         return user;
