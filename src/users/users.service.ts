@@ -38,6 +38,7 @@ export class UserService {
     /**
      * Search user suggestions by a partial name. returns a list of users ordered by resemblance score
      * @param partialName - the partial name to search by.
+     * @param destination? - optional param that identify the external destination, if not mentioned look in non-external network
      */
     public async searchByName(partialName: string, destination?: string): Promise<IUser[]> {
         let users: IUser[];
