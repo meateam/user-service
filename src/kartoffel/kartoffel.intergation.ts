@@ -1,8 +1,8 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import Spike from '../spike/spike.service';
 import { UserNotFoundError, ApplicationError, SpikeError, UnauthorizedError, KartoffelError } from '../utils/errors';
-import { kartoffelCTSQueryGet, kartoffelCTSQuerySearch, kartoffelQuery, kartoffelURL } from '../config';
-import { IKartoffelUser } from './kartoffel.interface';
+import { ctsDatasource, kartoffelCTSQueryGet, kartoffelCTSQuerySearch, kartoffelQuery, kartoffelURL } from '../config';
+import { IDomainUser, IKartoffelUser } from './kartoffel.interface';
 import { EXTERNAL_DESTS, IUser } from '../users/users.interface';
 
 export class Kartoffel {
@@ -12,21 +12,22 @@ export class Kartoffel {
     constructor() {
         this.SpikeService = new Spike();
         this.instance = axios.create({ baseURL: kartoffelURL });
-        
+
         // If authentication is needed, adds an authorization header to the axios instance.
         if (process.env.SPIKE_REQUIRED === 'true') {
             this.addAuthInterceptor();
         }
     }
 
-   /**
-     * Gets a user by its ID from the provider
-     * @param id - the user ID
-     */
+    /**
+      * Gets a user by its ID from the provider
+      * @param id - the user ID (return the id that specified in the request)
+      * @param dest? - optional param that identify the external destination, if not mentioned look in non-external network
+      */
     async getByID(id: string, dest?: string): Promise<IUser> {
         let res: AxiosResponse;
         try {
-            let query: string = (dest && dest == EXTERNAL_DESTS.c)? kartoffelCTSQueryGet: '';  
+            let query: string = (dest && dest == EXTERNAL_DESTS.CTS) ? kartoffelCTSQueryGet : '';
             res = await this.instance.get(`${query}/${id}`);
         } catch (err) {
             if (err.response && err.response.status) {
@@ -43,16 +44,29 @@ export class Kartoffel {
                 throw new ApplicationError(`Unknown Error while contacting the user service : ${JSON.stringify(err)}`);
             }
         }
+
         // Status Code = 2XX / 3XX
         const user: IKartoffelUser = res.data;
+
+        if (dest && dest == EXTERNAL_DESTS.CTS) {
+            // Check if the id is match to cts datasource
+            const userMatch: IDomainUser[] = user.domainUsers.filter(domainUser => {
+                return ctsDatasource == domainUser.dataSource && domainUser.uniqueID == id
+            });
+            if (userMatch.length < 1) throw new UserNotFoundError(`The user with id ${id} is not found`);
+
+            // Replace the return id to cts id
+            user.id = userMatch[0].uniqueID?  userMatch[0].uniqueID : user.id;
+        }
+
         const generalUser = this.setUser(user);
         return generalUser;
     }
 
-     /**
-     * Gets a user by one of his mail addresses
-     * @param domainUser - a mail address
-     */
+    /**
+    * Gets a user by one of his mail addresses
+    * @param domainUser - a mail address
+    */
     public async getByDomainUser(domainUser: string): Promise<IUser> {
         let res: AxiosResponse;
         try {
@@ -79,26 +93,36 @@ export class Kartoffel {
     }
 
 
-     /**
-     * Search user suggestions by a partial name. returns a list of users ordered by resemblance score
-     * @param partialName - the partial name to search by.
-     */
+    /**
+    * Search user suggestions by a partial name. returns a list of users ordered by resemblance score
+    * @param partialName - the partial name to search by.
+    * @param dest? - optional param that identify the external destination, if not mentioned look in non-external network
+    */
     public async searchByName(partialName: string, dest?: string): Promise<IUser[]> {
         let res: AxiosResponse;
         try {
-            let query: string = (dest && dest == EXTERNAL_DESTS.c)? kartoffelCTSQuerySearch: kartoffelQuery;
+            let query: string = (dest && dest == EXTERNAL_DESTS.CTS) ? kartoffelCTSQuerySearch : kartoffelQuery;
             res = await this.instance.get(query, { params: { fullname: partialName } });
         } catch (err) {
             throw new ApplicationError(`Unknown Error: ${err} `);
         }
         const users: IKartoffelUser[] = res.data;
-        const generalUsers = users.map(user=>this.setUser(user));
+        const generalUsers: IUser[] = users.map((user: IKartoffelUser) => {
+            if (dest && dest == EXTERNAL_DESTS.CTS) {
+                 // Get the id that match to cts datasource and replace the return id to cts id
+                const userMatch: IDomainUser[] = user.domainUsers.filter(domainUser => {return ctsDatasource == domainUser.dataSource});
+                user.id = userMatch[0].uniqueID?  userMatch[0].uniqueID : user.id;
+            }
+
+            return this.setUser(user)
+        });
         return generalUsers;
     }
 
     /**
      * This function gets an hierarchy in an array form and reduce it to a long string format
      * @param hierarchy - The hierarchy array.
+     * @param job - The job of the user.
      */
     public static flattenHierarchy(hierarchy: string[], job: string): string {
         let flat = hierarchy.join('/');
@@ -108,10 +132,10 @@ export class Kartoffel {
         return flat;
     }
 
-      /**
-     * Adds an Authorization header with an updated authentication token
-     * from spike to the axios instance to kartoffel.
-     */
+    /**
+   * Adds an Authorization header with an updated authentication token
+   * from spike to the axios instance to kartoffel.
+   */
     private addAuthInterceptor() {
         this.instance.interceptors.request.use(async (config) => {
             try {
@@ -126,6 +150,10 @@ export class Kartoffel {
         });
     }
 
+    /**
+     * Parse kartoffel user to user-service general user
+     * @param userData 
+     */
     private setUser(userData: IKartoffelUser): IUser {
         let user: IUser = {
             id: userData.id,

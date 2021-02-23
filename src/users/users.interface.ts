@@ -9,6 +9,6 @@ export interface IUser {
 }
 
 export enum EXTERNAL_DESTS {
-    z='z', 
-    c='c'
+    TOMCAL='TOMCAL', 
+    CTS='CTS'
 };

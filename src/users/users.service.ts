@@ -16,7 +16,7 @@ export class UserService {
     async getByID(id: string, destination?: string): Promise<IUser> {
         let user: IUser;
         switch (destination) {
-            case EXTERNAL_DESTS.z:
+            case EXTERNAL_DESTS.TOMCAL:
                 user = await this.phonebook.getUserByID(id);
                 break;
             default:
@@ -42,7 +42,7 @@ export class UserService {
     public async searchByName(partialName: string, destination?: string): Promise<IUser[]> {
         let users: IUser[];
         switch (destination) {
-            case EXTERNAL_DESTS.z:
+            case EXTERNAL_DESTS.TOMCAL:
                 users = await this.phonebook.findUserByName(partialName);
                 break;
             default:

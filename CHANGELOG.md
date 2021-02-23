@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- ISSUE([83](https://github.com/meateam/user-service/issues/83)): merge delegation service with user service
+- major:([83](https://github.com/meateam/user-service/issues/83)): merge delegation service with user service
 
 ## [v2.1.1]- 2021-02-11
 ### Changed
