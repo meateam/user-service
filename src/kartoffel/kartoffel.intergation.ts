@@ -27,7 +27,7 @@ export class Kartoffel {
     async getByID(id: string, dest?: string): Promise<IUser> {
         let res: AxiosResponse;
         try {
-            let query: string = (dest && dest == EXTERNAL_DESTS.CTS) ? kartoffelCTSQueryGet : '';
+            const query: string = (dest && dest === EXTERNAL_DESTS.CTS as any as string) ? kartoffelCTSQueryGet : '';
             res = await this.instance.get(`${query}/${id}`);
         } catch (err) {
             if (err.response && err.response.status) {
@@ -48,15 +48,15 @@ export class Kartoffel {
         // Status Code = 2XX / 3XX
         const user: IKartoffelUser = res.data;
 
-        if (dest && dest == EXTERNAL_DESTS.CTS) {
+        if (dest && dest === EXTERNAL_DESTS.CTS as any as string) {
             // Check if the id is match to cts datasource
-            const userMatch: IDomainUser[] = user.domainUsers.filter(domainUser => {
-                return ctsDatasource == domainUser.dataSource && domainUser.uniqueID == id
+            const userMatch: IDomainUser[] = user.domainUsers.filter((domainUser) => {
+                return ctsDatasource === domainUser.dataSource && domainUser.uniqueID === id;
             });
             if (userMatch.length < 1) throw new UserNotFoundError(`The user with id ${id} is not found`);
 
             // Replace the return id to cts id
-            user.id = userMatch[0].uniqueID?  userMatch[0].uniqueID : user.id;
+            user.id = userMatch[0].uniqueID ?  userMatch[0].uniqueID : user.id;
         }
 
         const generalUser = this.setUser(user);
@@ -92,7 +92,6 @@ export class Kartoffel {
         return generalUser;
     }
 
-
     /**
     * Search user suggestions by a partial name. returns a list of users ordered by resemblance score
     * @param partialName - the partial name to search by.
@@ -101,20 +100,20 @@ export class Kartoffel {
     public async searchByName(partialName: string, dest?: string): Promise<IUser[]> {
         let res: AxiosResponse;
         try {
-            let query: string = (dest && dest == EXTERNAL_DESTS.CTS) ? kartoffelCTSQuerySearch : kartoffelQuery;
+            const query: string = (dest && dest === EXTERNAL_DESTS.CTS as any as string) ? kartoffelCTSQuerySearch : kartoffelQuery;
             res = await this.instance.get(query, { params: { fullname: partialName } });
         } catch (err) {
             throw new ApplicationError(`Unknown Error: ${err} `);
         }
         const users: IKartoffelUser[] = res.data;
         const generalUsers: IUser[] = users.map((user: IKartoffelUser) => {
-            if (dest && dest == EXTERNAL_DESTS.CTS) {
+            if (dest && dest === EXTERNAL_DESTS.CTS as any as string) {
                  // Get the id that match to cts datasource and replace the return id to cts id
-                const userMatch: IDomainUser[] = user.domainUsers.filter(domainUser => {return ctsDatasource == domainUser.dataSource});
-                user.id = userMatch[0].uniqueID?  userMatch[0].uniqueID : user.id;
+                const userMatch: IDomainUser[] = user.domainUsers.filter((domainUser) => { return ctsDatasource === domainUser.dataSource; });
+                user.id = userMatch[0].uniqueID ?  userMatch[0].uniqueID : user.id;
             }
 
-            return this.setUser(user)
+            return this.setUser(user);
         });
         return generalUsers;
     }
@@ -152,10 +151,10 @@ export class Kartoffel {
 
     /**
      * Parse kartoffel user to user-service general user
-     * @param userData 
+     * @param userData
      */
     private setUser(userData: IKartoffelUser): IUser {
-        let user: IUser = {
+        const user: IUser = {
             id: userData.id,
             mail: userData.mail as string,
             firstName: userData.firstName,

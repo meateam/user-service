@@ -1,3 +1,5 @@
+import { ctsDest, tomcalDest } from '../config';
+
 export interface IUser {
     id: string;
     fullName: string;
@@ -9,6 +11,6 @@ export interface IUser {
 }
 
 export enum EXTERNAL_DESTS {
-    TOMCAL='TOMCAL', 
-    CTS='CTS'
-};
+  TOMCAL = tomcalDest as any,
+  CTS = ctsDest as any,
+}

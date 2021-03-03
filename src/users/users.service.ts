@@ -16,12 +16,12 @@ export class UserService {
     async getByID(id: string, destination?: string): Promise<IUser> {
         let user: IUser;
         switch (destination) {
-            case EXTERNAL_DESTS.TOMCAL:
-                user = await this.phonebook.getUserByID(id);
-                break;
-            default:
-                user = await this.kartoffel.getByID(id, destination);
-                break;
+        case EXTERNAL_DESTS.TOMCAL as any as string:
+            user = await this.phonebook.getUserByID(id);
+            break;
+        default:
+            user = await this.kartoffel.getByID(id, destination);
+            break;
         }
         return user;
     }
@@ -43,12 +43,12 @@ export class UserService {
     public async searchByName(partialName: string, destination?: string): Promise<IUser[]> {
         let users: IUser[];
         switch (destination) {
-            case EXTERNAL_DESTS.TOMCAL:
-                users = await this.phonebook.findUserByName(partialName);
-                break;
-            default:
-                users = await this.kartoffel.searchByName(partialName, destination);
-                break;
+        case EXTERNAL_DESTS.TOMCAL as any as string:
+            users = await this.phonebook.findUserByName(partialName);
+            break;
+        default:
+            users = await this.kartoffel.searchByName(partialName, destination);
+            break;
         }
         return users;
     }
