@@ -67,7 +67,6 @@ describe('Spike and Kartoffel Integration', () => {
             });
             it('Should return a user by id', async () => {
                 const user: IUser = await UsersService.getByID(user_1.id);
-                console.log(user);
                 expect(user).to.exist;
                 expect(user).to.have.property('id', user_1.id);
                 expect(user).to.have.property('firstName', user_1.firstName);
