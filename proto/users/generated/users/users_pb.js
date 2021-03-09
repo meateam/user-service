@@ -1,4 +1,4 @@
-// source: users/users.proto
+// source: users.proto
 /**
  * @fileoverview
  * @enhanceable
@@ -7,6 +7,8 @@
  * @public
  */
 // GENERATED CODE -- DO NOT EDIT!
+/* eslint-disable */
+// @ts-nocheck
 
 var jspb = require('google-protobuf');
 var goog = jspb;
@@ -581,7 +583,8 @@ proto.users.User.toObject = function(includeInstance, msg) {
     lastname: jspb.Message.getFieldWithDefault(msg, 4, ""),
     fullname: jspb.Message.getFieldWithDefault(msg, 5, ""),
     hierarchyList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-    hierarchyflat: jspb.Message.getFieldWithDefault(msg, 7, "")
+    hierarchyflat: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    adfsid: jspb.Message.getFieldWithDefault(msg, 8, "")
   };
 
   if (includeInstance) {
@@ -645,6 +648,10 @@ proto.users.User.deserializeBinaryFromReader = function(msg, reader) {
     case 7:
       var value = /** @type {string} */ (reader.readString());
       msg.setHierarchyflat(value);
+      break;
+    case 8:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAdfsid(value);
       break;
     default:
       reader.skipField();
@@ -721,6 +728,13 @@ proto.users.User.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       7,
+      f
+    );
+  }
+  f = message.getAdfsid();
+  if (f.length > 0) {
+    writer.writeString(
+      8,
       f
     );
   }
@@ -869,6 +883,24 @@ proto.users.User.prototype.getHierarchyflat = function() {
  */
 proto.users.User.prototype.setHierarchyflat = function(value) {
   return jspb.Message.setProto3StringField(this, 7, value);
+};
+
+
+/**
+ * optional string adfsId = 8;
+ * @return {string}
+ */
+proto.users.User.prototype.getAdfsid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.users.User} returns this
+ */
+proto.users.User.prototype.setAdfsid = function(value) {
+  return jspb.Message.setProto3StringField(this, 8, value);
 };
 
 
@@ -1091,9 +1123,9 @@ proto.users.ApproverInfo.prototype.toObject = function(opt_includeInstance) {
 proto.users.ApproverInfo.toObject = function(includeInstance, msg) {
   var f, obj = {
     userid: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    isadmin: jspb.Message.getFieldWithDefault(msg, 2, false),
-    isapprover: jspb.Message.getFieldWithDefault(msg, 3, false),
-    isblocked: jspb.Message.getFieldWithDefault(msg, 4, false),
+    isadmin: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
+    isapprover: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
+    isblocked: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
     unit: (f = msg.getUnit()) && proto.users.Unit.toObject(includeInstance, f)
   };
 
@@ -1243,7 +1275,7 @@ proto.users.ApproverInfo.prototype.setUserid = function(value) {
  * @return {boolean}
  */
 proto.users.ApproverInfo.prototype.getIsadmin = function() {
-  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 2, false));
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 2, false));
 };
 
 
@@ -1261,7 +1293,7 @@ proto.users.ApproverInfo.prototype.setIsadmin = function(value) {
  * @return {boolean}
  */
 proto.users.ApproverInfo.prototype.getIsapprover = function() {
-  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 3, false));
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
 };
 
 
@@ -1279,7 +1311,7 @@ proto.users.ApproverInfo.prototype.setIsapprover = function(value) {
  * @return {boolean}
  */
 proto.users.ApproverInfo.prototype.getIsblocked = function() {
-  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 4, false));
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
 };
 
 
@@ -2250,7 +2282,7 @@ proto.users.CanApproveToUserResponse.prototype.toObject = function(opt_includeIn
  */
 proto.users.CanApproveToUserResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    canapprovetouser: jspb.Message.getFieldWithDefault(msg, 1, false),
+    canapprovetouser: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
     cantapprovereasonsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f
   };
 
@@ -2347,7 +2379,7 @@ proto.users.CanApproveToUserResponse.serializeBinaryToWriter = function(message,
  * @return {boolean}
  */
 proto.users.CanApproveToUserResponse.prototype.getCanapprovetouser = function() {
-  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 1, false));
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 1, false));
 };
 
 

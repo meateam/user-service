@@ -1,5 +1,5 @@
 // package: users
-// file: users/users.proto
+// file: users.proto
 
 /* tslint:disable */
 /* eslint-disable */
@@ -8,8 +8,7 @@ import * as jspb from "google-protobuf";
 
 export class GetByMailRequest extends jspb.Message { 
     getMail(): string;
-    setMail(value: string): void;
-
+    setMail(value: string): GetByMailRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetByMailRequest.AsObject;
@@ -29,8 +28,7 @@ export namespace GetByMailRequest {
 
 export class GetByIDRequest extends jspb.Message { 
     getId(): string;
-    setId(value: string): void;
-
+    setId(value: string): GetByIDRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetByIDRequest.AsObject;
@@ -50,28 +48,23 @@ export namespace GetByIDRequest {
 
 export class User extends jspb.Message { 
     getId(): string;
-    setId(value: string): void;
-
+    setId(value: string): User;
     getMail(): string;
-    setMail(value: string): void;
-
+    setMail(value: string): User;
     getFirstname(): string;
-    setFirstname(value: string): void;
-
+    setFirstname(value: string): User;
     getLastname(): string;
-    setLastname(value: string): void;
-
+    setLastname(value: string): User;
     getFullname(): string;
-    setFullname(value: string): void;
-
+    setFullname(value: string): User;
     clearHierarchyList(): void;
     getHierarchyList(): Array<string>;
-    setHierarchyList(value: Array<string>): void;
+    setHierarchyList(value: Array<string>): User;
     addHierarchy(value: string, index?: number): string;
-
     getHierarchyflat(): string;
-    setHierarchyflat(value: string): void;
-
+    setHierarchyflat(value: string): User;
+    getAdfsid(): string;
+    setAdfsid(value: string): User;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): User.AsObject;
@@ -92,18 +85,17 @@ export namespace User {
         fullname: string,
         hierarchyList: Array<string>,
         hierarchyflat: string,
+        adfsid: string,
     }
 }
 
 export class Unit extends jspb.Message { 
     getName(): string;
-    setName(value: string): void;
-
+    setName(value: string): Unit;
     clearApproversList(): void;
     getApproversList(): Array<string>;
-    setApproversList(value: Array<string>): void;
+    setApproversList(value: Array<string>): Unit;
     addApprovers(value: string, index?: number): string;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Unit.AsObject;
@@ -124,23 +116,18 @@ export namespace Unit {
 
 export class ApproverInfo extends jspb.Message { 
     getUserid(): string;
-    setUserid(value: string): void;
-
+    setUserid(value: string): ApproverInfo;
     getIsadmin(): boolean;
-    setIsadmin(value: boolean): void;
-
+    setIsadmin(value: boolean): ApproverInfo;
     getIsapprover(): boolean;
-    setIsapprover(value: boolean): void;
-
+    setIsapprover(value: boolean): ApproverInfo;
     getIsblocked(): boolean;
-    setIsblocked(value: boolean): void;
-
+    setIsblocked(value: boolean): ApproverInfo;
 
     hasUnit(): boolean;
     clearUnit(): void;
     getUnit(): Unit | undefined;
-    setUnit(value?: Unit): void;
-
+    setUnit(value?: Unit): ApproverInfo;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ApproverInfo.AsObject;
@@ -167,8 +154,7 @@ export class GetUserResponse extends jspb.Message {
     hasUser(): boolean;
     clearUser(): void;
     getUser(): User | undefined;
-    setUser(value?: User): void;
-
+    setUser(value?: User): GetUserResponse;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetUserResponse.AsObject;
@@ -188,8 +174,7 @@ export namespace GetUserResponse {
 
 export class FindUserByNameRequest extends jspb.Message { 
     getName(): string;
-    setName(value: string): void;
-
+    setName(value: string): FindUserByNameRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): FindUserByNameRequest.AsObject;
@@ -210,9 +195,8 @@ export namespace FindUserByNameRequest {
 export class FindUserByNameResponse extends jspb.Message { 
     clearUsersList(): void;
     getUsersList(): Array<User>;
-    setUsersList(value: Array<User>): void;
+    setUsersList(value: Array<User>): FindUserByNameResponse;
     addUsers(value?: User, index?: number): User;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): FindUserByNameResponse.AsObject;
@@ -232,8 +216,7 @@ export namespace FindUserByNameResponse {
 
 export class GetApproverInfoRequest extends jspb.Message { 
     getId(): string;
-    setId(value: string): void;
-
+    setId(value: string): GetApproverInfoRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetApproverInfoRequest.AsObject;
@@ -256,8 +239,7 @@ export class GetApproverInfoResponse extends jspb.Message {
     hasApproverinfo(): boolean;
     clearApproverinfo(): void;
     getApproverinfo(): ApproverInfo | undefined;
-    setApproverinfo(value?: ApproverInfo): void;
-
+    setApproverinfo(value?: ApproverInfo): GetApproverInfoResponse;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetApproverInfoResponse.AsObject;
@@ -277,11 +259,9 @@ export namespace GetApproverInfoResponse {
 
 export class CanApproveToUserRequest extends jspb.Message { 
     getApproverid(): string;
-    setApproverid(value: string): void;
-
+    setApproverid(value: string): CanApproveToUserRequest;
     getUserid(): string;
-    setUserid(value: string): void;
-
+    setUserid(value: string): CanApproveToUserRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CanApproveToUserRequest.AsObject;
@@ -302,13 +282,11 @@ export namespace CanApproveToUserRequest {
 
 export class CanApproveToUserResponse extends jspb.Message { 
     getCanapprovetouser(): boolean;
-    setCanapprovetouser(value: boolean): void;
-
+    setCanapprovetouser(value: boolean): CanApproveToUserResponse;
     clearCantapprovereasonsList(): void;
     getCantapprovereasonsList(): Array<string>;
-    setCantapprovereasonsList(value: Array<string>): void;
+    setCantapprovereasonsList(value: Array<string>): CanApproveToUserResponse;
     addCantapprovereasons(value: string, index?: number): string;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CanApproveToUserResponse.AsObject;
