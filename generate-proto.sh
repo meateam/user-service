@@ -12,6 +12,11 @@ PROTO_DIR="./proto/${protoName}"
 
 cd "${PROTO_DIR}"
 
+CURR_PATH=$(realpath .)
+
+go clean -modcache
+protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative "./${protoName}.proto"
+
 mkdir -p "${OUT_DIR}"
 
 grpc_tools_node_protoc \

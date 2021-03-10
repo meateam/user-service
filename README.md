@@ -2,28 +2,18 @@
 
 Get user from the karttofel service
 
-## Compile proto to go
+## Compiling proto prerequisite
+### In order to compile the proto file make sure you have `grpc-tools`, `protoc` and `protoc-gen-go` installed globaly:
 
-In order to compile the proto file make sure you have `protobuf` and `protoc-gen-go`
+`npm i grpc-tools`
 
-### Installing protobuf on Linux
+### In order to compile the proto file make sure you have `protobuf` and `protoc-gen-go`
 
-`./install_protoc.sh`
-
-### Installing protoc-gen-go
-
+[https://grpc.io/docs/protoc-installation/](url)
 `go get -u github.com/golang/protobuf/protoc-gen-go`
 
-**Compiling Protobuf To Golang:**
-`protoc -I proto/ proto/users/users.proto --go_out=plugins=grpc:./proto`
+### And make sure to install all the dependencies (including the devDependencies):
+`npm i`
 
-## Compile proto to js/ts
-
-In order to compile the proto file make sure you have `grpc-tools`
-
-**Compiling proto to js+ts:**
-`npx grpc_tools_node_protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --ts_out=./proto/users/generated -I ./proto ./proto/users/users.proto`
-`npx grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./proto/users/generated --grpc_out=./proto/users/generated -I ./proto ./proto/users/users.proto`
-
-**Compiling spike proro to js+ts:**
-`./build-spike-proto.sh`
+## Compiling proto
+`./generate-proto.sh`
