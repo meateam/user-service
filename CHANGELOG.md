@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - FEAT([1](https://github.com/meateam/hi-service/issues/1)): Add adfsId to User
 
+## [v2.1.1]- 2021-02-11
 ### Changed
 - ISSUE([99](https://github.com/meateam/drive-project/issues/99)): update pkg, delete unused pkg and update deps
 
@@ -36,3 +37,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [unreleased]: https://github.com/meateam/user-service/compare/master...develop
 [v2.0.0]: https://github.com/meateam/user-service/compare/v1.3...v2.0.0
 [v2.1.0]: https://github.com/meateam/user-service/compare/v2.0.0...v2.1.0
+[v2.1.1]: https://github.com/meateam/user-service/compare/v2.1.0...v2.1.1
