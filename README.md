@@ -10,6 +10,7 @@ Get user from the karttofel service
 ### In order to compile the proto file make sure you have `protobuf` and `protoc-gen-go`
 
 [https://grpc.io/docs/protoc-installation/](url)
+
 `go get -u github.com/golang/protobuf/protoc-gen-go`
 
 ### And make sure to install all the dependencies (including the devDependencies):
