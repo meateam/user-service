@@ -3,15 +3,15 @@ syntax = "proto3";
 package users;
 
 service Users {
-    rpc GetUserByMail(GetByMailRequest) returns (GetUserResponse) {}
+    rpc GetUserByMailOrT(GetByMailOrTRequest) returns (GetUserResponse) {}
     rpc GetUserByID(GetByIDRequest) returns (GetUserResponse) {}
     rpc FindUserByName(FindUserByNameRequest) returns (FindUserByNameResponse) {}
     rpc GetApproverInfo(GetApproverInfoRequest) returns (GetApproverInfoResponse) {}
     rpc CanApproveToUser(CanApproveToUserRequest) returns (CanApproveToUserResponse) {}
 }
 
-message GetByMailRequest {
-    string mail = 1;
+message GetByMailOrTRequest {
+    string mailOrT = 1;
 }
 
 message GetByIDRequest {

@@ -5,7 +5,7 @@ import { Approval } from './approval/approval.service';
 import { IApproverInfo, ICanApproveToUser } from './approval/approvers.interface';
 import * as grpc from 'grpc';
 import { UsersService, IUsersServer } from '../proto/users/generated/users/users_grpc_pb';
-import { GetByMailRequest, GetByIDRequest, User, Unit, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse, GetApproverInfoResponse, GetApproverInfoRequest, ApproverInfo, CanApproveToUserRequest, CanApproveToUserResponse } from '../proto/users/generated/users/users_pb';
+import { GetByMailOrTRequest, GetByIDRequest, User, Unit, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse, GetApproverInfoResponse, GetApproverInfoRequest, ApproverInfo, CanApproveToUserRequest, CanApproveToUserResponse } from '../proto/users/generated/users/users_pb';
 import { wrapper } from './logger';
 import { UserNotFoundError } from './utils/errors';
 
@@ -132,12 +132,12 @@ export class RPC implements IUsersServer {
       * @param call - The grpc call from the client, should contain a mail.
       * @param callback - The grpc callback of the function that this method implements.
      */
-    async getUserByMail(call: grpc.ServerUnaryCall<GetByMailRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
-        await wrapper<GetByMailRequest, GetUserResponse>(RPC.getUserByMailHandler, call, callback);
+    async getUserByMail(call: grpc.ServerUnaryCall<GetByMailOrTRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
+        await wrapper<GetByMailOrTRequest, GetUserResponse>(RPC.getUserByMailHandler, call, callback);
     }
 
-    static async getUserByMailHandler(call: grpc.ServerUnaryCall<GetByMailRequest>) {
-        const userMail: string = call.request.getMail();
+    static async getUserByMailHandler(call: grpc.ServerUnaryCall<GetByMailOrTRequest>) {
+        const userMail: string = call.request.getMailort();
         const user: IUser = await RPC.karttofelClient.getByDomainUser(userMail);
         const reply: GetUserResponse = new GetUserResponse();
         if (!user) {
