@@ -128,20 +128,20 @@ export class RPC implements IUsersServer {
     }
 
     /**
-     * getUserByMail returns a user by its domain-user (mail). This function implements the UserService's method by the same name.
+     * getUserByMailOrT returns a user by its domain-user (mail or t). This function implements the UserService's method by the same name.
       * @param call - The grpc call from the client, should contain a mail.
       * @param callback - The grpc callback of the function that this method implements.
      */
-    async getUserByMail(call: grpc.ServerUnaryCall<GetByMailOrTRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
-        await wrapper<GetByMailOrTRequest, GetUserResponse>(RPC.getUserByMailHandler, call, callback);
+    async getUserByMailOrT(call: grpc.ServerUnaryCall<GetByMailOrTRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
+        await wrapper<GetByMailOrTRequest, GetUserResponse>(RPC.getUserByMailOrTHandler, call, callback);
     }
 
-    static async getUserByMailHandler(call: grpc.ServerUnaryCall<GetByMailOrTRequest>) {
-        const userMail: string = call.request.getMailort();
-        const user: IUser = await RPC.karttofelClient.getByDomainUser(userMail);
+    static async getUserByMailOrTHandler(call: grpc.ServerUnaryCall<GetByMailOrTRequest>) {
+        const userMailOrT: string = call.request.getMailort();
+        const user: IUser = await RPC.karttofelClient.getByDomainUser(userMailOrT);
         const reply: GetUserResponse = new GetUserResponse();
         if (!user) {
-            throw new UserNotFoundError(`The user with Mail ${userMail}, is not found`);
+            throw new UserNotFoundError(`The user with Mail ${userMailOrT}, is not found`);
         }
         const userRes: User = RPC.formatUser(user);
         reply.setUser(userRes);
