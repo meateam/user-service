@@ -20,8 +20,6 @@ type UsersClient interface {
 	GetUserByMailOrT(ctx context.Context, in *GetByMailOrTRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	GetUserByID(ctx context.Context, in *GetByIDRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	FindUserByName(ctx context.Context, in *FindUserByNameRequest, opts ...grpc.CallOption) (*FindUserByNameResponse, error)
-	GetApproverInfo(ctx context.Context, in *GetApproverInfoRequest, opts ...grpc.CallOption) (*GetApproverInfoResponse, error)
-	CanApproveToUser(ctx context.Context, in *CanApproveToUserRequest, opts ...grpc.CallOption) (*CanApproveToUserResponse, error)
 }
 
 type usersClient struct {
@@ -59,24 +57,6 @@ func (c *usersClient) FindUserByName(ctx context.Context, in *FindUserByNameRequ
 	return out, nil
 }
 
-func (c *usersClient) GetApproverInfo(ctx context.Context, in *GetApproverInfoRequest, opts ...grpc.CallOption) (*GetApproverInfoResponse, error) {
-	out := new(GetApproverInfoResponse)
-	err := c.cc.Invoke(ctx, "/users.Users/GetApproverInfo", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *usersClient) CanApproveToUser(ctx context.Context, in *CanApproveToUserRequest, opts ...grpc.CallOption) (*CanApproveToUserResponse, error) {
-	out := new(CanApproveToUserResponse)
-	err := c.cc.Invoke(ctx, "/users.Users/CanApproveToUser", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // UsersServer is the server API for Users service.
 // All implementations must embed UnimplementedUsersServer
 // for forward compatibility
@@ -84,8 +64,6 @@ type UsersServer interface {
 	GetUserByMailOrT(context.Context, *GetByMailOrTRequest) (*GetUserResponse, error)
 	GetUserByID(context.Context, *GetByIDRequest) (*GetUserResponse, error)
 	FindUserByName(context.Context, *FindUserByNameRequest) (*FindUserByNameResponse, error)
-	GetApproverInfo(context.Context, *GetApproverInfoRequest) (*GetApproverInfoResponse, error)
-	CanApproveToUser(context.Context, *CanApproveToUserRequest) (*CanApproveToUserResponse, error)
 	mustEmbedUnimplementedUsersServer()
 }
 
@@ -101,12 +79,6 @@ func (UnimplementedUsersServer) GetUserByID(context.Context, *GetByIDRequest) (*
 }
 func (UnimplementedUsersServer) FindUserByName(context.Context, *FindUserByNameRequest) (*FindUserByNameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindUserByName not implemented")
-}
-func (UnimplementedUsersServer) GetApproverInfo(context.Context, *GetApproverInfoRequest) (*GetApproverInfoResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetApproverInfo not implemented")
-}
-func (UnimplementedUsersServer) CanApproveToUser(context.Context, *CanApproveToUserRequest) (*CanApproveToUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CanApproveToUser not implemented")
 }
 func (UnimplementedUsersServer) mustEmbedUnimplementedUsersServer() {}
 
@@ -175,42 +147,6 @@ func _Users_FindUserByName_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Users_GetApproverInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetApproverInfoRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UsersServer).GetApproverInfo(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/users.Users/GetApproverInfo",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServer).GetApproverInfo(ctx, req.(*GetApproverInfoRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Users_CanApproveToUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CanApproveToUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UsersServer).CanApproveToUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/users.Users/CanApproveToUser",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServer).CanApproveToUser(ctx, req.(*CanApproveToUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 var _Users_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "users.Users",
 	HandlerType: (*UsersServer)(nil),
@@ -226,14 +162,6 @@ var _Users_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindUserByName",
 			Handler:    _Users_FindUserByName_Handler,
-		},
-		{
-			MethodName: "GetApproverInfo",
-			Handler:    _Users_GetApproverInfo_Handler,
-		},
-		{
-			MethodName: "CanApproveToUser",
-			Handler:    _Users_CanApproveToUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
