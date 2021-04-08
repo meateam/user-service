@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- FEAT([89](https://github.com/meateam/user-service/issues/89)): Add adfsId property to User
+- minor([89](https://github.com/meateam/user-service/issues/89)): Add adfsId property to User
 
 ## [v2.1.1]- 2021-02-11
 ### Changed
