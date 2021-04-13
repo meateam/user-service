@@ -6,8 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [v3.2.0] - 2021-04-13
 ### Added
 - minor([89](https://github.com/meateam/user-service/issues/89)): Add adfsId property to User
+## [v3.1.0] - 2021-04-11
+### Changed
+- minor: ([90](https://github.com/meateam/user-service/pull/90)): replace mail param to mailOrT in GetUsersByMail
+
+## [v3.0.0]- 2021-03-25
+
+### Changed
+- major:([83](https://github.com/meateam/user-service/issues/83)): merge delegation service with user service
 
 ## [v2.1.1]- 2021-02-11
 ### Changed
@@ -38,3 +47,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [v2.0.0]: https://github.com/meateam/user-service/compare/v1.3...v2.0.0
 [v2.1.0]: https://github.com/meateam/user-service/compare/v2.0.0...v2.1.0
 [v2.1.1]: https://github.com/meateam/user-service/compare/v2.1.0...v2.1.1
+[v3.0.0]: https://github.com/meateam/user-service/compare/v2.1.1...v3.0.0
+[v3.1.0]: https://github.com/meateam/user-service/compare/v3.0.0...v3.1.0

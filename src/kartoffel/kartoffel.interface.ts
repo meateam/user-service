@@ -1,11 +1,11 @@
-import { ctsDest, tomcalDest } from '../config';
 import { Types } from 'mongoose';
+// Taken From Kartoffel
 
 export interface IOrganizationGroup {
     id?: string;
     name: string;
-    directManagers?: IUser[] | string[];
-    directMembers?: IUser[] | string[];
+    directManagers?: IKartoffelUser[] | string[];
+    directMembers?: IKartoffelUser[] | string[];
     createdAt: Date;
     updatedAt?: Date;
     ancestors?: string[];
@@ -14,15 +14,18 @@ export interface IOrganizationGroup {
     isALeaf?: boolean;
     isAlive?: boolean;
 }
+
 export interface IDomainUser {
     id?: string;
     domain?: string;
     name?: string;
+    dataSource?:string;
     uniqueID?: string;
     adfsUID?: string;
-    personId?: Types.ObjectId | string | IUser;
+    personId?: Types.ObjectId | string | IKartoffelUser;
 }
-export interface IUser {
+
+export interface IKartoffelUser {
     // Person's Basic information
     _id?:string;
     id: string;
@@ -55,10 +58,4 @@ export interface IUser {
     clearance?: string;
     // Calculated
     fullName?: string;
-    adfsId: string;
-}
-
-export enum EXTERNAL_DESTS {
-  TOMCAL = tomcalDest as any,
-  CTS = ctsDest as any,
 }
