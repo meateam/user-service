@@ -20,14 +20,14 @@ export class Kartoffel {
     }
 
     /**
-      * Gets a user by its ID from the provider
-      * @param id - the user ID (return the id that specified in the request)
-      * @param dest? - optional param that identify the external destination, if not mentioned look in non-external network
-      */
+     * Gets a user by its ID from the provider
+     * @param id - the user ID (return the id that specified in the request)
+     * @param dest? - optional param that identify the external destination, if not mentioned look in non-external network
+     */
     async getByID(id: string, dest?: string): Promise<IUser> {
         let res: AxiosResponse;
         try {
-            const query: string = (dest && dest === EXTERNAL_DESTS.CTS as any as string) ? kartoffelCTSQueryGet : '';
+            const query: string = dest && dest === (EXTERNAL_DESTS.CTS as any as string) ? kartoffelCTSQueryGet : '';
             res = await this.instance.get(`${query}/${id}`);
         } catch (err) {
             if (err.response && err.response.status) {
@@ -48,7 +48,7 @@ export class Kartoffel {
         // Status Code = 2XX / 3XX
         const user: IKartoffelUser = res.data;
 
-        if (dest && dest === EXTERNAL_DESTS.CTS as any as string) {
+        if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
             // Check if the id is match to cts datasource
             const userMatch: IDomainUser[] = user.domainUsers.filter((domainUser) => {
                 return ctsDatasource === domainUser.dataSource && domainUser.uniqueID === id;
@@ -56,7 +56,7 @@ export class Kartoffel {
             if (userMatch.length < 1) throw new UserNotFoundError(`The user with id ${id} is not found`);
 
             // Replace the return id to cts id
-            user.id = userMatch[0].uniqueID ?  userMatch[0].uniqueID : user.id;
+            user.id = userMatch[0].uniqueID ? userMatch[0].uniqueID : user.id;
         }
 
         const generalUser = this.setUser(user);
@@ -64,10 +64,11 @@ export class Kartoffel {
     }
 
     /**
-    * Gets a user by one of his mail addresses
-    * @param domainUser - a mail address
-    */
-    public async getByDomainUser(domainUser: string): Promise<IUser> {
+     * Gets a user by one of his mail addresses
+     * @param domainUser - a mail address
+     * @param dest? - optional param that identify the external destination, if not mentioned look in non-external network
+     */
+    public async getByDomainUser(domainUser: string, dest?: string): Promise<IUser> {
         let res: AxiosResponse;
         try {
             res = await this.instance.get(`/domainUser/${domainUser}`);
@@ -86,31 +87,47 @@ export class Kartoffel {
                 throw new ApplicationError(`Unknown Error while contacting the user service : ${JSON.stringify(err)}`);
             }
         }
+
         // Status Code = 2XX / 3XX
         const user: IKartoffelUser = res.data;
+
+        if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
+            // Check if the person has user in cts datasource
+            const userMatch: IDomainUser[] = user.domainUsers.filter(
+                (domainUser) => ctsDatasource === domainUser.dataSource
+            );
+            if (userMatch.length < 1) throw new UserNotFoundError(`The user with id ${user.id} has no datasource`);
+
+            // Replace the return id to cts id
+            user.id = userMatch[0].uniqueID ? userMatch[0].uniqueID : user.id;
+        }
+
         const generalUser = this.setUser(user);
         return generalUser;
     }
 
     /**
-    * Search user suggestions by a partial name. returns a list of users ordered by resemblance score
-    * @param partialName - the partial name to search by.
-    * @param dest? - optional param that identify the external destination, if not mentioned look in non-external network
-    */
+     * Search user suggestions by a partial name. returns a list of users ordered by resemblance score
+     * @param partialName - the partial name to search by.
+     * @param dest? - optional param that identify the external destination, if not mentioned look in non-external network
+     */
     public async searchByName(partialName: string, dest?: string): Promise<IUser[]> {
         let res: AxiosResponse;
         try {
-            const query: string = (dest && dest === EXTERNAL_DESTS.CTS as any as string) ? kartoffelCTSQuerySearch : kartoffelQuery;
+            const query: string =
+                dest && dest === (EXTERNAL_DESTS.CTS as any as string) ? kartoffelCTSQuerySearch : kartoffelQuery;
             res = await this.instance.get(query, { params: { fullname: partialName } });
         } catch (err) {
             throw new ApplicationError(`Unknown Error: ${err} `);
         }
         const users: IKartoffelUser[] = res.data;
         const generalUsers: IUser[] = users.map((user: IKartoffelUser) => {
-            if (dest && dest === EXTERNAL_DESTS.CTS as any as string) {
-                 // Get the id that match to cts datasource and replace the return id to cts id
-                const userMatch: IDomainUser[] = user.domainUsers.filter((domainUser) => { return ctsDatasource === domainUser.dataSource; });
-                user.id = userMatch[0].uniqueID ?  userMatch[0].uniqueID : user.id;
+            if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
+                // Get the id that match to cts datasource and replace the return id to cts id
+                const userMatch: IDomainUser[] = user.domainUsers.filter((domainUser) => {
+                    return ctsDatasource === domainUser.dataSource;
+                });
+                user.id = userMatch[0].uniqueID ? userMatch[0].uniqueID : user.id;
             }
 
             return this.setUser(user);
@@ -132,9 +149,9 @@ export class Kartoffel {
     }
 
     /**
-   * Adds an Authorization header with an updated authentication token
-   * from spike to the axios instance to kartoffel.
-   */
+     * Adds an Authorization header with an updated authentication token
+     * from spike to the axios instance to kartoffel.
+     */
     private addAuthInterceptor() {
         this.instance.interceptors.request.use(async (config) => {
             try {
