@@ -10,6 +10,9 @@ export class GetByMailOrTRequest extends jspb.Message {
     getMailort(): string;
     setMailort(value: string): void;
 
+    getDestination(): string;
+    setDestination(value: string): void;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetByMailOrTRequest.AsObject;
@@ -24,6 +27,7 @@ export class GetByMailOrTRequest extends jspb.Message {
 export namespace GetByMailOrTRequest {
     export type AsObject = {
         mailort: string,
+        destination: string,
     }
 }
 

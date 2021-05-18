@@ -10,6 +10,7 @@ service Users {
 
 message GetByMailOrTRequest {
     string mailOrT = 1;
+    string destination = 2;
 }
 
 message GetByIDRequest {

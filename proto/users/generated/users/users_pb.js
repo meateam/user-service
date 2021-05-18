@@ -178,7 +178,8 @@ proto.users.GetByMailOrTRequest.prototype.toObject = function(opt_includeInstanc
  */
 proto.users.GetByMailOrTRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    mailort: jspb.Message.getFieldWithDefault(msg, 1, "")
+    mailort: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    destination: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -219,6 +220,10 @@ proto.users.GetByMailOrTRequest.deserializeBinaryFromReader = function(msg, read
       var value = /** @type {string} */ (reader.readString());
       msg.setMailort(value);
       break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDestination(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -255,6 +260,13 @@ proto.users.GetByMailOrTRequest.serializeBinaryToWriter = function(message, writ
       f
     );
   }
+  f = message.getDestination();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
 };
 
 
@@ -273,6 +285,24 @@ proto.users.GetByMailOrTRequest.prototype.getMailort = function() {
  */
 proto.users.GetByMailOrTRequest.prototype.setMailort = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional string destination = 2;
+ * @return {string}
+ */
+proto.users.GetByMailOrTRequest.prototype.getDestination = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.users.GetByMailOrTRequest} returns this
+ */
+proto.users.GetByMailOrTRequest.prototype.setDestination = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
