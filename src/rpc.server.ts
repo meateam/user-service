@@ -1,7 +1,14 @@
 import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
 import * as grpc from 'grpc';
 import { UsersService, IUsersServer } from '../proto/users/generated/users/users_grpc_pb';
-import { GetByMailRequest, GetByIDRequest, User, FindUserByNameRequest, FindUserByNameResponse, GetUserResponse } from '../proto/users/generated/users/users_pb';
+import {
+    GetByMailOrTRequest,
+    GetByIDRequest,
+    User,
+    FindUserByNameRequest,
+    FindUserByNameResponse,
+    GetUserResponse,
+} from '../proto/users/generated/users/users_pb';
 import { wrapper } from './logger';
 import { ClientError, UserNotFoundError } from './utils/errors';
 import { EXTERNAL_DESTS, IUser } from './users/users.interface';
@@ -55,8 +62,8 @@ export class RPC implements IUsersServer {
 
     /**
      * getUserByID returns a user by a given ID. This function implements the UserService's method by the same name.
-      * @param call - The grpc call from the client, should contain a user ID.
-      * @param callback - The grpc callback of the function that this method implements.
+     * @param call - The grpc call from the client, should contain a user ID.
+     * @param callback - The grpc callback of the function that this method implements.
      */
     async getUserByID(call: grpc.ServerUnaryCall<GetByIDRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
         await wrapper<GetByIDRequest, GetUserResponse>(RPC.getUserByIDHandler, call, callback);
@@ -69,7 +76,7 @@ export class RPC implements IUsersServer {
         if (destination && !(destination in EXTERNAL_DESTS)) {
             throw new ClientError(`The destination ${destination}, is not found`);
         }
-        
+
         const user: IUser = await RPC.userService.getByID(userID, destination);
         if (!user) {
             throw new UserNotFoundError(`The user with ID ${userID}, is not found`);
@@ -83,23 +90,26 @@ export class RPC implements IUsersServer {
 
     /**
      * findUserByName returns an array of users who match with a given partial-name. This function implements the UserService's method by the same name.
-      * @param call - The grpc call from the client, should contain a user's partial name.
-      * @param callback - The grpc callback of the function that this method implements.
+     * @param call - The grpc call from the client, should contain a user's partial name.
+     * @param callback - The grpc callback of the function that this method implements.
      */
-    async findUserByName(call: grpc.ServerUnaryCall<FindUserByNameRequest>, callback: grpc.sendUnaryData<FindUserByNameResponse>) {
+    async findUserByName(
+        call: grpc.ServerUnaryCall<FindUserByNameRequest>,
+        callback: grpc.sendUnaryData<FindUserByNameResponse>
+    ) {
         await wrapper<FindUserByNameRequest, FindUserByNameResponse>(RPC.findUserByNameHandler, call, callback);
     }
 
     static async findUserByNameHandler(call: grpc.ServerUnaryCall<FindUserByNameRequest>) {
         const userName: string = call.request.getName();
         const destination: string = call.request.getDestination();
-        
+
         if (destination && !(destination in EXTERNAL_DESTS)) {
             throw new ClientError(`The destination ${destination}, is not found`);
         }
 
         const usersRes: IUser[] = await RPC.userService.searchByName(userName, destination);
-        const users: User[] = usersRes.map(user => RPC.formatUser(user));
+        const users: User[] = usersRes.map((user) => RPC.formatUser(user));
 
         const reply: FindUserByNameResponse = new FindUserByNameResponse();
         reply.setUsersList(users);
@@ -107,20 +117,28 @@ export class RPC implements IUsersServer {
     }
 
     /**
-     * getUserByMail returns a user by its domain-user (mail). This function implements the UserService's method by the same name.
-      * @param call - The grpc call from the client, should contain a mail.
-      * @param callback - The grpc callback of the function that this method implements.
+     * getUserByMailOrT returns a user by its domain-user (mail or t). This function implements the UserService's method by the same name.
+     * @param call - The grpc call from the client, should contain a mail.
+     * @param callback - The grpc callback of the function that this method implements.
      */
-    async getUserByMail(call: grpc.ServerUnaryCall<GetByMailRequest>, callback: grpc.sendUnaryData<GetUserResponse>) {
-        await wrapper<GetByMailRequest, GetUserResponse>(RPC.getUserByMailHandler, call, callback);
+    async getUserByMailOrT(
+        call: grpc.ServerUnaryCall<GetByMailOrTRequest>,
+        callback: grpc.sendUnaryData<GetUserResponse>
+    ) {
+        await wrapper<GetByMailOrTRequest, GetUserResponse>(RPC.getUserByMailOrTHandler, call, callback);
     }
 
-    static async getUserByMailHandler(call: grpc.ServerUnaryCall<GetByMailRequest>) {
-        const userMail: string = call.request.getMail();
-        const user: IUser = await RPC.userService.getByDomainUser(userMail);
+    static async getUserByMailOrTHandler(call: grpc.ServerUnaryCall<GetByMailOrTRequest>) {
+        const userMailOrT: string = call.request.getMailort();
+        const destination: string = call.request.getDestination();
+        if (destination && !(destination in EXTERNAL_DESTS)) {
+            throw new ClientError(`The destination ${destination}, is not found`);
+        }
+
+        const user: IUser = await RPC.userService.getByDomainUser(userMailOrT, destination);
         const reply: GetUserResponse = new GetUserResponse();
         if (!user) {
-            throw new UserNotFoundError(`The user with Mail ${userMail}, is not found`);
+            throw new UserNotFoundError(`The user with Mail ${userMailOrT}, is not found`);
         }
         const userRes: User = RPC.formatUser(user);
         reply.setUser(userRes);
@@ -128,9 +146,9 @@ export class RPC implements IUsersServer {
     }
 
     /**
-    * formatUser gets a User object and returned it formatted.
-    * @param user- a user object from user service.
-    */
+     * formatUser gets a User object and returned it formatted.
+     * @param user- a user object from user service.
+     */
     static formatUser(user: IUser): User {
         const userRes: User = new User();
 

@@ -1,29 +1,33 @@
 // package: users
-// file: users/users.proto
+// file: users.proto
 
 /* tslint:disable */
 /* eslint-disable */
 
 import * as jspb from "google-protobuf";
 
-export class GetByMailRequest extends jspb.Message { 
-    getMail(): string;
-    setMail(value: string): void;
+export class GetByMailOrTRequest extends jspb.Message { 
+    getMailort(): string;
+    setMailort(value: string): void;
+
+    getDestination(): string;
+    setDestination(value: string): void;
 
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): GetByMailRequest.AsObject;
-    static toObject(includeInstance: boolean, msg: GetByMailRequest): GetByMailRequest.AsObject;
+    toObject(includeInstance?: boolean): GetByMailOrTRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: GetByMailOrTRequest): GetByMailOrTRequest.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: GetByMailRequest, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): GetByMailRequest;
-    static deserializeBinaryFromReader(message: GetByMailRequest, reader: jspb.BinaryReader): GetByMailRequest;
+    static serializeBinaryToWriter(message: GetByMailOrTRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): GetByMailOrTRequest;
+    static deserializeBinaryFromReader(message: GetByMailOrTRequest, reader: jspb.BinaryReader): GetByMailOrTRequest;
 }
 
-export namespace GetByMailRequest {
+export namespace GetByMailOrTRequest {
     export type AsObject = {
-        mail: string,
+        mailort: string,
+        destination: string,
     }
 }
 
