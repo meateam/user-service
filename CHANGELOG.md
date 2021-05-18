@@ -5,9 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
 ## [v3.2.0] - 2021-05-18
 
-## [Unreleased]
 -   minor: ([93](https://github.com/meateam/user-service/pull/93)): add upn search for cts
 
 ## [v3.1.0] - 2021-04-11
@@ -50,3 +51,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [v2.1.1]: https://github.com/meateam/user-service/compare/v2.1.0...v2.1.1
 [v3.0.0]: https://github.com/meateam/user-service/compare/v2.1.1...v3.0.0
 [v3.1.0]: https://github.com/meateam/user-service/compare/v3.0.0...v3.1.0
+[v3.2.0]: https://github.com/meateam/user-service/compare/v3.1.0...v3.2.0
