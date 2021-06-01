@@ -14,7 +14,7 @@ export class Phonebook {
     async getUserByID(id: string): Promise<IUser> {
         let res: AxiosResponse;
         try {
-           res = await this.instance.get(`/${id}`);
+            res = await this.instance.get(`/${id}`);
         } catch (err) {
             if (err.response && err.response.status) {
                 const statusCode: number = err.response.status;
@@ -43,7 +43,7 @@ export class Phonebook {
         const users: IUser[] = [];
         usersData.forEach((userData) => { users.push(setUser(userData)); });
 
-       return users;
+        return users;
     }
 
 }
@@ -55,7 +55,7 @@ function setUser(userData: IPhoneBookUser): IUser {
         firstName: userData.firstName,
         lastName: userData.lastName,
         fullName: `${userData.firstName} ${userData.lastName}`,
-        hierarchyFlat: userData.displayName
+        hierarchyFlat: userData.displayName,
     };
 
     return user;

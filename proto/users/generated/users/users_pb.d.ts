@@ -9,6 +9,8 @@ import * as jspb from "google-protobuf";
 export class GetByMailOrTRequest extends jspb.Message { 
     getMailort(): string;
     setMailort(value: string): GetByMailOrTRequest;
+    getDestination(): string;
+    setDestination(value: string): GetByMailOrTRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetByMailOrTRequest.AsObject;
@@ -23,6 +25,7 @@ export class GetByMailOrTRequest extends jspb.Message {
 export namespace GetByMailOrTRequest {
     export type AsObject = {
         mailort: string,
+        destination: string,
     }
 }
 

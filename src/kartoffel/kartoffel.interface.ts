@@ -58,4 +58,5 @@ export interface IKartoffelUser {
     clearance?: string;
     // Calculated
     fullName?: string;
+    adfsId: string;
 }

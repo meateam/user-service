@@ -12,6 +12,7 @@ export class UserService {
     /**
      * Gets a user by its ID from the provider
      * @param id - the user ID
+     * @param destination? - optional param that identify the external destination, if not mentioned look in non-external network
      */
     async getByID(id: string, destination?: string): Promise<IUser> {
         let user: IUser;
@@ -29,9 +30,10 @@ export class UserService {
     /**
      * Gets a user by one of his mail addresses
      * @param domainUser - a mail address
+     *  @param destination? - optional param that identify the external destination, if not mentioned look in non-external network
      */
-    public async getByDomainUser(domainUser: string): Promise<IUser> {
-        const user: IUser = await this.kartoffel.getByDomainUser(domainUser);
+    public async getByDomainUser(domainUser: string, destination?: string): Promise<IUser> {
+        const user: IUser = await this.kartoffel.getByDomainUser(domainUser, destination);
         return user;
     }
 
