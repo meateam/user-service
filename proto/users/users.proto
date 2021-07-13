@@ -3,19 +3,19 @@ syntax = "proto3";
 package users;
 
 service Users {
-    rpc GetUserByMail(GetByMailRequest) returns (GetUserResponse) {}
+    rpc GetUserByMailOrT(GetByMailOrTRequest) returns (GetUserResponse) {}
     rpc GetUserByID(GetByIDRequest) returns (GetUserResponse) {}
     rpc FindUserByName(FindUserByNameRequest) returns (FindUserByNameResponse) {}
-    rpc GetApproverInfo(GetApproverInfoRequest) returns (GetApproverInfoResponse) {}
-    rpc CanApproveToUser(CanApproveToUserRequest) returns (CanApproveToUserResponse) {}
 }
 
-message GetByMailRequest {
-    string mail = 1;
+message GetByMailOrTRequest {
+    string mailOrT = 1;
+    string destination = 2;
 }
 
 message GetByIDRequest {
     string id = 1;
+    string destination = 2;
 }
 
 message User {
@@ -28,45 +28,15 @@ message User {
     string hierarchyFlat = 7;
 }
 
-message Unit {
-    string name =1;
-    repeated string approvers = 2;
-}
-
-message ApproverInfo {
-    string userId = 1;
-    bool isAdmin = 2;
-    bool isApprover = 3;
-    bool isBlocked = 4;
-    Unit unit = 5;
-}
-
 message GetUserResponse {
     User user = 1;
 }
 
 message FindUserByNameRequest {
     string name = 1;
+    string destination = 2;
 }
 
 message FindUserByNameResponse {
     repeated User users = 1;
-}
-
-message GetApproverInfoRequest {
-    string id = 1;
-}
-
-message GetApproverInfoResponse {
-    ApproverInfo approverInfo =  1;
-}
-
-message CanApproveToUserRequest {
-    string approverID = 1;
-    string userID = 2;
-}
-
-message CanApproveToUserResponse {
-    bool canApproveToUser = 1;
-    repeated string cantApproveReasons = 2;
 }
