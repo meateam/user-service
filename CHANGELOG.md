@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [v3.2.2] - 2021-10-12
+
 - minor([96](https://github.com/meateam/user-service/pull/96)): mail not required field
 
 ## [v3.2.1] - 2021-08-26
