@@ -7,7 +7,7 @@ export interface IUser {
     lastName: string;
     hierarchy?: string[];
     hierarchyFlat: string;
-    mail: string;
+    mail?: string;
 }
 
 export enum EXTERNAL_DESTS {

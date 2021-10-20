@@ -6,5 +6,5 @@ export interface IPhoneBookUser {
     firstName: string;
     lastName: string;
     rank: string;
-    mail: string;
+    mail?: string;
 }
