@@ -121,16 +121,17 @@ export class Kartoffel {
             throw new ApplicationError(`Unknown Error: ${err} `);
         }
         const users: IKartoffelUser[] = res.data;
-        const generalUsers: IUser[] = users.map((user: IKartoffelUser) => {
-            if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
-                // Get the id that match to cts datasource and replace the return id to cts id
-                const userMatch: IDomainUser[] = user.domainUsers.filter((domainUser) => {
-                    return ctsDatasource === domainUser.dataSource;
-                });
-                user.id = userMatch[0].uniqueID ? userMatch[0].uniqueID : user.id;
-            }
+        const usersWithRoles = users.filter(user => user?.hierarchy && !Array.isArray(user.hierarchy));
+        const generalUsers: IUser[] = usersWithRoles.map((user: IKartoffelUser) => {
+          if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
+            // Get the id that match to cts datasource and replace the return id to cts id
+            const userMatch: IDomainUser[] = user.domainUsers.filter((domainUser) => {
+              return ctsDatasource === domainUser.dataSource;
+            });
+            user.id = userMatch[0].uniqueID ? userMatch[0].uniqueID : user.id;
+          }
 
-            return this.setUser(user);
+          return this.setUser(user);
         });
         return generalUsers;
     }
