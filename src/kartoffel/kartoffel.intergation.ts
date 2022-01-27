@@ -121,7 +121,7 @@ export class Kartoffel {
             throw new ApplicationError(`Unknown Error: ${err} `);
         }
         const users: IKartoffelUser[] = res.data;
-        const usersWithRoles = users.filter(user => user?.hierarchy && !Array.isArray(user.hierarchy));
+        const usersWithRoles = users.filter(user => user?.hierarchy && Array.isArray(user.hierarchy));
         const generalUsers: IUser[] = usersWithRoles.map((user: IKartoffelUser) => {
           if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
             // Get the id that match to cts datasource and replace the return id to cts id
@@ -142,7 +142,7 @@ export class Kartoffel {
      * @param job - The job of the user.
      */
     public static flattenHierarchy(hierarchy: string[], job: string): string {
-        let flat = hierarchy.join('/');
+        let flat = hierarchy? hierarchy.join('/'): '';
         if (job) {
             flat += `/${job}`;
         }
