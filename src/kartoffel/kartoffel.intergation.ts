@@ -2,8 +2,8 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import Spike from '../spike/spike.service';
 import { UserNotFoundError, ApplicationError, SpikeError, UnauthorizedError, KartoffelError } from '../utils/errors';
 import { ctsDatasource, kartoffelCTSQueryGet, kartoffelCTSQuerySearch, kartoffelQuery, kartoffelURL } from '../config';
-import { IDomainUser, IKartoffelUser } from './kartoffel.interface';
-import { EXTERNAL_DESTS, IUser } from '../users/users.interface';
+import { IKartoffelUser2, IDigitalIdentity } from './kartoffel.interface';
+import { EXTERNAL_DESTS, IUser, IUser2 } from '../users/users.interface';
 
 export class Kartoffel {
     private instance: AxiosInstance;
@@ -24,12 +24,11 @@ export class Kartoffel {
      * @param id - the user ID (return the id that specified in the request)
      * @param dest? - optional param that identify the external destination, if not mentioned look in non-external network
      */
-    async getByID(id: string, dest?: string): Promise<IUser> {
+    async getByID(id: string, dest?: string): Promise<any> {
         let res: AxiosResponse;
         try {
-            const query: string = dest && dest === (EXTERNAL_DESTS.CTS as any as string) ? kartoffelCTSQueryGet : '';
-            res = await this.instance.get(`${query}/${id}`);
-        } catch (err) {
+            res = await this.instance.get(`/${id}?expanded=true`);
+        } catch (err: any) {
             if (err.response && err.response.status) {
                 const statusCode: number = err.response.status;
                 if (statusCode === 404) {
@@ -46,17 +45,17 @@ export class Kartoffel {
         }
 
         // Status Code = 2XX / 3XX
-        const user: IKartoffelUser = res.data;
+        const user: IKartoffelUser2 = res.data;
 
         if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
             // Check if the id is match to cts datasource
-            const userMatch: IDomainUser[] = user.domainUsers.filter((domainUser) => {
-                return ctsDatasource === domainUser.dataSource && domainUser.uniqueID === id;
+            const userMatch: IDigitalIdentity[] = user.digitalIdentities.filter((digitalIdentitie) => {
+                return ctsDatasource === digitalIdentitie.source && digitalIdentitie.uniqueId === id;
             });
             if (userMatch.length < 1) throw new UserNotFoundError(`The user with id ${id} is not found`);
 
             // Replace the return id to cts id
-            user.id = userMatch[0].uniqueID ? userMatch[0].uniqueID : user.id;
+            user.id = userMatch[0].uniqueId ? userMatch[0].uniqueId : user.id;
         }
 
         const generalUser = this.setUser(user);
@@ -71,8 +70,8 @@ export class Kartoffel {
     public async getByDomainUser(domainUser: string, dest?: string): Promise<IUser> {
         let res: AxiosResponse;
         try {
-            res = await this.instance.get(`/domainUser/${domainUser}`);
-        } catch (err) {
+            res = await this.instance.get(`/digitalIdentity/${domainUser}?expanded=true`);
+        } catch (err: any) {
             if (err.response && err.response.status) {
                 const statusCode: number = err.response.status;
                 if (statusCode === 404) {
@@ -89,17 +88,17 @@ export class Kartoffel {
         }
 
         // Status Code = 2XX / 3XX
-        const user: IKartoffelUser = res.data;
+        const user: IKartoffelUser2 = res.data;
 
         if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
             // Check if the person has user in cts datasource
-            const userMatch: IDomainUser[] = user.domainUsers.filter(
-                (domainUser) => ctsDatasource === domainUser.dataSource
+            const userMatch: IDigitalIdentity[] = user.digitalIdentities.filter(
+                (digitalIdentitie) => ctsDatasource === digitalIdentitie.source
             );
             if (userMatch.length < 1) throw new UserNotFoundError(`The user with id ${user.id} has no datasource`);
 
             // Replace the return id to cts id
-            user.id = userMatch[0].uniqueID ? userMatch[0].uniqueID : user.id;
+            user.id = userMatch[0].uniqueId ? userMatch[0].uniqueId : user.id;
         }
 
         const generalUser = this.setUser(user);
@@ -111,42 +110,31 @@ export class Kartoffel {
      * @param partialName - the partial name to search by.
      * @param dest? - optional param that identify the external destination, if not mentioned look in non-external network
      */
-    public async searchByName(partialName: string, dest?: string): Promise<IUser[]> {
-        let res: AxiosResponse;
-        try {
-            const query: string =
-                dest && dest === (EXTERNAL_DESTS.CTS as any as string) ? kartoffelCTSQuerySearch : kartoffelQuery;
-            res = await this.instance.get(query, { params: { fullname: partialName } });
-        } catch (err) {
-            throw new ApplicationError(`Unknown Error: ${err} `);
-        }
-        const users: IKartoffelUser[] = res.data;
-        const usersWithRoles = users.filter(user => user?.hierarchy && Array.isArray(user.hierarchy));
-        const generalUsers: IUser[] = usersWithRoles.map((user: IKartoffelUser) => {
-          if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
-            // Get the id that match to cts datasource and replace the return id to cts id
-            const userMatch: IDomainUser[] = user.domainUsers.filter((domainUser) => {
-              return ctsDatasource === domainUser.dataSource;
-            });
-            user.id = userMatch[0].uniqueID ? userMatch[0].uniqueID : user.id;
-          }
-
-          return this.setUser(user);
+    public async searchByName(partialName: string, dest?: string): Promise<IUser2[]> {
+    let res: AxiosResponse;
+    try {
+        res = await this.instance.get(`/search`, { params: { fullName: partialName, expanded: true } });
+    } catch (err) {
+        throw new ApplicationError(`Unknown Error: ${err} `);
+    }
+    const users: IKartoffelUser2[] = res.data;
+    const usersWithRoles = users.filter(user => user?.hierarchy);
+    const generalUsers: IUser2[] = usersWithRoles.map((user: IKartoffelUser2) => {
+        if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
+        // Get the id that match to cts datasource and replace the return id to cts id
+        const userMatch: IDigitalIdentity[] = user.digitalIdentities.filter((digitalIdentitie) => {
+            return ctsDatasource === digitalIdentitie.source;
         });
-        return generalUsers;
+        user.id = userMatch[0].uniqueId ? userMatch[0].uniqueId : user.id;
     }
 
-    /**
-     * This function gets an hierarchy in an array form and reduce it to a long string format
-     * @param hierarchy - The hierarchy array.
-     * @param job - The job of the user.
-     */
-    public static flattenHierarchy(hierarchy: string[], job: string): string {
-        let flat = hierarchy? hierarchy.join('/'): '';
-        if (job) {
-            flat += `/${job}`;
-        }
-        return flat;
+        return this.setUser(user);
+    });
+    return generalUsers;
+    }
+
+    public static HierarchyToArray(hierarchy: string): string[] {
+        return hierarchy.split('/');
     }
 
     /**
@@ -171,15 +159,16 @@ export class Kartoffel {
      * Parse kartoffel user to user-service general user
      * @param userData
      */
-    private setUser(userData: IKartoffelUser): IUser {
-        const user: IUser = {
+
+    private setUser(userData: IKartoffelUser2): IUser2 {
+        const user: IUser2 = {
             id: userData.id,
             mail: userData.mail as string,
             firstName: userData.firstName,
             lastName: userData.lastName,
             fullName: `${userData.firstName} ${userData.lastName}`,
-            hierarchyFlat: Kartoffel.flattenHierarchy(userData.hierarchy, userData.job),
-            hierarchy: userData.hierarchy,
+            hierarchyFlat: userData.hierarchy + '/' + userData.jobTitle,
+            hierarchy: Kartoffel.HierarchyToArray(userData.hierarchy),
         };
 
         return user;
