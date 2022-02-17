@@ -2,8 +2,8 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import Spike from '../spike/spike.service';
 import { UserNotFoundError, ApplicationError, SpikeError, UnauthorizedError, KartoffelError } from '../utils/errors';
 import { ctsDatasource, kartoffelCTSQueryGet, kartoffelCTSQuerySearch, kartoffelQuery, kartoffelURL } from '../config';
-import { IKartoffelUser2, IDigitalIdentity } from './kartoffel.interface';
-import { EXTERNAL_DESTS, IUser, IUser2 } from '../users/users.interface';
+import { IKartoffelUserNew, IDigitalIdentity } from './kartoffel.interface';
+import { EXTERNAL_DESTS, IUser } from '../users/users.interface';
 
 export class Kartoffel {
     private instance: AxiosInstance;
@@ -45,12 +45,12 @@ export class Kartoffel {
         }
 
         // Status Code = 2XX / 3XX
-        const user: IKartoffelUser2 = res.data;
+        const user: IKartoffelUserNew = res.data;
 
         if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
             // Check if the id is match to cts datasource
-            const userMatch: IDigitalIdentity[] = user.digitalIdentities.filter((digitalIdentitie) => {
-                return ctsDatasource === digitalIdentitie.source && digitalIdentitie.uniqueId === id;
+            const userMatch: IDigitalIdentity[] = user.digitalIdentities.filter((digitalIdentity) => {
+                return ctsDatasource === digitalIdentity.source && digitalIdentity.uniqueId === id;
             });
             if (userMatch.length < 1) throw new UserNotFoundError(`The user with id ${id} is not found`);
 
@@ -88,12 +88,12 @@ export class Kartoffel {
         }
 
         // Status Code = 2XX / 3XX
-        const user: IKartoffelUser2 = res.data;
+        const user: IKartoffelUserNew = res.data;
 
         if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
             // Check if the person has user in cts datasource
             const userMatch: IDigitalIdentity[] = user.digitalIdentities.filter(
-                (digitalIdentitie) => ctsDatasource === digitalIdentitie.source
+                (digitalIdentity) => ctsDatasource === digitalIdentity.source
             );
             if (userMatch.length < 1) throw new UserNotFoundError(`The user with id ${user.id} has no datasource`);
 
@@ -110,20 +110,20 @@ export class Kartoffel {
      * @param partialName - the partial name to search by.
      * @param dest? - optional param that identify the external destination, if not mentioned look in non-external network
      */
-    public async searchByName(partialName: string, dest?: string): Promise<IUser2[]> {
+    public async searchByName(partialName: string, dest?: string): Promise<IUser[]> {
     let res: AxiosResponse;
     try {
         res = await this.instance.get(`/search`, { params: { fullName: partialName, expanded: true } });
     } catch (err) {
         throw new ApplicationError(`Unknown Error: ${err} `);
     }
-    const users: IKartoffelUser2[] = res.data;
+    const users: IKartoffelUserNew[] = res.data;
     const usersWithRoles = users.filter(user => user?.hierarchy);
-    const generalUsers: IUser2[] = usersWithRoles.map((user: IKartoffelUser2) => {
+    const generalUsers: IUser[] = usersWithRoles.map((user: IKartoffelUserNew) => {
         if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
         // Get the id that match to cts datasource and replace the return id to cts id
-        const userMatch: IDigitalIdentity[] = user.digitalIdentities.filter((digitalIdentitie) => {
-            return ctsDatasource === digitalIdentitie.source;
+        const userMatch: IDigitalIdentity[] = user.digitalIdentities.filter((digitalIdentity) => {
+            return ctsDatasource === digitalIdentity.source;
         });
         user.id = userMatch[0].uniqueId ? userMatch[0].uniqueId : user.id;
     }
@@ -131,10 +131,6 @@ export class Kartoffel {
         return this.setUser(user);
     });
     return generalUsers;
-    }
-
-    public static HierarchyToArray(hierarchy: string): string[] {
-        return hierarchy.split('/');
     }
 
     /**
@@ -160,15 +156,15 @@ export class Kartoffel {
      * @param userData
      */
 
-    private setUser(userData: IKartoffelUser2): IUser2 {
-        const user: IUser2 = {
+    private setUser(userData: IKartoffelUserNew): IUser {
+        const user: IUser = {
             id: userData.id,
             mail: userData.mail as string,
             firstName: userData.firstName,
             lastName: userData.lastName,
             fullName: `${userData.firstName} ${userData.lastName}`,
             hierarchyFlat: userData.hierarchy + '/' + userData.jobTitle,
-            hierarchy: Kartoffel.HierarchyToArray(userData.hierarchy),
+            hierarchy: userData.hierarchy.split('/').filter(Boolean),
         };
 
         return user;

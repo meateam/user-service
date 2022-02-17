@@ -71,7 +71,7 @@ export interface IDigitalIdentity {
     isRoleAttachable: Boolean;
   }
   
-  export interface IKartoffelUser2 {
+  export interface IKartoffelUserNew {
     _id?: string;
     id: string;
     displayName: string;
