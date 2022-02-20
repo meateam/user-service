@@ -27,7 +27,8 @@ export class Kartoffel {
     async getByID(id: string, dest?: string): Promise<IUser> {
         let res: AxiosResponse;
         try {
-            res = await this.instance.get(`/${id}?expanded=true`);
+            const query: string = dest && dest === (EXTERNAL_DESTS.CTS as any as string) ? kartoffelCTSQueryGet : '';
+            res = await this.instance.get(`${query}/${id}?expanded=true`);
         } catch (err: any) {
             if (err.response && err.response.status) {
                 const statusCode: number = err.response.status;
@@ -113,7 +114,8 @@ export class Kartoffel {
     public async searchByName(partialName: string, dest?: string): Promise<IUser[]> {
         let res: AxiosResponse;
         try {
-            res = await this.instance.get(`/search`, { params: { fullName: partialName, expanded: true } });
+            const query: string = dest && dest === (EXTERNAL_DESTS.CTS as any as string) ? kartoffelCTSQuerySearch : kartoffelQuery;
+            res = await this.instance.get(query, { params: { fullName: partialName, expanded: true } });
         } catch (err) {
             throw new ApplicationError(`Unknown Error: ${err} `);
         }
