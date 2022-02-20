@@ -12,7 +12,7 @@ export interface IDigitalIdentity {
     isRoleAttachable: Boolean;
   }
   
-  export interface IKartoffelUserNew {
+  export interface IKartoffelUser {
     _id?: string;
     id: string;
     displayName: string;

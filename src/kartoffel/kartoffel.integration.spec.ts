@@ -3,14 +3,14 @@ import { describe } from 'mocha';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { Kartoffel } from './kartoffel.intergation';
-import { IKartoffelUserNew } from './kartoffel.interface';
+import { IKartoffelUser } from './kartoffel.interface';
 import { UserNotFoundError } from '../utils/errors';
 import { IUser } from '../users/users.interface';
 
 const expect: Chai.ExpectStatic = chai.expect;
 chai.use(chaiAsPromised);
 
-const user_1: IKartoffelUserNew = {
+const user_1: IKartoffelUser = {
     akaUnit: '',
     ancestors: [],
     displayName: '',

@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import Spike from '../spike/spike.service';
 import { UserNotFoundError, ApplicationError, SpikeError, UnauthorizedError, KartoffelError } from '../utils/errors';
 import { ctsDatasource, kartoffelCTSQueryGet, kartoffelCTSQuerySearch, kartoffelQuery, kartoffelURL } from '../config';
-import { IKartoffelUserNew, IDigitalIdentity } from './kartoffel.interface';
+import { IKartoffelUser, IDigitalIdentity } from './kartoffel.interface';
 import { EXTERNAL_DESTS, IUser } from '../users/users.interface';
 
 export class Kartoffel {
@@ -46,7 +46,7 @@ export class Kartoffel {
         }
 
         // Status Code = 2XX / 3XX
-        const user: IKartoffelUserNew = res.data;
+        const user: IKartoffelUser = res.data;
 
         if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
             // Check if the id is match to cts datasource
@@ -89,7 +89,7 @@ export class Kartoffel {
         }
 
         // Status Code = 2XX / 3XX
-        const user: IKartoffelUserNew = res.data;
+        const user: IKartoffelUser = res.data;
 
         if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
             // Check if the person has user in cts datasource
@@ -119,9 +119,9 @@ export class Kartoffel {
         } catch (err) {
             throw new ApplicationError(`Unknown Error: ${err} `);
         }
-        const users: IKartoffelUserNew[] = res.data;
+        const users: IKartoffelUser[] = res.data;
         const usersWithRoles = users.filter(user => user?.hierarchy);
-        const generalUsers: IUser[] = usersWithRoles.map((user: IKartoffelUserNew) => {
+        const generalUsers: IUser[] = usersWithRoles.map((user: IKartoffelUser) => {
             if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
                 // Get the id that match to cts datasource and replace the return id to cts id
                 const userMatch: IDigitalIdentity[] = user.digitalIdentities.filter((digitalIdentity) => {
@@ -158,7 +158,7 @@ export class Kartoffel {
      * @param userData
      */
 
-    private setUser(userData: IKartoffelUserNew): IUser {
+    private setUser(userData: IKartoffelUser): IUser {
         const user: IUser = {
             id: userData.id,
             mail: userData.mail as string,
