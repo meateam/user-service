@@ -3,17 +3,19 @@ import { describe } from 'mocha';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { Kartoffel } from './kartoffel.intergation';
-import { IKartoffelUser } from './kartoffel.interface';
+import { IKartoffelUserNew } from './kartoffel.interface';
 import { UserNotFoundError } from '../utils/errors';
 import { IUser } from '../users/users.interface';
 
 const expect: Chai.ExpectStatic = chai.expect;
 chai.use(chaiAsPromised);
 
-const user_1: IKartoffelUser = {
-    alive: true,
-    job: 'רוצח',
-    responsibility: 'none',
+const user_1: IKartoffelUserNew = {
+    akaUnit: '',
+    ancestors: [],
+    displayName: '',
+    serviceType: '',
+    jobTitle: 'רוצח',
     phone: [
         '02-6426784',
     ],
@@ -27,22 +29,23 @@ const user_1: IKartoffelUser = {
     entityType: 'tamar',
     firstName: 'נייטרו',
     lastName: 'הגלטין',
-    currentUnit: 'יחידת ביג מאם',
     dischargeDay: new Date('2022-11-30T22:00:00.000Z'),
     directGroup: '5d6f88e7f7709b8b73df3faf',
     rank: 'mega',
     mail: 't23456789@jello.com',
     address: 'רחוב הממתקים 34',
-    hierarchy: [
-        'parentGroup',
-        'childGroup1',
-        'childGroup1-1',
-    ],
+    hierarchy: 'parentGroup/childGroup1/childGroup1-1',
     createdAt: new Date('2019-09-04T10:20:05.689Z'),
     updatedAt: new Date('2019-09-11T11:06:05.185Z'),
-    domainUsers: [{
-        uniqueID: 'Cleta95@jello',
-        adfsUID: 'Cleta95@jellouid',
+    digitalIdentities: [{
+        uniqueId: 'Cleta95@jello',
+        source: 'Cleta95@jellouid',
+        type: 'email',
+        mail: '',
+        entityId: '5d6f8fd5f7709b8b73df3fb2',
+        isRoleAttachable: true,
+        createdAt: new Date('2019-09-04T10:20:05.689Z'),
+        updatedAt: new Date('2019-09-11T11:06:05.185Z'),
     }],
     fullName: 'נייטרו הגלטין',
     id: '5d6f8fd5f7709b8b73df3fb2',
@@ -79,7 +82,7 @@ describe('Spike and Kartoffel Integration', () => {
                 await expect(KartoffelService.getByID(fakeUserMail)).to.eventually.be.rejectedWith(UserNotFoundError);
             });
             it('Should return a user by domain-user id', async () => {
-                const user: IUser = await KartoffelService.getByDomainUser(<string>user_1.domainUsers[0].uniqueID);
+                const user: IUser = await KartoffelService.getByDomainUser(<string>user_1.digitalIdentities[0].uniqueId);
                 expect(user).to.exist;
                 expect(user).to.have.property('id', user_1.id);
                 expect(user).to.have.property('firstName', user_1.firstName);
