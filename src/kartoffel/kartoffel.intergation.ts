@@ -24,7 +24,7 @@ export class Kartoffel {
      * @param id - the user ID (return the id that specified in the request)
      * @param dest? - optional param that identify the external destination, if not mentioned look in non-external network
      */
-    async getByID(id: string, dest?: string): Promise<any> {
+    async getByID(id: string, dest?: string): Promise<IUser> {
         let res: AxiosResponse;
         try {
             res = await this.instance.get(`/${id}?expanded=true`);
@@ -111,26 +111,26 @@ export class Kartoffel {
      * @param dest? - optional param that identify the external destination, if not mentioned look in non-external network
      */
     public async searchByName(partialName: string, dest?: string): Promise<IUser[]> {
-    let res: AxiosResponse;
-    try {
-        res = await this.instance.get(`/search`, { params: { fullName: partialName, expanded: true } });
-    } catch (err) {
-        throw new ApplicationError(`Unknown Error: ${err} `);
-    }
-    const users: IKartoffelUserNew[] = res.data;
-    const usersWithRoles = users.filter(user => user?.hierarchy);
-    const generalUsers: IUser[] = usersWithRoles.map((user: IKartoffelUserNew) => {
-        if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
-        // Get the id that match to cts datasource and replace the return id to cts id
-        const userMatch: IDigitalIdentity[] = user.digitalIdentities.filter((digitalIdentity) => {
-            return ctsDatasource === digitalIdentity.source;
-        });
-        user.id = userMatch[0].uniqueId ? userMatch[0].uniqueId : user.id;
-    }
+        let res: AxiosResponse;
+        try {
+            res = await this.instance.get(`/search`, { params: { fullName: partialName, expanded: true } });
+        } catch (err) {
+            throw new ApplicationError(`Unknown Error: ${err} `);
+        }
+        const users: IKartoffelUserNew[] = res.data;
+        const usersWithRoles = users.filter(user => user?.hierarchy);
+        const generalUsers: IUser[] = usersWithRoles.map((user: IKartoffelUserNew) => {
+            if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
+                // Get the id that match to cts datasource and replace the return id to cts id
+                const userMatch: IDigitalIdentity[] = user.digitalIdentities.filter((digitalIdentity) => {
+                    return ctsDatasource === digitalIdentity.source;
+                });
+                user.id = userMatch[0].uniqueId ? userMatch[0].uniqueId : user.id;
+            }
 
-        return this.setUser(user);
-    });
-    return generalUsers;
+            return this.setUser(user);
+        });
+        return generalUsers;
     }
 
     /**
