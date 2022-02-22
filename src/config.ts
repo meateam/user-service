@@ -9,15 +9,15 @@ export const audiance: string = process.env.USER_KARTOFFEL_AUDIENCE || 'kartoffe
 export const grantType: string = process.env.GRANT_TYPE || 'client_credentials';
 
 export const spikeServiceURL: string = process.env.SPIKE_SERVICE_URL || 'spike-service:8080';
-export const kartoffelQuery: string = `/search?domainusers.datasource=${
-  process.env.DOMAINUSERS_QUERY || 'nonExternals'
+export const kartoffelQuery: string = `/search?digitalIdentity.source=${
+  process.env.DOMAINUSERS_QUERY || 'es_name'
 }`;
-export const kartoffelURL: string = `${process.env.KARTOFFEL_URL || 'http://localhost:3001'}/api/persons`;
-export const kartoffelCTSQuerySearch: string = `/search?domainusers.datasource=${
-  process.env.USER_KARTOFFEL_CTS_DATASOURCE || 'dataSource1'
+export const kartoffelURL: string = `${process.env.KARTOFFEL_URL || 'http://localhost:3001'}/api/entities`;
+export const kartoffelCTSQuerySearch: string = `/search?digitalIdentity.source=${
+  process.env.USER_KARTOFFEL_CTS_DATASOURCE || 'es_name'
 }`;
-export const kartoffelCTSQueryGet: string = '/domainUser';
-export const ctsDatasource: string = process.env.USER_KARTOFFEL_CTS_DATASOURCE || 'dataSource1';
+export const kartoffelCTSQueryGet: string = '/digitalIdentity';
+export const ctsDatasource: string = process.env.USER_KARTOFFEL_CTS_DATASOURCE || 'es_name';
 export const phoneBookURL: string = `${process.env.PHONE_BOOK_URL || 'http://localhost'}:${
   process.env.PHONE_BOOK_PORT || '80'
 }`;
