@@ -42,3 +42,4 @@ export interface IDigitalIdentity {
     createdAt?: Date;
     goalUserID?: string;
   }
+  

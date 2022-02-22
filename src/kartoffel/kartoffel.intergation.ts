@@ -29,7 +29,7 @@ export class Kartoffel {
         try {
             const query: string = dest && dest === (EXTERNAL_DESTS.CTS as any as string) ? kartoffelCTSQueryGet : '';
             res = await this.instance.get(`${query}/${id}?expanded=true`);
-        } catch (err: any) {
+        } catch (err) {
             if (err.response && err.response.status) {
                 const statusCode: number = err.response.status;
                 if (statusCode === 404) {
@@ -72,7 +72,7 @@ export class Kartoffel {
         let res: AxiosResponse;
         try {
             res = await this.instance.get(`/digitalIdentity/${domainUser}?expanded=true`);
-        } catch (err: any) {
+        } catch (err) {
             if (err.response && err.response.status) {
                 const statusCode: number = err.response.status;
                 if (statusCode === 404) {
