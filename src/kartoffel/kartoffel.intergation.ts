@@ -57,6 +57,7 @@ export class Kartoffel {
 
             // Replace the return id to cts id
             user.id = userMatch[0].uniqueId ? userMatch[0].uniqueId : user.id;
+            user.hierarchy = userMatch[0].role.hierarchy ? userMatch[0].role.hierarchy : user.hierarchy;
         }
 
         const generalUser = this.setUser(user);
@@ -100,6 +101,7 @@ export class Kartoffel {
 
             // Replace the return id to cts id
             user.id = userMatch[0].uniqueId ? userMatch[0].uniqueId : user.id;
+            user.hierarchy = userMatch[0].role.hierarchy ? userMatch[0].role.hierarchy : user.hierarchy;
         }
 
         const generalUser = this.setUser(user);
@@ -128,6 +130,7 @@ export class Kartoffel {
                     return ctsDatasource === digitalIdentity.source;
                 });
                 user.id = userMatch[0].uniqueId ? userMatch[0].uniqueId : user.id;
+                user.hierarchy = userMatch[0].role.hierarchy ? userMatch[0].role.hierarchy : user.hierarchy;
             }
 
             return this.setUser(user);
