@@ -10,6 +10,7 @@ export interface IDigitalIdentity {
     createdAt: Date;
     updatedAt: Date;
     isRoleAttachable: Boolean;
+    role: {hierarchy: string}
   }
   
   export interface IKartoffelUser {
