@@ -46,6 +46,9 @@ const user_1: IKartoffelUser = {
         isRoleAttachable: true,
         createdAt: new Date('2019-09-04T10:20:05.689Z'),
         updatedAt: new Date('2019-09-11T11:06:05.185Z'),
+        role: {
+            hierarchy: 'parentGroup/childGroup1/childGroup1-1',
+        },
     }],
     fullName: 'נייטרו הגלטין',
     id: '5d6f8fd5f7709b8b73df3fb2',
