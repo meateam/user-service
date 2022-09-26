@@ -51,7 +51,7 @@
     "grpc-ts-health-check": "^2.0.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
-    "snyk": "^1.316.1",
+    "snyk": "^1.1012.0",
     "winston": "^3.2.1",
     "winston-elasticsearch": "^0.7.13"
   },
