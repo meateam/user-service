@@ -51,7 +51,7 @@ export class Kartoffel {
         if (dest && dest === (EXTERNAL_DESTS.CTS as any as string)) {
             // Check if the id is match to cts datasource
             const userMatch: IDomainUser[] = user.domainUsers.filter((domainUser) => {
-                return ctsDatasource === domainUser.dataSource && domainUser.uniqueID === id;
+                return ctsDatasource === domainUser.dataSource && domainUser.uniqueID.toLowerCase() === id.toLowerCase();
             });
             if (userMatch.length < 1) throw new UserNotFoundError(`The user with id ${id} is not found`);
 
